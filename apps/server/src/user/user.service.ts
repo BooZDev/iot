@@ -10,7 +10,16 @@ import { InjectModel } from '@nestjs/mongoose';
 export class UserService {
   constructor(@InjectModel(User.name) private userModel: Model<User>) {}
 
-  async create(createUserDto: CreateUserDto): Promise<Types.ObjectId> {
+  async updateHashedRefreshToken(
+    id: Types.ObjectId,
+    hashedRefreshToken: string,
+  ) {
+    return await this.userModel.findByIdAndUpdate(id, {
+      hashedRefreshToken: hashedRefreshToken,
+    });
+  }
+
+  async create(createUserDto: CreateUserDto) {
     const salt = bcrypt.genSaltSync(10);
     const hashedPassword = bcrypt.hashSync(createUserDto.password, salt);
 
@@ -19,13 +28,13 @@ export class UserService {
     const createdUser = new this.userModel(createUserDto);
     await createdUser.save();
 
-    return createdUser._id;
+    return { id: createdUser._id };
   }
 
   async findAll() {
     return this.userModel
       .find()
-      .select('-password')
+      .select('-password -hashedRefreshToken')
       .sort({ createdAt: -1 })
       .exec();
   }
@@ -36,10 +45,6 @@ export class UserService {
 
   async findByEmail(email: string) {
     const user = await this.userModel.findOne({ email }).exec();
-
-    if (!user) {
-      throw new Error(`Không thấy người dùng có email: ${email}.`);
-    }
 
     return user;
   }
@@ -61,7 +66,7 @@ export class UserService {
       throw new NotFoundException('Người dùng không tồn tại.');
     }
 
-    return user;
+    return { id: user._id };
   }
 
   delete(id: Types.ObjectId) {

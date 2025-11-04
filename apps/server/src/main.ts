@@ -1,7 +1,8 @@
+import 'dotenv/config';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import { MicroserviceOptions, Transport } from '@nestjs/microservices';
 import { ValidationPipe } from '@nestjs/common';
+import { MqttOptions, Transport } from '@nestjs/microservices';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -10,25 +11,26 @@ async function bootstrap() {
     new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true }),
   );
 
-  app.connectMicroservice<MicroserviceOptions>({
-    transport: Transport.MQTT,
-    options: {
-      url: 'mqtt://warehouse.eladev.site:1883',
-      clientId: 'nest-subscriber',
-      username: 'nest_server',
-      password: 'n12345678',
-      clean: true,
-      reconnectPeriod: 2000,
-    },
-  });
-
   app.enableCors({
     origin: '*', //'http://localhost:3000',
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
     credentials: true,
   });
 
-  await app.startAllMicroservices();
+  app.connectMicroservice<MqttOptions>({
+    transport: Transport.MQTT,
+    options: {
+      clientId: 'server_subscriber',
+      url: process.env.MQTT_ULR,
+      username: process.env.MQTT_USERNAME,
+      password: process.env.MQTT_PASSWORD,
+    },
+  });
+
+  app.startAllMicroservices().catch((err) => {
+    console.error('Error starting microservices:', err);
+  });
+
   await app.listen(process.env.PORT ?? 5001);
 }
 

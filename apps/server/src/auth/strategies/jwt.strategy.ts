@@ -2,7 +2,7 @@ import type { ConfigType } from '@nestjs/config';
 import { Inject, Injectable } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
-import jwtConfig from 'src/config/jwt.config';
+import jwtConfig from 'src/auth/config/jwt.config';
 import { AuthJwtPayload } from '../types/auth-jwtPayload';
 import { AuthService } from '../auth.service';
 
@@ -21,6 +21,8 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
   }
 
   validate(payload: AuthJwtPayload) {
-    return { id: payload.sub };
+    const id = payload.sub;
+
+    return this.authService.validateJwtUser(id);
   }
 }
