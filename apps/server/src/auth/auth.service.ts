@@ -5,8 +5,8 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { compare } from 'bcrypt';
-import { CreateUserDto } from 'src/user/dto/create-user.dto';
-import { UserService } from 'src/user/user.service';
+import { CreateUserDto } from 'src/users/dto/create-user.dto';
+import { UsersService } from 'src/users/users.service';
 import { AuthJwtPayload } from './types/auth-jwtPayload';
 import { Types } from 'mongoose';
 import { JwtService } from '@nestjs/jwt';
@@ -18,7 +18,7 @@ import * as argon2 from 'argon2';
 @Injectable()
 export class AuthService {
   constructor(
-    private readonly userService: UserService,
+    private readonly userService: UsersService,
     private readonly jwtService: JwtService,
     @Inject(refreshJwtConfig.KEY)
     private readonly refreshTokenConfig: ConfigType<typeof refreshJwtConfig>,

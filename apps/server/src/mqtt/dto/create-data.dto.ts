@@ -1,4 +1,6 @@
 import { IsDate, IsNotEmpty } from 'class-validator';
+import { Types } from 'mongoose';
+import type { DataType } from '../types/data.type';
 
 export class CreateDataDto {
   @IsDate()
@@ -6,20 +8,8 @@ export class CreateDataDto {
   timestamp: Date;
 
   @IsNotEmpty()
-  metadata: {
-    deviceId: string;
-    location: string;
-  };
+  metadata: Types.ObjectId;
 
   @IsNotEmpty()
-  temperature: number;
-
-  @IsNotEmpty()
-  humidity: number;
-
-  @IsNotEmpty()
-  gas: number;
-
-  @IsNotEmpty()
-  lux: number;
+  data: DataType;
 }

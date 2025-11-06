@@ -7,7 +7,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { CreateUserDto } from 'src/user/dto/create-user.dto';
+import { CreateUserDto } from 'src/users/dto/create-user.dto';
 import { Types } from 'mongoose';
 import { LocalAuthGuard } from './guards/local-auth/local-auth.guard';
 import { Roles } from './decorators/role.decorator';

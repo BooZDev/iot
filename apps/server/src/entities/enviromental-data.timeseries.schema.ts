@@ -1,10 +1,12 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { Types } from 'mongoose';
+import type { DataType } from 'src/mqtt/types/data.type';
 
 @Schema({
   timestamps: false,
   versionKey: false,
   collection: 'enviromental_data',
-  expireAfterSeconds: 5, // 7 days
+  expireAfterSeconds: 5,
   timeseries: {
     timeField: 'timestamp',
     metaField: 'metadata',
@@ -16,28 +18,14 @@ export class EnviromentalDataTimeseries {
   timestamp: Date;
 
   @Prop({
-    type: {
-      deviceId: { type: String, required: true },
-      location: { type: String, required: true },
-    },
+    type: Types.ObjectId,
     required: true,
+    ref: 'Devices',
   })
-  metadata: {
-    deviceId: string;
-    location: string;
-  };
+  metadata: Types.ObjectId;
 
-  @Prop({ type: Number, required: true })
-  temperature: number;
-
-  @Prop({ type: Number, required: true })
-  humidity: number;
-
-  @Prop({ type: Number, required: true })
-  gas: number;
-
-  @Prop({ type: Number, required: true })
-  lux: number;
+  @Prop({ type: Object, required: true })
+  data: DataType;
 }
 
 export const EnviromentalDataTimeseriesSchema = SchemaFactory.createForClass(

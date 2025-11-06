@@ -12,6 +12,9 @@ export class User {
   @Prop({ type: String, required: true, unique: true })
   email: string;
 
+  @Prop({ type: String, required: false })
+  avatarUrl: string;
+
   @Prop({ type: [{ type: String, enum: Role }], default: [Role.USER] })
   role: Role[];
 

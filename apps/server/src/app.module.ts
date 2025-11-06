@@ -1,11 +1,15 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
-import { UserModule } from './user/user.module';
+import { UserModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
 import { MqttModule } from './mqtt/mqtt.module';
 import { RealtimeModule } from './realtime/realtime.module';
 import { DataModule } from './data/data.module';
+import { WarehousesModule } from './warehouses/warehouses.module';
+import { DevicesModule } from './devices/devices.module';
+import { ControlModule } from './control/control.module';
+import { RouterModule } from '@nestjs/core';
 
 @Module({
   imports: [
@@ -13,9 +17,24 @@ import { DataModule } from './data/data.module';
     MongooseModule.forRoot(process.env.MONGO_URI as string),
     UserModule,
     AuthModule,
-    MqttModule,
-    RealtimeModule,
     DataModule,
+    WarehousesModule,
+    DevicesModule,
+    ControlModule,
+    RouterModule.register([
+      {
+        path: 'warehouses/:mac/devices',
+        module: DevicesModule,
+        children: [
+          {
+            path: ':deviceMac/control',
+            module: ControlModule,
+          },
+        ],
+      },
+    ]),
+    RealtimeModule,
+    MqttModule,
   ],
 })
 export class AppModule {}

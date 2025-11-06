@@ -7,7 +7,7 @@ import * as bcrypt from 'bcrypt';
 import { InjectModel } from '@nestjs/mongoose';
 
 @Injectable()
-export class UserService {
+export class UsersService {
   constructor(@InjectModel(User.name) private userModel: Model<User>) {}
 
   async updateHashedRefreshToken(

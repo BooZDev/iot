@@ -47,3 +47,16 @@ Authorization: Bearer {{token}}
 #######################
 GET http://localhost:{{port}}/users/all
 Authorization: Bearer {{token}}
+
+#######################
+GET  http://localhost:{{port}}/warehouses/231231231/devices
+Authorization: Bearer {{token}}
+# Content-Type: application/json
+
+# {
+#   "deviceId": "3bd566ad99a481a1ffaa5aa0",
+#   "type": "sensor"
+# }
+
+#######################
+POST http://localhost:{{port}}/warehouses/312312312/devices/231313/control
