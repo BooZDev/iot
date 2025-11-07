@@ -22,8 +22,8 @@ export default function Navbar({ onMenuToggle }: NavbarProps) {
         </Button>
         <div className="flex items-center gap-2">
           {/* <Icon icon="lucide:leaf" className="text-primary text-xl" /> */}
-          <p className="font-semibold text-inherit hidden sm:block">BioHerb Smart Warehouse</p>
-          <p className="font-semibold text-inherit block sm:hidden">BioHerb</p>
+          <p className="font-semibold text-inherit hidden sm:block">EVBoo Smart Warehouse</p>
+          <p className="font-semibold text-inherit block sm:hidden">EVBoo</p>
         </div>
       </NavbarBrand>
 
