@@ -48,7 +48,7 @@ export default function SensorCards() {
               <div className={`p-2 rounded-md bg-primary-100 dark:bg-primary-900/20`}>
                 <FaTemperatureHigh className="text-primary-500" size={24} />
               </div>
-              <h3 className="text-medium font-medium">Nhiệt độ</h3>
+              <h3 className="text-lg font-medium">Nhiệt độ</h3>
             </div>
             <span className={`text-xs px-2 py-1 rounded-full bg-success-100 text-success-500 dark:bg-success-900/20`}>
               Normal
@@ -83,7 +83,7 @@ export default function SensorCards() {
               <div className={`p-2 rounded-md bg-secondary-100 dark:bg-secondary-900/20`}>
                 <WiHumidity className="text-secondary-500" size={24} />
               </div>
-              <h3 className="text-medium font-medium">Độ ẩm</h3>
+              <h3 className="text-lg font-medium">Độ ẩm</h3>
             </div>
             <span className={`text-xs px-2 py-1 rounded-full bg-${data.hum > 70 ? "warning" : "success"}-100 text-${data.hum > 70 ? "warning" : "success"}-500 dark:bg-${data.hum > 70 ? "warning" : "success"}-900/20`}>
               Normal
@@ -118,7 +118,7 @@ export default function SensorCards() {
               <div className={`p-2 rounded-md bg-success-100 dark:bg-success-900/20`}>
                 <GiSmokingOrb className="text-success-500" size={24} />
               </div>
-              <h3 className="text-medium font-medium">Nồng độ khí Gas/Khói</h3>
+              <h3 className="text-lg font-medium">Nồng độ khí Gas/Khói</h3>
             </div>
             <span className={`text-xs px-2 py-1 rounded-full bg-${data.gasValue < 6 || data.gasValue > 7.5 ? "warning" : "success"}-100 text-${data.gasValue < 6 || data.gasValue > 7.5 ? "warning" : "success"}-500 dark:bg-${data.gasValue < 6 || data.gasValue > 7.5 ? "warning" : "success"}-900/20`}>
               {(data.gasValue < 6 || data.gasValue > 7.5 ? "warning" : "success") === "success" ? "Normal" : "Attention"}
@@ -153,7 +153,7 @@ export default function SensorCards() {
               <div className={`p-2 rounded-md bg-warning-100 dark:bg-warning-900/20`}>
                 <MdOutlineWbTwilight className="text-warning-500" size={24} />
               </div>
-              <h3 className="text-medium font-medium">Cường độ ánh sáng</h3>
+              <h3 className="text-lg font-medium">Cường độ ánh sáng</h3>
             </div>
             <span className={`text-xs px-2 py-1 rounded-full bg-${data.luxValue > 800 ? "danger" : "success"}-100 text-${data.luxValue > 800 ? "danger" : "success"}-500 dark:bg-${data.luxValue > 800 ? "danger" : "success"}-900/20`}>
               {(data.luxValue > 800 ? "danger" : "success") === "success" ? "Normal" : "Attention"}
@@ -167,8 +167,9 @@ export default function SensorCards() {
               animate={{ opacity: 1, y: 0 }}
               className="text-2xl font-semibold"
             >
-              {data.luxValue.toFixed(3)}
+              {data.luxValue.toFixed(2)}
             </motion.span>
+            <span className="text-default-500">lux</span>
           </div>
 
           <Progress

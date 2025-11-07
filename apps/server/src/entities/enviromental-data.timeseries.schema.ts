@@ -6,7 +6,7 @@ import type { DataType } from 'src/mqtt/types/data.type';
   timestamps: false,
   versionKey: false,
   collection: 'enviromental_data',
-  expireAfterSeconds: 5,
+  expireAfterSeconds: 60 * 60 * 24 * 2,
   timeseries: {
     timeField: 'timestamp',
     metaField: 'metadata',

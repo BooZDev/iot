@@ -12,7 +12,6 @@ export const ThemeSwitcher = () => {
   useEffect(() => setMounted(true), []);
 
   if (!mounted) {
-    // 💡 Tránh render trước khi client xác định theme
     return null;
   }
 

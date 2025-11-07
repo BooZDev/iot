@@ -1,14 +1,14 @@
 "use client";
 
 import { Navbar as HeroNavbar, NavbarBrand, NavbarContent, NavbarItem, Avatar, Dropdown, DropdownTrigger, DropdownMenu, DropdownItem, Button } from "@heroui/react";
-import { ThemeSwitcher } from "./themeSwitcher/ThemeSwitcher";
+import { ThemeSwitcher } from "../themeSwitcher/ThemeSwitcher";
 import { GiHamburgerMenu } from "react-icons/gi";
+import useSidebarStore from "../../stores/UseSidebarStore";
+import { FaBell } from "react-icons/fa6";
 
-interface NavbarProps {
-  onMenuToggle: () => void;
-}
+export default function Navbar() {
+  const { toggleSidebar } = useSidebarStore();
 
-export default function Navbar({ onMenuToggle }: NavbarProps) {
   return (
     <HeroNavbar maxWidth="full" className="border-b border-divider">
       <NavbarBrand className="gap-3">
@@ -16,7 +16,7 @@ export default function Navbar({ onMenuToggle }: NavbarProps) {
           isIconOnly
           variant="light"
           className="md:hidden flex items-center justify-center"
-          onPress={onMenuToggle}
+          onPress={toggleSidebar}
         >
           <GiHamburgerMenu className="text-primary-500" size={24} />
         </Button>
@@ -38,7 +38,7 @@ export default function Navbar({ onMenuToggle }: NavbarProps) {
             aria-label="Notifications"
             className="relative"
           >
-            {/* <Icon icon="lucide:bell" width={20} /> */}
+            <FaBell size={20} color="hsl(var(--heroui-warning))" />
             <span className="absolute top-1 right-1 flex h-2 w-2">
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-danger opacity-75"></span>
               <span className="relative inline-flex rounded-full h-2 w-2 bg-danger"></span>

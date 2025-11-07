@@ -1,3 +1,12 @@
 packages:
-  - "apps/*"
-  - "packages/*"
+  - apps/*
+  - packages/*
+
+onlyBuiltDependencies:
+  - '@heroui/shared-utils'
+  - '@nestjs/core'
+  - '@parcel/watcher'
+  - argon2
+  - bcrypt
+  - sharp
+  - unrs-resolver

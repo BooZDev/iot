@@ -49,7 +49,7 @@ const heroUIInstance: ReturnType<typeof heroui> = heroui({
           foreground: "#475569",
         },
         divider: {
-          DEFAULT: "rgba(15, 23, 42, 0.1)",
+          DEFAULT: "#0F172A1A",
         },
         focus: {
           DEFAULT: "#0EA5E9",
@@ -165,7 +165,7 @@ const heroUIInstance: ReturnType<typeof heroui> = heroui({
           foreground: "#CBD5E1",
         },
         divider: {
-          DEFAULT: "rgba(248, 250, 252, 0.1)",
+          DEFAULT: "#F8FAFC1A",
         },
         focus: {
           DEFAULT: "#0EA5E9",
@@ -175,7 +175,7 @@ const heroUIInstance: ReturnType<typeof heroui> = heroui({
         },
         default: {
           50: "#0F172A",
-          100: "#1E293B",
+          100: "#252642",
           200: "#334155",
           300: "#475569",
           400: "#64748B",
@@ -185,7 +185,7 @@ const heroUIInstance: ReturnType<typeof heroui> = heroui({
           800: "#F1F5F9",
           900: "#F8FAFC",
           DEFAULT: "#94A3B8",
-          foreground: "#1E293B",
+          foreground: "#FFFFFF",
         },
         primary: {
           50: "#064E3B",

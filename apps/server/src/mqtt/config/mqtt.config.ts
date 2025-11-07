@@ -7,7 +7,7 @@ export const mqttConfig: MqttOptions & { name: string } = {
     url: process.env.MQTT_ULR,
     username: process.env.MQTT_USERNAME,
     password: process.env.MQTT_PASSWORD,
-    clientId: 'server_publisher',
+    clientId: process.env.MQTT_CLIENT_ID_2 || 'server-pub',
     reconnectPeriod: 3000,
   },
 };
