@@ -60,3 +60,6 @@ Authorization: Bearer {{token}}
 
 #######################
 POST http://localhost:{{port}}/warehouses/312312312/devices/231313/control
+
+#######################
+POST https://api.synapseware.eladev.site/warehouses/312312312/devices/231313/control

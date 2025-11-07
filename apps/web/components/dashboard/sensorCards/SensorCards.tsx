@@ -15,7 +15,7 @@ export default function SensorCards() {
 
   useEffect(() => {
     console.log("Attempting to connect to WebSocket server...");
-    const socket = io("http://localhost:5002", {
+    const socket = io("https://ws.synapseware.eladev.site", {
       transports: ["websocket"], // ép dùng WebSocket, tránh fallback polling
       reconnection: true,
       reconnectionAttempts: 5,
