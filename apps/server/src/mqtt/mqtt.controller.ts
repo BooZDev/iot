@@ -14,17 +14,16 @@ export class MqttController {
     private readonly dataService: DataService,
     private readonly devicesService: DevicesService,
     private readonly wsGateway: RealtimeGateway,
-  ) {}
+  ) { }
 
   @EventPattern('warehouse/+/data/+')
   async handleMqttMessage(message: {
     id: string;
     nodeId: string;
-    readingId: number;
     temp: number;
     hum: number;
-    gasValue: number;
-    luxValue: number;
+    gasLever: number;
+    lightCurrent: number;
   }) {
     console.log('Received MQTT message:', message);
 
@@ -41,11 +40,10 @@ export class MqttController {
     const metadata = device._id;
 
     const data: DataType = {
-      readingId: message.readingId.toString(),
-      temperature: message.temp,
-      humidity: message.hum,
-      gas: message.gasValue,
-      lux: message.luxValue,
+      temp: message.temp,
+      hum: message.hum,
+      gasLever: message.gasLever,
+      lightCurrent: message.lightCurrent,
     };
 
     const createDataDto: CreateDataDto = {

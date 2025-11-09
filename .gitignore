@@ -40,3 +40,6 @@ dist/
 **/.pnpm-store
 **/node_modules
 **/*.env
+
+
+design.js

@@ -9,13 +9,20 @@ export class ControlController {
     private readonly mqttSevice: MqttService,
   ) {}
 
-  @Post()
+  @Post('fan')
   controlFan(
-    @Body() body: { device: string; status: string; value: number },
+    @Body()
+    body: {
+      id: string;
+      type: string;
+      status: string;
+      state: string;
+      value: number;
+    },
     @Param() param: { mac: string; deviceMac: string },
   ) {
     this.mqttSevice.publicToTopic(
-      `warehouse/${param.mac}/cmd/${param.deviceMac}`,
+      `warehouse/${param.mac}/cmd/control/device`,
       body,
     );
 

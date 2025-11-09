@@ -1,7 +1,15 @@
 "use client";
 
 import { useState } from "react";
-import { Card, CardHeader, CardBody, Switch, Tooltip, Chip } from "@heroui/react";
+import {
+  Card,
+  CardHeader,
+  CardBody,
+  Switch,
+  Tooltip,
+  Chip,
+  Pagination,
+} from "@heroui/react";
 import { motion } from "framer-motion";
 
 interface Device {
@@ -15,7 +23,6 @@ interface Device {
 }
 
 export default function DeviceControls() {
-  // Mock devices data
   const [devices, setDevices] = useState<Device[]>([
     {
       id: "fan-01",
@@ -62,13 +69,37 @@ export default function DeviceControls() {
       location: "Khu D",
       powerUsage: 0,
     },
+    {
+      id: "light-02",
+      name: "Đèn chiếu sáng",
+      icon: "lightbulb",
+      isActive: true,
+      status: "Hoạt động",
+      location: "Khu B",
+      powerUsage: 60,
+    },
   ]);
+
+  const [page, setPage] = useState(1);
+  const rowsPerPage = 5;
+  const pages = Math.ceil(devices.length / rowsPerPage);
+
+  const curentPageDevices = (page: number) => {
+    const startIndex = (page - 1) * rowsPerPage;
+    return devices.slice(startIndex, startIndex + rowsPerPage);
+  };
 
   const toggleDevice = (id: string) => {
     setDevices(
       devices.map((device) =>
         device.id === id && device.status !== "Bảo trì"
-          ? { ...device, isActive: !device.isActive, powerUsage: device.isActive ? 0 : Math.round(Math.random() * 100) + 50 }
+          ? {
+            ...device,
+            isActive: !device.isActive,
+            powerUsage: device.isActive
+              ? 0
+              : Math.round(Math.random() * 100) + 50,
+          }
           : device
       )
     );
@@ -94,13 +125,26 @@ export default function DeviceControls() {
           {/* <Icon icon="lucide:cpu" className="text-primary" width={20} /> */}
           <h2 className="text-lg font-medium">Thiết bị hoạt động</h2>
         </div>
-        <Chip color="primary" variant="flat" size="sm">
-          {devices.filter((d) => d.isActive).length} Active
-        </Chip>
+
+        <div className="flex items-center gap-8">
+          <Pagination
+            isCompact
+            showShadow
+            color="secondary"
+            page={page}
+            total={pages}
+            onChange={(page) => setPage(page)}
+            className="text-green-500"
+          />
+
+          <Chip color="primary" variant="flat" size="sm">
+            {devices.filter((d) => d.isActive).length} Active
+          </Chip>
+        </div>
       </CardHeader>
       <CardBody>
-        <div className="space-y-4">
-          {devices.map((device) => (
+        <div className="grid grid-rows-5 gap-3">
+          {curentPageDevices(page).map((device) => (
             <motion.div
               key={device.id}
               initial={{ opacity: 0, y: 10 }}
@@ -109,7 +153,9 @@ export default function DeviceControls() {
               className="flex items-center justify-between p-3 rounded-medium bg-content2 dark:bg-content2"
             >
               <div className="flex items-center gap-3">
-                <div className={`p-2 rounded-md ${device.isActive ? "bg-primary/10 text-primary" : "bg-default-100 text-default-500"}`}>
+                <div
+                  className={`p-2 rounded-md ${device.isActive ? "bg-primary/10 text-primary" : "bg-default-100 text-default-500"}`}
+                >
                   {/* <Icon icon={`lucide:${device.icon}`} width={20} /> */}
                 </div>
                 <div>
@@ -135,7 +181,15 @@ export default function DeviceControls() {
                     {device.powerUsage}W
                   </span>
                 )}
-                <Tooltip content={device.status === "Bảo trì" ? "Device under maintenance" : device.isActive ? "Tắt" : "Bật"}>
+                <Tooltip
+                  content={
+                    device.status === "Bảo trì"
+                      ? "Device under maintenance"
+                      : device.isActive
+                        ? "Tắt"
+                        : "Bật"
+                  }
+                >
                   <Switch
                     size="sm"
                     color="primary"
@@ -151,4 +205,4 @@ export default function DeviceControls() {
       </CardBody>
     </Card>
   );
-};
+}

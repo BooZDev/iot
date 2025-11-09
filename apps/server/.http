@@ -59,7 +59,16 @@ Authorization: Bearer {{token}}
 # }
 
 #######################
-POST http://localhost:{{port}}/warehouses/312312312/devices/231313/control
+POST http://localhost:{{port}}/warehouses/74:4D:BD:98:87:0C/devices/231313/control/fan
+Content-Type: application/json
+
+{
+  "id": "C8:2B:96:A8:49:F4",
+  "type": "1",
+  "status": "1",
+  "state": "1",
+  "value": 75
+}
 
 #######################
 POST https://api.synapseware.eladev.site/warehouses/312312312/devices/231313/control

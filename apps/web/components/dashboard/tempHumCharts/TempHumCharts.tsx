@@ -12,15 +12,14 @@ import {
   ResponsiveContainer,
 } from "recharts";
 import CustomTooltip from "./CustomTooltip";
+import CustomLegend from "./CustomLengend";
 
 export default function TempHumCharts() {
   return (
     <div className="col-start-3 col-end-6">
       <Card className="border border-divider h-full">
         <CardHeader>
-          <h3 className="text-lg font-medium mb-3">
-            Đồ thị Nhệt độ, độ ẩm
-          </h3>
+          <h3 className="text-lg font-medium mb-3">Đồ thị Nhệt độ, độ ẩm</h3>
         </CardHeader>
         <CardBody className="flex flex-col">
           <div className="w-full h-full font-bold">
@@ -87,7 +86,13 @@ export default function TempHumCharts() {
                   }}
                 />
                 <Tooltip content={<CustomTooltip />} />
-                <Legend />
+
+                <Legend
+                  verticalAlign="bottom"
+                  height={36}
+                  content={(props) => <CustomLegend {...(props as { payload: [{ dataKey: string; value: string }] })} />}
+                />
+
                 <Line
                   yAxisId="temp"
                   type="monotone"

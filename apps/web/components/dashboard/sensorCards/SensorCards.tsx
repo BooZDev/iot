@@ -11,7 +11,7 @@ import { MdOutlineWbTwilight } from "react-icons/md";
 
 
 export default function SensorCards() {
-  const [data, setData] = useState<{ temp: number, hum: number, gasValue: number, luxValue: number }>({ temp: 0, hum: 0, gasValue: 0, luxValue: 0 });
+  const [data, setData] = useState<{ temp: number, hum: number, gasLever: number, lightCurrent: number }>({ temp: 0, hum: 0, gasLever: 0, lightCurrent: 0 });
 
   useEffect(() => {
     console.log("Attempting to connect to WebSocket server...");
@@ -120,27 +120,27 @@ export default function SensorCards() {
               </div>
               <h3 className="text-lg font-medium">Nồng độ khí Gas/Khói</h3>
             </div>
-            <span className={`text-xs px-2 py-1 rounded-full bg-${data.gasValue < 6 || data.gasValue > 7.5 ? "warning" : "success"}-100 text-${data.gasValue < 6 || data.gasValue > 7.5 ? "warning" : "success"}-500 dark:bg-${data.gasValue < 6 || data.gasValue > 7.5 ? "warning" : "success"}-900/20`}>
-              {(data.gasValue < 6 || data.gasValue > 7.5 ? "warning" : "success") === "success" ? "Normal" : "Attention"}
+            <span className={`text-xs px-2 py-1 rounded-full bg-${data.gasLever < 6 || data.gasLever > 7.5 ? "warning" : "success"}-100 text-${data.gasLever < 6 || data.gasLever > 7.5 ? "warning" : "success"}-500 dark:bg-${data.gasLever < 6 || data.gasLever > 7.5 ? "warning" : "success"}-900/20`}>
+              {(data.gasLever < 6 || data.gasLever > 7.5 ? "warning" : "success") === "success" ? "Normal" : "Attention"}
             </span>
           </div>
 
           <div className="flex items-end gap-2 mb-3">
             <motion.span
-              key={data.gasValue}
+              key={data.gasLever}
               initial={{ opacity: 0, y: -10 }}
               animate={{ opacity: 1, y: 0 }}
               className="text-2xl font-semibold"
             >
-              {data.gasValue}
+              {data.gasLever}
             </motion.span>
             <span className="text-default-500">ppm</span>
           </div>
 
           <Progress
             aria-label={`Nồng độ khí Gas/Khói`}
-            value={(data.gasValue / 5000) * 100}
-            color={(data.gasValue > 1000 ? "warning" : "success") as "success" | "warning" | "danger"}
+            value={(data.gasLever / 5000) * 100}
+            color={(data.gasLever > 1000 ? "warning" : "success") as "success" | "warning" | "danger"}
             className="h-1.5"
           />
         </CardBody>
@@ -155,27 +155,27 @@ export default function SensorCards() {
               </div>
               <h3 className="text-lg font-medium">Cường độ ánh sáng</h3>
             </div>
-            <span className={`text-xs px-2 py-1 rounded-full bg-${data.luxValue > 800 ? "danger" : "success"}-100 text-${data.luxValue > 800 ? "danger" : "success"}-500 dark:bg-${data.luxValue > 800 ? "danger" : "success"}-900/20`}>
-              {(data.luxValue > 800 ? "danger" : "success") === "success" ? "Normal" : "Attention"}
+            <span className={`text-xs px-2 py-1 rounded-full bg-${data.lightCurrent > 800 ? "danger" : "success"}-100 text-${data.lightCurrent > 800 ? "danger" : "success"}-500 dark:bg-${data.lightCurrent > 800 ? "danger" : "success"}-900/20`}>
+              {(data.lightCurrent > 800 ? "danger" : "success") === "success" ? "Normal" : "Attention"}
             </span>
           </div>
 
           <div className="flex items-end gap-2 mb-3">
             <motion.span
-              key={data.luxValue}
+              key={data.lightCurrent}
               initial={{ opacity: 0, y: -10 }}
               animate={{ opacity: 1, y: 0 }}
               className="text-2xl font-semibold"
             >
-              {data.luxValue.toFixed(2)}
+              {data.lightCurrent.toFixed(2)}
             </motion.span>
             <span className="text-default-500">lux</span>
           </div>
 
           <Progress
             aria-label={`Cường độ ánh sáng`}
-            value={(data.luxValue / 2000) * 100}
-            color={(data.luxValue > 800 ? "danger" : "success") as "success" | "warning" | "danger"}
+            value={(data.lightCurrent / 2000) * 100}
+            color={(data.lightCurrent > 800 ? "danger" : "success") as "success" | "warning" | "danger"}
             className="h-1.5"
           />
         </CardBody>
