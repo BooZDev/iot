@@ -10,6 +10,7 @@ import { Server, Socket } from 'socket.io';
 import { RealtimeService } from './realtime.service';
 
 @WebSocketGateway(5002, {
+  path: '/socket',
   cors: {
     origin: '*',
   },

@@ -20,6 +20,7 @@ export default function SensorCards() {
   useEffect(() => {
     console.log("Attempting to connect to WebSocket server...");
     const socket = io("http://localhost:5002", {
+      path: "/socket",
       transports: ["websocket"],
       reconnection: true,
       reconnectionAttempts: 5,
@@ -162,9 +163,9 @@ export default function SensorCards() {
             value={(data.gasLever / 5000) * 100}
             color={
               (data.gasLever > 1000 ? "warning" : "success") as
-                | "success"
-                | "warning"
-                | "danger"
+              | "success"
+              | "warning"
+              | "danger"
             }
             className="h-1.5"
           />
@@ -208,9 +209,9 @@ export default function SensorCards() {
             value={(data.lightCurrent / 2000) * 100}
             color={
               (data.lightCurrent > 800 ? "danger" : "success") as
-                | "success"
-                | "warning"
-                | "danger"
+              | "success"
+              | "warning"
+              | "danger"
             }
             className="h-1.5"
           />

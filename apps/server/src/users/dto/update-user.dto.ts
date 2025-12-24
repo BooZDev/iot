@@ -1,5 +1,13 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsArray, IsDate, IsEmail, IsMongoId, IsOptional, IsString, IsUrl } from 'class-validator';
+import {
+  IsArray,
+  IsDate,
+  IsEmail,
+  IsMongoId,
+  IsOptional,
+  IsString,
+  IsUrl,
+} from 'class-validator';
 import { Types } from 'mongoose';
 import { Role } from 'src/auth/enums/role.enum';
 
