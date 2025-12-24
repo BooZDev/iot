@@ -9,7 +9,7 @@ import { DataModule } from './data/data.module';
 import { WarehousesModule } from './warehouses/warehouses.module';
 import { DevicesModule } from './devices/devices.module';
 import { ControlModule } from './control/control.module';
-import { RouterModule } from '@nestjs/core';
+import { SubDevicesModule } from './sub-devices/sub-devices.module';
 
 @Module({
   imports: [
@@ -21,20 +21,9 @@ import { RouterModule } from '@nestjs/core';
     WarehousesModule,
     DevicesModule,
     ControlModule,
-    RouterModule.register([
-      {
-        path: 'warehouses/:mac/devices',
-        module: DevicesModule,
-        children: [
-          {
-            path: ':deviceMac/control',
-            module: ControlModule,
-          },
-        ],
-      },
-    ]),
     RealtimeModule,
     MqttModule,
+    SubDevicesModule,
   ],
 })
 export class AppModule {}

@@ -2,7 +2,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from 'src/entities/user.entity';
-import { Model, Types } from 'mongoose';
+import { Model } from 'mongoose';
 import * as bcrypt from 'bcrypt';
 import { InjectModel } from '@nestjs/mongoose';
 
@@ -10,10 +10,7 @@ import { InjectModel } from '@nestjs/mongoose';
 export class UsersService {
   constructor(@InjectModel(User.name) private userModel: Model<User>) {}
 
-  async updateHashedRefreshToken(
-    id: Types.ObjectId,
-    hashedRefreshToken: string,
-  ) {
+  async updateHashedRefreshToken(id: string, hashedRefreshToken: string) {
     return await this.userModel.findByIdAndUpdate(id, {
       hashedRefreshToken: hashedRefreshToken,
     });
@@ -39,7 +36,7 @@ export class UsersService {
       .exec();
   }
 
-  async findById(id: Types.ObjectId) {
+  async findById(id: string) {
     return this.userModel.findById(id).select('-password').exec();
   }
 
@@ -49,14 +46,16 @@ export class UsersService {
     return user;
   }
 
-  async update(id: Types.ObjectId, updateUserDto: UpdateUserDto) {
-    if (updateUserDto.password) {
-      const salt = bcrypt.genSaltSync(10);
-      const hashedPassword = bcrypt.hashSync(updateUserDto.password, salt);
+  async rePassword(userId: string, newPassword: string) {
+    const salt = bcrypt.genSaltSync(10);
+    const hashedPassword = bcrypt.hashSync(newPassword, salt);
 
-      updateUserDto.password = hashedPassword;
-    }
+    return await this.userModel.findByIdAndUpdate(userId, {
+      password: hashedPassword,
+    });
+  }
 
+  async update(id: string, updateUserDto: UpdateUserDto) {
     const user = await this.userModel
       .findByIdAndUpdate(id, updateUserDto)
       .select('_id')
@@ -69,7 +68,7 @@ export class UsersService {
     return { id: user._id };
   }
 
-  delete(id: Types.ObjectId) {
+  delete(id: string) {
     return this.userModel.findByIdAndDelete(id).select('-password').exec();
   }
 }

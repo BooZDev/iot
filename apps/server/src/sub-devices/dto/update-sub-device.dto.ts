@@ -1,0 +1,36 @@
+import { ApiProperty } from '@nestjs/swagger';
+import { IsMongoId, IsNumber, IsOptional, IsString } from 'class-validator';
+import { SubDeviceState, SubDeviceStatus } from '../enums/sub-device.enum';
+import { Types } from 'mongoose';
+
+export class UpdateSubDeviceDto {
+  @ApiProperty({ description: 'Tên thiết bị' })
+  @IsOptional({ message: 'Tên thiết bị không hợp lệ' })
+  @IsString({ message: 'Tên thiết bị không hợp lệ' })
+  name?: string;
+
+  @ApiProperty({ description: 'Loại thiết bị' })
+  @IsOptional({ message: 'Loại thiết bị không hợp lệ' })
+  @IsString({ message: 'Loại thiết bị không hợp lệ' })
+  type?: string;
+
+  @ApiProperty({ description: 'Trạng thái thiết bị' })
+  @IsOptional({ message: 'Trạng thái thiết bị không hợp lệ' })
+  @IsString({ message: 'Trạng thái thiết bị không hợp lệ' })
+  status?: SubDeviceStatus;
+
+  @ApiProperty({ description: 'Trạng thái hoạt động của thiết bị' })
+  @IsOptional({ message: 'Trạng thái thiết bị không hợp lệ' })
+  @IsString({ message: 'Trạng thái thiết bị không hợp lệ' })
+  state?: SubDeviceState;
+
+  @ApiProperty({ description: 'Giá trị của thiết bị' })
+  @IsOptional({ message: 'Giá trị thiết bị không hợp lệ' })
+  @IsNumber({}, { message: 'Giá trị thiết bị không hợp lệ' })
+  value?: number;
+
+  @ApiProperty({ description: 'ID thiết bị cha' })
+  @IsOptional({ message: 'deviceId không hợp lệ' })
+  @IsMongoId({ message: 'deviceId không hợp lệ' })
+  deviceId?: Types.ObjectId;
+}

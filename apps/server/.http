@@ -27,48 +27,5 @@ POST http://localhost:{{port}}/auth/refresh
 Authorization: Bearer {{refreshToken}}
 
 #######################
-GET http://localhost:{{port}}/users/profile
+GET http://localhost:5001/users/profile
 Authorization: Bearer {{token}}
-
-#######################
-PUT http://localhost:{{port}}/users
-Content-Type: application/json
-Authorization: Bearer {{token}}
-
-{
-  "username": "testuser",
-  "password": "123456789"
-}
-
-#######################
-DELETE http://localhost:{{port}}/users
-Authorization: Bearer {{token}}
-
-#######################
-GET http://localhost:{{port}}/users/all
-Authorization: Bearer {{token}}
-
-#######################
-GET  http://localhost:{{port}}/warehouses/231231231/devices
-Authorization: Bearer {{token}}
-# Content-Type: application/json
-
-# {
-#   "deviceId": "3bd566ad99a481a1ffaa5aa0",
-#   "type": "sensor"
-# }
-
-#######################
-POST http://localhost:{{port}}/warehouses/74:4D:BD:98:87:0C/devices/231313/control/fan
-Content-Type: application/json
-
-{
-  "id": "C8:2B:96:A8:49:F4",
-  "type": "1",
-  "status": "1",
-  "state": "1",
-  "value": 75
-}
-
-#######################
-POST https://api.synapseware.eladev.site/warehouses/312312312/devices/231313/control

@@ -6,17 +6,18 @@ import {
   Param,
   Delete,
   UseGuards,
-  Put,
+  Patch,
 } from '@nestjs/common';
 import { WarehousesService } from './warehouses.service';
 import { CreateWarehouseDto } from './dto/create-warehouse.dto';
 import { UpdateWarehouseDto } from './dto/update-warehouse.dto';
-import { Types } from 'mongoose';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth/jwt-auth.guard';
 import { RoleGuard } from 'src/auth/guards/role/role.guard';
 import { Roles } from 'src/auth/decorators/role.decorator';
 import { Role } from 'src/auth/enums/role.enum';
+import { ApiBody, ApiOperation, ApiParam, ApiTags } from '@nestjs/swagger';
 
+@ApiTags('warehouses')
 @Roles(Role.ADMIN, Role.MANAGER)
 @UseGuards(RoleGuard)
 @UseGuards(JwtAuthGuard)
@@ -24,32 +25,78 @@ import { Role } from 'src/auth/enums/role.enum';
 export class WarehousesController {
   constructor(private readonly warehousesService: WarehousesService) {}
 
+  // Create Warehouse
+  @Roles(Role.ADMIN, Role.MANAGER)
   @Post()
+  @ApiOperation({
+    summary: 'Tạo nhà kho mới',
+    description: 'Cần quyền admin và manager để thực hiện hành động này',
+  })
+  @ApiBody({ type: CreateWarehouseDto })
   create(@Body() createWarehouseDto: CreateWarehouseDto) {
+    console.log('Create Warehouse DTO:', createWarehouseDto);
     return this.warehousesService.create(createWarehouseDto);
   }
 
+  // Get All Warehouses
   @Roles(Role.ADMIN, Role.MANAGER)
   @Get()
+  @ApiOperation({
+    summary: 'Lấy danh sách tất cả nhà kho',
+    description: 'Cần quyền admin và manager để thực hiện hành động này',
+  })
   findAll() {
     return this.warehousesService.findAll();
   }
 
+  // Get Warehouse by ID
+  @Roles()
   @Get(':id')
-  findOne(@Param('id') id: Types.ObjectId) {
+  @ApiOperation({
+    summary: 'Lấy thông tin nhà kho theo ID',
+    description: 'Tất cả vai trò đều có thể thực hiện hành động này',
+  })
+  @ApiParam({ name: 'id', type: String, description: 'ID của nhà kho' })
+  findOne(@Param('id') id: string) {
     return this.warehousesService.findOne(id);
   }
 
-  @Put(':id')
+  // Update Warehouse
+  @Roles(Role.ADMIN, Role.MANAGER)
+  @Patch(':id')
+  @ApiOperation({
+    summary: 'Cập nhật thông tin nhà kho',
+    description: 'Cần quyền admin và manager để thực hiện hành động này',
+  })
+  @ApiParam({ name: 'id', type: String, description: 'ID của nhà kho' })
   update(
-    @Param('id') id: Types.ObjectId,
+    @Param('id') id: string,
     @Body() updateWarehouseDto: UpdateWarehouseDto,
   ) {
     return this.warehousesService.update(id, updateWarehouseDto);
   }
 
+  // Deactivate Warehouse
+  @Roles(Role.ADMIN, Role.MANAGER)
+  @Patch('deactivate/:id')
+  @ApiOperation({
+    summary: 'Hủy kích hoạt nhà kho',
+    description: 'Cần quyền admin và manager để thực hiện hành động này',
+  })
+  @ApiParam({ name: 'id', type: String, description: 'ID của nhà kho' })
+  deactivateWarehouse(@Param('id') warehouseId: string) {
+    return this.warehousesService.deactivateWarehouse(warehouseId);
+  }
+
+  // Delete Warehouse
+  @Roles(Role.ADMIN, Role.MANAGER)
   @Delete(':id')
-  remove(@Param('id') id: Types.ObjectId) {
+  @ApiOperation({
+    summary: 'Xóa nhà kho',
+    description: 'Cần quyền admin và manager để thực hiện hành động này',
+  })
+  @ApiParam({ name: 'id', type: String, description: 'ID của nhà kho' })
+  remove(@Param('id') id: string) {
     return this.warehousesService.remove(id);
   }
 }

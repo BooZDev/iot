@@ -8,7 +8,6 @@ import { compare } from 'bcrypt';
 import { CreateUserDto } from 'src/users/dto/create-user.dto';
 import { UsersService } from 'src/users/users.service';
 import { AuthJwtPayload } from './types/auth-jwtPayload';
-import { Types } from 'mongoose';
 import { JwtService } from '@nestjs/jwt';
 import { CurrentUser } from './types/current-user';
 import refreshJwtConfig from './config/refresh-jwt.config';
@@ -50,7 +49,7 @@ export class AuthService {
     return await this.userService.create(createAuthDto);
   }
 
-  async login(userId: Types.ObjectId) {
+  async login(userId: string) {
     const { accessToken, refreshToken } = await this.generateTokens(userId);
 
     const hashedRefreshToken = await argon2.hash(refreshToken);
@@ -60,7 +59,7 @@ export class AuthService {
     return { id: userId, accessToken, refreshToken };
   }
 
-  async generateTokens(userId: Types.ObjectId) {
+  async generateTokens(userId: string) {
     const payload: AuthJwtPayload = { sub: userId };
 
     const [accessToken, refreshToken] = await Promise.all([
@@ -71,7 +70,7 @@ export class AuthService {
     return { accessToken, refreshToken };
   }
 
-  async refreshTokens(userId: Types.ObjectId) {
+  async refreshTokens(userId: string) {
     const { accessToken, refreshToken } = await this.generateTokens(userId);
 
     const hashedRefreshToken = await argon2.hash(refreshToken);
@@ -81,7 +80,7 @@ export class AuthService {
     return { id: userId, accessToken, refreshToken };
   }
 
-  async validateJwtUser(id: Types.ObjectId) {
+  async validateJwtUser(id: string) {
     const user = await this.userService.findById(id);
 
     if (!user) {
@@ -93,7 +92,7 @@ export class AuthService {
     return userCurrent;
   }
 
-  async validateRefreshToken(userId: Types.ObjectId, refreshToken: string) {
+  async validateRefreshToken(userId: string, refreshToken: string) {
     const user = await this.userService.findById(userId);
 
     if (!user || !user.hashedRefreshToken) {

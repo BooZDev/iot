@@ -1,5 +1,5 @@
 import "@repo/ui/styles.css";
-import "./globals.css";
+import "../public/styles/globals.css";
 import type { Metadata } from "next";
 import Providers from "./Providers";
 

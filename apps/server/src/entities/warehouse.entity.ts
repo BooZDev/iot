@@ -1,5 +1,4 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Types } from 'mongoose';
 
 @Schema({ timestamps: true })
 export class Warehouse {
@@ -12,8 +11,17 @@ export class Warehouse {
   @Prop({ type: [Number, Number], required: false })
   locations: Array<number>;
 
-  @Prop({ type: [Types.ObjectId], required: false })
-  devices: Types.ObjectId[];
+  @Prop({ type: String, required: false })
+  description: string;
+
+  @Prop({ type: String, required: false })
+  address: string;
+
+  @Prop({ type: String, required: false })
+  imageUrl: string;
+
+  @Prop({ type: Boolean, required: true, default: true })
+  isActive: boolean;
 }
 
 export const WarehouseSchema = SchemaFactory.createForClass(Warehouse);

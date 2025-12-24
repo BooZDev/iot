@@ -1,7 +1,20 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { Card, CardHeader, CardBody, Table, TableHeader, TableColumn, TableBody, TableRow, TableCell, Chip, Pagination, Button } from "@heroui/react";
+import {
+  Card,
+  CardHeader,
+  CardBody,
+  Table,
+  TableHeader,
+  TableColumn,
+  TableBody,
+  TableRow,
+  TableCell,
+  Chip,
+  Pagination,
+  Button,
+} from "@heroui/react";
 
 interface Alert {
   id: string;
@@ -93,11 +106,12 @@ export default function AlertsTable() {
   }, [page, alerts]);
 
   // Update alert status
-  const updateAlertStatus = (id: string, status: "acknowledged" | "resolved") => {
+  const updateAlertStatus = (
+    id: string,
+    status: "acknowledged" | "resolved",
+  ) => {
     setAlerts(
-      alerts.map((alert) =>
-        alert.id === id ? { ...alert, status } : alert
-      )
+      alerts.map((alert) => (alert.id === id ? { ...alert, status } : alert)),
     );
   };
 
@@ -155,7 +169,7 @@ export default function AlertsTable() {
           size="sm"
           variant="flat"
           color="primary"
-        // startContent={<Icon icon="lucide:filter" width={16} />}
+          // startContent={<Icon icon="lucide:filter" width={16} />}
         >
           Filter
         </Button>
@@ -221,12 +235,15 @@ export default function AlertsTable() {
                         size="sm"
                         variant="light"
                         color="warning"
-                        onPress={() => updateAlertStatus(alert.id, "acknowledged")}
+                        onPress={() =>
+                          updateAlertStatus(alert.id, "acknowledged")
+                        }
                       >
                         Acknowledge
                       </Button>
                     )}
-                    {(alert.status === "new" || alert.status === "acknowledged") && (
+                    {(alert.status === "new" ||
+                      alert.status === "acknowledged") && (
                       <Button
                         size="sm"
                         variant="light"
@@ -237,7 +254,9 @@ export default function AlertsTable() {
                       </Button>
                     )}
                     {alert.status === "resolved" && (
-                      <span className="text-xs text-default-500">No action needed</span>
+                      <span className="text-xs text-default-500">
+                        No action needed
+                      </span>
                     )}
                   </div>
                 </TableCell>
@@ -248,4 +267,4 @@ export default function AlertsTable() {
       </CardBody>
     </Card>
   );
-};
+}

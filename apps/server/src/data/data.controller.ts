@@ -1,17 +1,24 @@
 import { Controller, Get, Param } from '@nestjs/common';
 import { DataService } from './data.service';
+import { Types } from 'mongoose';
+import { ApiOperation, ApiParam, ApiTags } from '@nestjs/swagger';
 
+@ApiTags('Data')
 @Controller('data')
 export class DataController {
   constructor(private readonly dataService: DataService) {}
 
-  @Get()
-  findAll() {
-    return this.dataService.findAll();
-  }
-
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.dataService.findOne(+id);
+  @Get('hourly-avg-last-24h/:deviceId')
+  @ApiOperation({
+    summary: 'Lấy giá trị trung bình theo giờ trong 24 giờ qua cho thiết bị',
+    description: 'Trả về mảng các giá trị trung bình theo giờ trong 24 giờ qua',
+  })
+  @ApiParam({
+    name: 'deviceId',
+    type: String,
+    description: 'ID của thiết bị',
+  })
+  getHourlyAvgLast24h(@Param('deviceId') deviceId: string) {
+    return this.dataService.getHourlyAvgLast24h(new Types.ObjectId(deviceId));
   }
 }
