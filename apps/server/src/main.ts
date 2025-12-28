@@ -57,7 +57,7 @@ async function bootstrap() {
     deepScanRoutes: true,
   });
   document.security = [{ 'access-token': [] }];
-  SwaggerModule.setup('backend-api', app, document);
+  SwaggerModule.setup('server-api', app, document);
 
   await app.listen(process.env.PORT ?? 5001);
 }
