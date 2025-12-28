@@ -15,6 +15,7 @@ import { RoleGuard } from './guards/role/role.guard';
 import { RefreshAuthGuard } from './guards/refresh-auth/refresh-auth.guard';
 import { ApiBearerAuth, ApiBody, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { LoginDto } from './dto/login.dto';
+import { JwtAuthGuard } from './guards/jwt-auth/jwt-auth.guard';
 
 @ApiTags('auth')
 @ApiBearerAuth('access-token')
@@ -24,7 +25,7 @@ export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
   // Register User
-  @UseGuards(RoleGuard)
+  @UseGuards(JwtAuthGuard, RoleGuard)
   @Roles(Role.ADMIN)
   @HttpCode(201)
   @Post('register')
