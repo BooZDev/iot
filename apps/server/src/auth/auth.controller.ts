@@ -17,6 +17,7 @@ import { ApiBearerAuth, ApiBody, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { LoginDto } from './dto/login.dto';
 
 @ApiTags('auth')
+@ApiBearerAuth('access-token')
 @ApiBearerAuth('refresh-token')
 @Controller('auth')
 export class AuthController {

@@ -1,5 +1,11 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsMongoId, IsNumber, IsOptional, IsString } from 'class-validator';
+import {
+  IsEnum,
+  IsMongoId,
+  IsNumber,
+  IsOptional,
+  IsString,
+} from 'class-validator';
 import { SubDeviceState, SubDeviceStatus } from '../enums/sub-device.enum';
 import { Types } from 'mongoose';
 
@@ -16,12 +22,16 @@ export class UpdateSubDeviceDto {
 
   @ApiProperty({ description: 'Trạng thái thiết bị' })
   @IsOptional({ message: 'Trạng thái thiết bị không hợp lệ' })
-  @IsString({ message: 'Trạng thái thiết bị không hợp lệ' })
+  @IsEnum(SubDeviceStatus, {
+    message: 'Trạng thái thiết bị phải là on, off hoặc maintenance',
+  })
   status?: SubDeviceStatus;
 
   @ApiProperty({ description: 'Trạng thái hoạt động của thiết bị' })
   @IsOptional({ message: 'Trạng thái thiết bị không hợp lệ' })
-  @IsString({ message: 'Trạng thái thiết bị không hợp lệ' })
+  @IsEnum(SubDeviceState, {
+    message: 'Trạng thái thiết bị phải là active hoặc inactive',
+  })
   state?: SubDeviceState;
 
   @ApiProperty({ description: 'Giá trị của thiết bị' })

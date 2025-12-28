@@ -3,4 +3,5 @@ export type DataType = {
   hum: number;
   gasLever: number;
   lightCurrent: number;
+  ts: number
 };

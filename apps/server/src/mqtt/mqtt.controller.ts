@@ -18,7 +18,7 @@ export class MqttController {
     private readonly realtimeService: RealtimeService,
   ) {}
 
-  @EventPattern('warehouse/+/+/data/sensor')
+  @EventPattern('warehouse/+/+/env/data')
   async handleMqttMessage(
     @Ctx() context: MqttContext,
     @Payload()
@@ -27,6 +27,7 @@ export class MqttController {
       hum: number;
       gasLever: number;
       lightCurrent: number;
+      ts: number;
     },
   ) {
     console.log('Received MQTT message:', message);
@@ -53,6 +54,7 @@ export class MqttController {
       hum: message.hum,
       gasLever: message.gasLever,
       lightCurrent: message.lightCurrent,
+      ts: message.ts
     };
 
     const createDataDto: CreateDataDto = {

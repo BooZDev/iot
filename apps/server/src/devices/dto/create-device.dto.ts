@@ -1,4 +1,10 @@
-import { IsMongoId, IsNotEmpty, IsOptional, IsString } from 'class-validator';
+import {
+  IsEnum,
+  IsMongoId,
+  IsNotEmpty,
+  IsOptional,
+  IsString,
+} from 'class-validator';
 import { DeviceType } from '../enums/device.enum';
 import { ApiProperty } from '@nestjs/swagger';
 
@@ -10,7 +16,9 @@ export class CreateDeviceDto {
 
   @ApiProperty({ description: 'Loại thiết bị' })
   @IsNotEmpty({ message: 'Loại thiết bị không được để trống' })
-  @IsString({ message: 'Loại thiết bị không hợp lệ' })
+  @IsEnum(DeviceType, {
+    message: 'Loại thiết bị phải là gateway, envSensor, other hoặc rfidReader',
+  })
   type: DeviceType;
 
   @ApiProperty({ description: 'Địa chỉ MAC của thiết bị' })

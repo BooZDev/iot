@@ -14,6 +14,7 @@ import { RoleGuard } from 'src/auth/guards/role/role.guard';
 import { Roles } from 'src/auth/decorators/role.decorator';
 import { Role } from 'src/auth/enums/role.enum';
 import { ApiBody, ApiOperation, ApiParam, ApiTags } from '@nestjs/swagger';
+import { UpdateDeviceDto } from './dto/update-device.dto';
 
 @ApiTags('devices')
 @UseGuards(RoleGuard)
@@ -66,11 +67,8 @@ export class DevicesController {
     description: 'Cần quyền admin và manager để thực hiện hành động này',
   })
   @ApiParam({ name: 'id', type: String, description: 'ID của thiết bị' })
-  @ApiBody({ type: CreateDeviceDto })
-  update(
-    @Param('id') id: string,
-    @Body() updateDeviceDto: Partial<CreateDeviceDto>,
-  ) {
+  @ApiBody({ type: UpdateDeviceDto })
+  update(@Param('id') id: string, @Body() updateDeviceDto: UpdateDeviceDto) {
     return this.devicesService.update(id, updateDeviceDto);
   }
 

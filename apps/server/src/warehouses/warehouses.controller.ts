@@ -50,14 +50,14 @@ export class WarehousesController {
   }
 
   // Get Warehouse by ID
-  @Roles()
+  @Roles(Role.ADMIN, Role.MANAGER)
   @Get(':id')
   @ApiOperation({
     summary: 'Lấy thông tin nhà kho theo ID',
-    description: 'Tất cả vai trò đều có thể thực hiện hành động này',
+    description: 'Cần quyền admin và manager để thực hiện hành động này',
   })
   @ApiParam({ name: 'id', type: String, description: 'ID của nhà kho' })
-  findOne(@Param('id') id: string) {
+  async findOne(@Param('id') id: string) {
     return this.warehousesService.findOne(id);
   }
 

@@ -3,6 +3,7 @@ import {
   ArrayMaxSize,
   ArrayMinSize,
   IsArray,
+  IsEnum,
   IsNumber,
   IsOptional,
   IsString,
@@ -23,12 +24,17 @@ export class UpdateDeviceDto {
 
   @ApiProperty({ description: 'Loại thiết bị' })
   @IsOptional()
-  @IsString({ message: 'Loại thiết bị không hợp lệ' })
+  @IsEnum(DeviceType, {
+    message: 'Loại thiết bị phải là gateway, envSensor, other hoặc rfidReader',
+  })
   type?: DeviceType;
 
   @ApiProperty({ description: 'Trạng thái thiết bị' })
   @IsOptional()
-  @IsString({ message: 'Trạng thái thiết bị không hợp lệ' })
+  @IsEnum(DeviceState, {
+    message:
+      'Trạng thái thiết bị phải là authorized, unauthorized, active, inactive',
+  })
   state?: DeviceState;
 
   @ApiProperty({ description: 'Vị trí trong kho của thiết bị' })

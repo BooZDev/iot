@@ -1,8 +1,10 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { Type } from 'class-transformer';
 import {
   IsArray,
   IsDate,
   IsEmail,
+  IsEnum,
   IsMongoId,
   IsOptional,
   IsString,
@@ -41,7 +43,11 @@ export class UpdateUserDto {
   @ApiProperty({ description: 'Vai trò người dùng' })
   @IsOptional()
   @IsArray({ message: 'Vai trò không hợp lệ' })
-  @IsString({ each: true, message: 'Vai trò không hợp lệ' })
+  @Type(() => String)
+  @IsEnum(Role, {
+    each: true,
+    message: 'Vai trò phải là admin, manager, engineeer hoặc staff',
+  })
   role?: Role[];
 
   @ApiProperty({ description: 'ID kho của người dùng' })
