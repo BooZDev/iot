@@ -19,7 +19,7 @@ export default function SensorCards() {
 
   useEffect(() => {
     console.log("Attempting to connect to WebSocket server...");
-    const socket = io("https://backend-api.eladev.site", {
+    const socket = io("https://ws.eladev.site", {
       transports: ["websocket"],
       reconnection: true,
       reconnectionAttempts: 5,
