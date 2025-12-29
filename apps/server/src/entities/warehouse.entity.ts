@@ -8,11 +8,11 @@ export class Warehouse {
   @Prop({ type: String, required: true })
   type: string;
 
-  @Prop({ type: [Number, Number], required: false })
-  locations: Array<number>;
+  @Prop({ type: [[Number, Number]], required: false })
+  locations: [number, number][];
 
-  @Prop({ type: String, required: false })
-  description: string;
+  @Prop({ type: Array, required: false })
+  description: [string, string];
 
   @Prop({ type: String, required: false })
   address: string;

@@ -1,15 +1,36 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Type } from 'class-transformer';
 import {
-  ArrayMaxSize,
   ArrayMinSize,
   IsArray,
   IsBoolean,
-  IsNumber,
   IsOptional,
   IsString,
   IsUrl,
+  Validate,
+  ValidatorConstraint,
+  ValidatorConstraintInterface,
 } from 'class-validator';
+
+@ValidatorConstraint({ name: 'PolygonValidator', async: false })
+class PolygonValidator implements ValidatorConstraintInterface {
+  validate(locations: [number, number][]) {
+    if (locations.length < 3) return false;
+
+    const first = locations[0];
+    const last = locations[locations.length - 1];
+
+    // polygon phải đóng
+    if (first[0] !== last[0] || first[1] !== last[1]) {
+      return false;
+    }
+
+    return true;
+  }
+
+  defaultMessage() {
+    return 'Polygon must be closed (first point = last point)';
+  }
+}
 
 export class UpdateWarehouseDto {
   @ApiProperty({ description: 'Tên kho' })
@@ -24,12 +45,10 @@ export class UpdateWarehouseDto {
 
   @ApiProperty({ description: 'Vị trí kho trong bản đồ' })
   @IsOptional()
-  @IsArray({ message: 'Vị trí kho phải là một mảng' })
-  @ArrayMinSize(2, { message: 'Vị trí kho phải có đúng 2 phần tử' })
-  @ArrayMaxSize(2, { message: 'Vị trí kho phải có đúng 2 phần tử' })
-  @Type(() => Number)
-  @IsNumber({}, { each: true })
-  location?: [number, number];
+  @IsArray({ message: 'Vị trí kho không hợp lệ' })
+  @ArrayMinSize(4, { message: 'Phải có 3 tọa độ' })
+  @Validate(PolygonValidator)
+  locations?: [number, number][];
 
   @ApiProperty({ description: 'Mô tả kho' })
   @IsOptional()

@@ -18,13 +18,12 @@ import { LoginDto } from './dto/login.dto';
 import { JwtAuthGuard } from './guards/jwt-auth/jwt-auth.guard';
 
 @ApiTags('auth')
-@ApiBearerAuth('access-token')
-@ApiBearerAuth('refresh-token')
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
   // Register User
+  @ApiBearerAuth('access-token')
   @UseGuards(JwtAuthGuard, RoleGuard)
   @Roles(Role.ADMIN)
   @HttpCode(201)
@@ -52,6 +51,7 @@ export class AuthController {
     return this.authService.login(req.user.id);
   }
 
+  @ApiBearerAuth('refresh-token')
   @UseGuards(RefreshAuthGuard)
   @HttpCode(201)
   @Post('refresh')
