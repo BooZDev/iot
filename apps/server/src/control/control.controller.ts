@@ -1,6 +1,6 @@
 import { Body, Controller, Param, Post } from '@nestjs/common';
 import { ControlService } from './control.service';
-import { ApiBody, ApiOperation, ApiParam, PartialType } from '@nestjs/swagger';
+import { ApiBody, ApiOperation, ApiParam } from '@nestjs/swagger';
 import { ControlPacketDto } from 'src/control/dto/controlPacket.dto';
 import { ThresholdPacketDto } from './dto/thresholdPacket.dto';
 
@@ -43,7 +43,7 @@ export class ControlController {
     description: 'Gửi lệnh thiết lập ngưỡng cảnh báo cho thiết bị qua MQTT',
   })
   @ApiBody({
-    type: PartialType(ThresholdPacketDto),
+    type: ThresholdPacketDto,
   })
   @ApiParam({
     name: 'deviceId',
@@ -52,7 +52,7 @@ export class ControlController {
   })
   async setWarningThreshold(
     @Body()
-    body: Partial<ThresholdPacketDto>,
+    body: ThresholdPacketDto,
     @Param('deviceId') deviceId: string,
   ) {
     return await this.controlService.setWarningThreshold(deviceId, body);
@@ -83,32 +83,5 @@ export class ControlController {
     @Body() body: { rfidTag: string },
   ) {
     return this.controlService.setRfidUserInfo(userId, body.rfidTag);
-  }
-
-  @Post('rfid/product/:productId')
-  @ApiOperation({
-    summary: 'Gửi thông tin sản phẩm đến thiết bị RFID',
-    description:
-      'Gửi lệnh thiết lập thông tin sản phẩm cho thiết bị RFID qua MQTT',
-  })
-  @ApiBody({
-    schema: {
-      type: 'object',
-      properties: {
-        rfidTag: { type: 'string', example: 'RFID654321' },
-      },
-      required: ['rfidTag'],
-    },
-  })
-  @ApiParam({
-    name: 'productId',
-    type: String,
-    description: 'ID của sản phẩm',
-  })
-  async setRfidProductInfo(
-    @Param('productId') productId: string,
-    @Body() body: { rfidTag: string },
-  ) {
-    return this.controlService.setRfidProductInfo(productId, body.rfidTag);
   }
 }

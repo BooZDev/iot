@@ -10,6 +10,9 @@ import { WarehousesModule } from './warehouses/warehouses.module';
 import { DevicesModule } from './devices/devices.module';
 import { ControlModule } from './control/control.module';
 import { SubDevicesModule } from './sub-devices/sub-devices.module';
+import { AlertModule } from './alert/alert.module';
+import { ThresholdModule } from './threshold/threshold.module';
+import { ProductModule } from './product/product.module';
 
 @Module({
   imports: [
@@ -24,6 +27,9 @@ import { SubDevicesModule } from './sub-devices/sub-devices.module';
     RealtimeModule,
     MqttModule,
     SubDevicesModule,
+    AlertModule,
+    ThresholdModule,
+    ProductModule,
   ],
 })
 export class AppModule {}

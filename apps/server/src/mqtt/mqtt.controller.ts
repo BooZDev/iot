@@ -1,5 +1,4 @@
 import { Controller } from '@nestjs/common';
-import { MqttService } from './mqtt.service';
 import { Ctx, EventPattern, MqttContext, Payload } from '@nestjs/microservices';
 import { DataService } from 'src/data/data.service';
 import { CreateDataDto } from './dto/create-data.dto';
@@ -7,16 +6,21 @@ import { DataType } from './types/data.type';
 import { DevicesService } from 'src/devices/devices.service';
 import { RealtimeGateway } from 'src/realtime/realtime.gateway';
 import { RealtimeService } from 'src/realtime/realtime.service';
-import { WarehousesService } from 'src/warehouses/warehouses.service';
+import { CreateAlertDto } from 'src/alert/dto/create-alert.dto';
+import { AlertService } from 'src/alert/alert.service';
+import { InjectModel } from '@nestjs/mongoose';
+import { Product } from 'src/entities/product.entity';
+import { Model } from 'mongoose';
 
 @Controller('mqtt')
 export class MqttController {
   constructor(
-    private readonly mqttService: MqttService,
+    @InjectModel(Product.name) private productModel: Model<Product>,
     private readonly dataService: DataService,
     private readonly devicesService: DevicesService,
     private readonly wsGateway: RealtimeGateway,
     private readonly realtimeService: RealtimeService,
+    private readonly alertService: AlertService,
   ) {}
 
   @EventPattern('warehouse/+/+/env/data')
@@ -31,13 +35,13 @@ export class MqttController {
       ts: number;
     },
   ) {
-    console.log('Received MQTT message:', message);
+    // console.log('Received MQTT message:', message);
     const topic = context.getTopic().split('/');
     const gatewayMac = topic[1].slice(4);
     const deviceMac = topic[2].slice(5);
 
-    const device = await this.devicesService.findByMac(deviceMac);
     const gateway = await this.devicesService.findByMac(gatewayMac);
+    const device = await this.devicesService.findByMac(deviceMac);
 
     if (!device) {
       console.error('Device not found for node mac:', deviceMac);
@@ -77,11 +81,116 @@ export class MqttController {
     await this.dataService.create(createDataDto);
   }
 
-  // @EventPattern('warehouse/+/+/alert/sensor')
-  // async handleAlertMessage(
-  //   @Payload() data: { alertType: string; alertValue: number },
-  //   @Ctx() context: MqttContext,
-  // ) {
-  //   const topic = context.getTopic();
-  // }
+  @EventPattern('warehouse/+/alert/data')
+  async handleAlertDataMessage(
+    @Ctx() context: MqttContext,
+    @Payload()
+    message: {
+      level: string;
+      reason: string;
+      temp: number;
+      hum: number;
+      gasLever: number;
+      lightCurrent: number;
+      ts: number;
+    },
+  ) {
+    const topic = context.getTopic().split('/');
+    const gatewayMac = topic[1].slice(4);
+
+    const gateway = await this.devicesService.findByMac(gatewayMac);
+    if (!gateway) {
+      console.error('Gateway not found for gateway mac:', gatewayMac);
+      return;
+    }
+
+    const payload: CreateAlertDto = {
+      level: message.level,
+      reason: `Giá trị cảnh báo: ${message.reason}`,
+      value: message.reason.includes('TEMP')
+        ? message.temp
+        : message.reason.includes('HUM')
+          ? message.hum
+          : message.reason.includes('GAS')
+            ? message.gasLever
+            : message.reason.includes('LIGHT')
+              ? message.lightCurrent
+              : 0,
+      status:
+        message.level === 'warning'
+          ? 'new'
+          : message.level === 'danger'
+            ? 'critical'
+            : 'resolved',
+      warehouseId: gateway.warehouseId.toString(),
+    };
+
+    if (payload.level === 'danger') {
+      this.wsGateway.server
+        .to(`wh:${gateway.warehouseId.toString()}`)
+        .emit('alert', payload);
+      return await this.alertService.update(gateway.warehouseId.toString(), {
+        status: 'critical',
+      });
+    }
+
+    this.wsGateway.server
+      .to(`wh:${gateway.warehouseId.toString()}`)
+      .emit('alert', payload);
+    return await this.alertService.create(payload);
+  }
+
+  @EventPattern('warehouse/+/+/rfid/data')
+  async handleRfidDataMessage(
+    @Ctx() context: MqttContext,
+    @Payload()
+    message: {
+      op: number;
+      kind: number;
+      id: string;
+      ts: number;
+    },
+  ) {
+    const topic = context.getTopic().split('/');
+    const gatewayMac = topic[1].slice(4);
+    const deviceMac = topic[2].slice(5);
+
+    const gateway = await this.devicesService.findByMac(gatewayMac);
+    const device = await this.devicesService.findByMac(deviceMac);
+
+    if (!device) {
+      console.error('Device not found for node mac:', deviceMac);
+      return;
+    }
+
+    if (!gateway) {
+      console.error('Gateway not found for gateway mac:', gatewayMac);
+      return;
+    }
+
+    const product = await this.productModel
+      .findOne({ productCode: message.id })
+      .exec();
+
+    if (!product) {
+      console.error('Product not found for product code:', message.id);
+      return;
+    }
+
+    if (product.status == 'READY_IN' && message.op == 1) {
+      await this.productModel.findByIdAndUpdate(product._id, {
+        status: 'IN_STOCK',
+      });
+    }
+
+    if (product.status == 'READY_OUT' && message.op == 1) {
+      await this.productModel.findByIdAndUpdate(product._id, {
+        status: 'OUT_STOCK',
+      });
+    }
+
+    this.wsGateway.server
+      .to(`wh:${gateway.warehouseId.toString()}`)
+      .emit('rfidData', message);
+  }
 }

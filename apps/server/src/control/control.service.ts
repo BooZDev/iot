@@ -4,6 +4,7 @@ import { ControlPacketDto } from 'src/control/dto/controlPacket.dto';
 import { MqttService } from 'src/mqtt/mqtt.service';
 import { SubDevicesService } from 'src/sub-devices/sub-devices.service';
 import { ThresholdPacketDto } from './dto/thresholdPacket.dto';
+import { ThresholdService } from 'src/threshold/threshold.service';
 
 @Injectable()
 export class ControlService {
@@ -11,6 +12,7 @@ export class ControlService {
     private readonly mqttSevice: MqttService,
     private readonly subDevicesService: SubDevicesService,
     private readonly devicesService: DevicesService,
+    private readonly thresholdService: ThresholdService,
   ) {}
 
   async sendControlCommand(
@@ -29,20 +31,24 @@ export class ControlService {
     return { message: `${topic} ${JSON.stringify(packet)}` };
   }
 
-  async setWarningThreshold(
-    deviceId: string,
-    threshold: Partial<ThresholdPacketDto>,
-  ) {
+  async setWarningThreshold(deviceId: string, threshold: ThresholdPacketDto) {
     const device = await this.devicesService.findOne(deviceId);
 
     if (!device) {
       throw new NotFoundException('Không tìm thấy thiết bị với ID đã cho');
     }
-    const topic = `warehouse/gtw_${device.gatewayId.mac}/node_${device.mac}/control/threshold/cmd`;
+    const topic = `warehouse/gtw_${device.gatewayId.mac}/node_${device.mac}/threshold/cmd`;
 
     this.mqttSevice.publicToTopic(topic, {
       ...threshold,
     });
+
+    await this.thresholdService.update(device.warehouseId.toString(), {
+      warehouseId: device.warehouseId.toString(),
+      thresholds: { ...threshold },
+    });
+
+    console.log('Published to topic:', topic, 'with payload:', threshold);
 
     return { message: 'Đã gửi lệnh thiết lập ngưỡng cảnh báo thành công' };
   }
@@ -62,11 +68,20 @@ export class ControlService {
     return { message: 'Đã gửi lệnh thiết lập thông tin người dùng thành công' };
   }
 
-  async setRfidProductInfo(productId: string, rfidTag: string) {
-    // Implementation for setting RFID product info can be added here
-    return await Promise.resolve({
-      message:
-        'Chức năng thiết lập thông tin sản phẩm RFID chưa được triển khai',
+  async setRfidProductInfo(productCode: string, rfidTag: string) {
+    const device = await this.devicesService.findOne(rfidTag);
+
+    if (!device) {
+      throw new NotFoundException('Không tìm thấy thiết bị với ID đã cho');
+    }
+    const topic = `warehouse/gtw_${device.gatewayId.mac}/node_${device.mac}/rfid/cmd`;
+
+    this.mqttSevice.publicToTopic(topic, {
+      kind: 2,
+      id: productCode,
+      ttl: 30000,
     });
+
+    return { message: 'Đã gửi lệnh thiết lập thông tin người dùng thành công' };
   }
 }

@@ -32,7 +32,12 @@ export class Device {
   @Prop({ type: Types.ObjectId, required: true, ref: Warehouse.name })
   warehouseId: Types.ObjectId;
 
-  @Prop({ type: Types.ObjectId, required: false, ref: Device.name })
+  @Prop({
+    type: Types.ObjectId,
+    required: false,
+    ref: Device.name,
+    default: null,
+  })
   gatewayId: Types.ObjectId;
 }
 
