@@ -15,7 +15,13 @@ export class DataService {
     return await this.dataModel.create(createDataDto);
   }
 
-  getHourlyAvgLast24h(deviceId: Types.ObjectId) {
+  async getHourlyAvgLast24h(deviceId: Types.ObjectId): Promise<
+    {
+      timestamp: Date;
+      avgTemp: number;
+      avgHum: number;
+    }[]
+  > {
     const end = new Date(new Date().getTime() + 7 * 60 * 60 * 1000);
     const start = new Date(end.getTime() - 24 * 60 * 60 * 1000);
 
@@ -25,7 +31,7 @@ export class DataService {
 
     match.metadata = deviceId;
 
-    return this.dataModel.aggregate([
+    return await this.dataModel.aggregate([
       { $match: match },
       {
         $group: {
@@ -58,11 +64,7 @@ export class DataService {
     ]);
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} datum`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} datum`;
+  async findOne(warehouseId: string) {
+    return await this.dataModel.findOne({ warehouseId }).exec();
   }
 }

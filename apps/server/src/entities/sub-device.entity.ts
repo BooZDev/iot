@@ -17,8 +17,8 @@ export class SubDevice {
   @Prop({ type: String, required: true })
   name: string;
 
-  @Prop({ type: String, required: true })
-  type: string;
+  @Prop({ type: Number, required: true })
+  type: number;
 
   @Prop({ type: String, required: true, default: SubDeviceStatus.OFF })
   status: SubDeviceStatus;

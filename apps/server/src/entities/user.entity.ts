@@ -5,6 +5,9 @@ import { Role } from 'src/auth/enums/role.enum';
 @Schema({ timestamps: true })
 export class User {
   @Prop({ type: String, required: true, unique: true })
+  code: string;
+
+  @Prop({ type: String, required: true, unique: true })
   username: string;
 
   @Prop({ type: String, required: true })

@@ -19,7 +19,7 @@ export default function SensorCards() {
 
   useEffect(() => {
     console.log("Attempting to connect to WebSocket server...");
-    const socket = io("https://ws.eladev.site", {
+    const socket = io("http://localhost:5002", {
       transports: ["websocket"],
       reconnection: true,
       reconnectionAttempts: 5,
@@ -27,7 +27,7 @@ export default function SensorCards() {
 
     socket.on("connect", () => {
       console.log("🟢 Connected to server:", socket.id);
-      socket.emit("joinRoom", "1111");
+      socket.emit("joinRoom", "69504a30527142284b688278");
     });
 
     socket.on("environmentalData", (msg) => {

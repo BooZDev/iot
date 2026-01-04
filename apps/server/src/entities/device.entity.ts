@@ -11,6 +11,9 @@ export type PopulateDevice = Device & {
   timestamps: true,
 })
 export class Device {
+  @Prop({ type: String, required: true, unique: true })
+  deviceCode: string;
+
   @Prop({ type: String, required: true })
   name: string;
 

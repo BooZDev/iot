@@ -29,3 +29,14 @@ Authorization: Bearer {{refreshToken}}
 #######################
 GET http://localhost:5001/users/profile
 Authorization: Bearer {{token}}
+
+#######################
+POST http://localhost:5001/control/6952190ddc504ae4dd252628
+Content-Type: application/json
+
+{
+  "kind": 1,
+  "actuator": 1,
+  "on": 1,
+  "value": 30
+}

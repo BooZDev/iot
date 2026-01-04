@@ -11,5 +11,8 @@ export class CreateDataDto {
   metadata: Types.ObjectId;
 
   @IsNotEmpty()
+  warehouseId: Types.ObjectId;
+
+  @IsNotEmpty()
   data: DataType;
 }

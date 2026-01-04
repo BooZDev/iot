@@ -5,8 +5,8 @@ export const mqttConfig: MqttOptions & { name: string } = {
   name: 'MQTT_SERVICE',
   options: {
     url: process.env.MQTT_ULR,
-    username: process.env.MQTT_USERNAME,
-    password: process.env.MQTT_PASSWORD,
+    // username: process.env.MQTT_USERNAME,
+    // password: process.env.MQTT_PASSWORD,
     clientId: process.env.MQTT_CLIENT_ID_2 || 'server-pub',
     rejectUnauthorized: false,
     keepalive: 60,

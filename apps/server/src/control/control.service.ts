@@ -1,7 +1,9 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { DevicesService } from 'src/devices/devices.service';
+import { ControlPacketDto } from 'src/control/dto/controlPacket.dto';
 import { MqttService } from 'src/mqtt/mqtt.service';
 import { SubDevicesService } from 'src/sub-devices/sub-devices.service';
+import { ThresholdPacketDto } from './dto/thresholdPacket.dto';
 
 @Injectable()
 export class ControlService {
@@ -11,65 +13,32 @@ export class ControlService {
     private readonly devicesService: DevicesService,
   ) {}
 
-  async controlFanSpeed(subDeviceId: string, value: number) {
-    const subDevice = await this.subDevicesService.findOne(subDeviceId);
+  async sendControlCommand(
+    deviceId: string,
+    packet: Partial<ControlPacketDto>,
+  ) {
+    const subDevice = await this.subDevicesService.findOne(deviceId);
 
     if (!subDevice) {
-      throw new NotFoundException('Không tìm thấy thiết bị con với ID đã cho');
+      throw new NotFoundException('Không tìm thấy thiết bị với ID đã cho');
     }
+    const topic = `warehouse/gtw_${subDevice.deviceId.gatewayId.mac}/node_${subDevice.deviceId.mac}/device/cmd`;
 
-    const topic = `warehouse/gateway_${subDevice.deviceId.gatewayId.mac}/node_${subDevice.deviceId.mac}/control/fan/speed/cmd`;
+    this.mqttSevice.publicToTopic(topic, packet);
 
-    this.mqttSevice.publicToTopic(topic, {
-      value: value,
-    });
-
-    return { message: 'Đã gửi lệnh điều khiển tốc độ quạt thành công' };
-  }
-
-  async controlState(subDeviceId: string, state: string) {
-    const subDevice = await this.subDevicesService.findOne(subDeviceId);
-
-    if (!subDevice) {
-      throw new NotFoundException('Không tìm thấy thiết bị con với ID đã cho');
-    }
-
-    const topic = `warehouse/gateway_${subDevice.deviceId.gatewayId.mac}/node_${subDevice.deviceId.mac}/control/state/cmd`;
-
-    this.mqttSevice.publicToTopic(topic, {
-      state: state,
-    });
-
-    return { message: 'Đã gửi lệnh điều khiển trạng thái quạt thành công' };
-  }
-
-  async controlStatus(subDeviceId: string, status: string) {
-    const subDevice = await this.subDevicesService.findOne(subDeviceId);
-
-    if (!subDevice) {
-      throw new NotFoundException('Không tìm thấy thiết bị con với ID đã cho');
-    }
-
-    const topic = `warehouse/gateway_${subDevice.deviceId.gatewayId.mac}/node_${subDevice.deviceId.mac}/control/status/cmd`;
-
-    this.mqttSevice.publicToTopic(topic, {
-      status: status,
-    });
-
-    return { message: 'Đã gửi lệnh điều khiển trạng thái quạt thành công' };
+    return { message: `${topic} ${JSON.stringify(packet)}` };
   }
 
   async setWarningThreshold(
     deviceId: string,
-    threshold: { min: number; max: number },
-    type: string,
+    threshold: Partial<ThresholdPacketDto>,
   ) {
     const device = await this.devicesService.findOne(deviceId);
 
     if (!device) {
       throw new NotFoundException('Không tìm thấy thiết bị với ID đã cho');
     }
-    const topic = `warehouse/gateway_${device.gatewayId.mac}/node_${device.mac}/control/threshold/${type}/cmd`;
+    const topic = `warehouse/gtw_${device.gatewayId.mac}/node_${device.mac}/control/threshold/cmd`;
 
     this.mqttSevice.publicToTopic(topic, {
       ...threshold,
@@ -84,7 +53,7 @@ export class ControlService {
     if (!device) {
       throw new NotFoundException('Không tìm thấy thiết bị với ID đã cho');
     }
-    const topic = `warehouse/gateway_${device.gatewayId.mac}/node_${device.mac}/control/rfid/user-infi/cmd`;
+    const topic = `warehouse/gtw_${device.gatewayId.mac}/node_${device.mac}/control/rfid/user-infi/cmd`;
 
     this.mqttSevice.publicToTopic(topic, {
       userId: userId,

@@ -14,6 +14,11 @@ import { Types } from 'mongoose';
 import { Role } from 'src/auth/enums/role.enum';
 
 export class UpdateUserDto {
+  @ApiProperty({ description: 'Mã người dùng' })
+  @IsOptional()
+  @IsString({ message: 'Mã người dùng không hợp lệ' })
+  code?: string;
+
   @ApiProperty({ description: 'Tên tài khoản người dùng' })
   @IsOptional()
   @IsString({ message: 'Tên tài khoản không hợp lệ' })

@@ -7,6 +7,7 @@ import { DataType } from './types/data.type';
 import { DevicesService } from 'src/devices/devices.service';
 import { RealtimeGateway } from 'src/realtime/realtime.gateway';
 import { RealtimeService } from 'src/realtime/realtime.service';
+import { WarehousesService } from 'src/warehouses/warehouses.service';
 
 @Controller('mqtt')
 export class MqttController {
@@ -32,34 +33,44 @@ export class MqttController {
   ) {
     console.log('Received MQTT message:', message);
     const topic = context.getTopic().split('/');
-    const warehouseMac = topic[1].slice(4);
+    const gatewayMac = topic[1].slice(4);
     const deviceMac = topic[2].slice(5);
 
-    this.realtimeService.setLastMessage('environmentalData', message);
-    this.wsGateway.server.to(`wh:1111`).emit('environmentalData', message);
-
     const device = await this.devicesService.findByMac(deviceMac);
+    const gateway = await this.devicesService.findByMac(gatewayMac);
 
     if (!device) {
       console.error('Device not found for node mac:', deviceMac);
       return;
     }
 
-    // vn timezone
+    if (!gateway) {
+      console.error('Gateway not found for gateway mac:', gatewayMac);
+      return;
+    }
+
+    this.realtimeService.setLastMessage('environmentalData', message);
+    this.wsGateway.server
+      .to(`wh:${gateway.warehouseId.toString()}`)
+      .emit('environmentalData', message);
+
     const timestamp = new Date(new Date().getTime() + 7 * 60 * 60 * 1000);
+
     const metadata = device._id;
+    const warehouseId = gateway.warehouseId;
 
     const data: DataType = {
       temp: message.temp,
       hum: message.hum,
       gasLever: message.gasLever,
       lightCurrent: message.lightCurrent,
-      ts: message.ts
+      ts: message.ts,
     };
 
     const createDataDto: CreateDataDto = {
       timestamp,
       metadata,
+      warehouseId,
       data,
     };
 

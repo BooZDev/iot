@@ -2,6 +2,7 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Types } from 'mongoose';
 import type { DataType } from 'src/mqtt/types/data.type';
 import { Device } from './device.entity';
+import { Warehouse } from './warehouse.entity';
 
 @Schema({
   timestamps: false,
@@ -24,6 +25,9 @@ export class EnviromentalDataTimeseries {
     ref: Device.name,
   })
   metadata: Types.ObjectId;
+
+  @Prop({ type: Types.ObjectId, required: true, ref: Warehouse.name })
+  warehouseId: Types.ObjectId;
 
   @Prop({ type: Object, required: true })
   data: DataType;

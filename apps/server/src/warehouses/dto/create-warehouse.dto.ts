@@ -2,6 +2,11 @@ import { ApiProperty } from '@nestjs/swagger';
 import { IsNotEmpty, IsString } from 'class-validator';
 
 export class CreateWarehouseDto {
+  @ApiProperty({ description: 'Mã nhà kho' })
+  @IsNotEmpty({ message: 'Mã kho không được để trống' })
+  @IsString({ message: 'Mã kho không hợp lệ' })
+  warehouseCode: string;
+
   @ApiProperty({ description: 'Tên kho' })
   @IsNotEmpty({ message: 'Tên kho không được để trống' })
   @IsString({ message: 'Tên kho không hợp lệ' })

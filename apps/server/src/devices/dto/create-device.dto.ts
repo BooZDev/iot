@@ -9,6 +9,11 @@ import { DeviceType } from '../enums/device.enum';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class CreateDeviceDto {
+  @ApiProperty({ description: 'Mã thiết bị' })
+  @IsNotEmpty({ message: 'Mã thiết bị không được để trống' })
+  @IsString({ message: 'Mã thiết bị không hợp lệ' })
+  deviceCode: string;
+
   @ApiProperty({ description: 'Tên thiết bị' })
   @IsNotEmpty({ message: 'Tên thiết bị không được để trống' })
   @IsString({ message: 'Tên thiết bị không hợp lệ' })

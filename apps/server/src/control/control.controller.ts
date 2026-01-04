@@ -1,97 +1,40 @@
 import { Body, Controller, Param, Post } from '@nestjs/common';
 import { ControlService } from './control.service';
-import { ApiBody, ApiOperation, ApiParam } from '@nestjs/swagger';
+import { ApiBody, ApiOperation, ApiParam, PartialType } from '@nestjs/swagger';
+import { ControlPacketDto } from 'src/control/dto/controlPacket.dto';
+import { ThresholdPacketDto } from './dto/thresholdPacket.dto';
 
 @Controller('control')
 export class ControlController {
   constructor(private readonly controlService: ControlService) {}
 
-  @Post(':subDeviceId/value')
+  @Post(':deviceId')
   @ApiOperation({
-    summary: 'Điều khiển tốc độ quạt của thiết bị con',
-    description: 'Gửi lệnh điều khiển tốc độ quạt cho thiết bị con qua MQTT',
+    summary: 'Gửi lệnh điều khiển đến thiết bị',
+    description: 'Gửi lệnh điều khiển cho thiết bị qua MQTT',
   })
   @ApiBody({
     schema: {
       type: 'object',
       properties: {
+        kind: { type: 'number', example: 1 },
+        actuator: { type: 'number', example: 2 },
+        on: { type: 'number', example: 1 },
         value: { type: 'number', example: 50 },
       },
-      required: ['value'],
     },
   })
   @ApiParam({
-    name: 'subDeviceId',
+    name: 'deviceId',
     type: String,
-    description: 'ID của thiết bị con',
+    description: 'ID của thiết bị',
   })
-  async controlFan(
+  async sendControlCommand(
     @Body()
-    body: {
-      value: number;
-    },
+    body: ControlPacketDto,
     @Param('deviceId') deviceId: string,
   ) {
-    return await this.controlService.controlFanSpeed(deviceId, body.value);
-  }
-
-  @Post(':subDeviceId/state')
-  @ApiOperation({
-    summary: 'Điều khiển trạng thái quạt của thiết bị con',
-    description:
-      'Gửi lệnh điều khiển trạng thái quạt cho thiết bị con qua MQTT',
-  })
-  @ApiBody({
-    schema: {
-      type: 'object',
-      properties: {
-        state: { type: 'string', example: 'ON' },
-      },
-      required: ['state'],
-    },
-  })
-  @ApiParam({
-    name: 'subDeviceId',
-    type: String,
-    description: 'ID của thiết bị con',
-  })
-  async controlState(
-    @Body()
-    body: {
-      state: string;
-    },
-    @Param('deviceId') deviceId: string,
-  ) {
-    return await this.controlService.controlState(deviceId, body.state);
-  }
-
-  @Post(':subDeviceId/status')
-  @ApiOperation({
-    summary: 'Điều khiển trạng thái thiết bị con',
-    description: 'Gửi lệnh điều khiển trạng thái thiết bị con qua MQTT',
-  })
-  @ApiBody({
-    schema: {
-      type: 'object',
-      properties: {
-        status: { type: 'string', example: 'ACTIVE' },
-      },
-      required: ['status'],
-    },
-  })
-  @ApiParam({
-    name: 'subDeviceId',
-    type: String,
-    description: 'ID của thiết bị con',
-  })
-  async controlStatus(
-    @Body()
-    body: {
-      status: string;
-    },
-    @Param('deviceId') deviceId: string,
-  ) {
-    return await this.controlService.controlStatus(deviceId, body.status);
+    return await this.controlService.sendControlCommand(deviceId, body);
   }
 
   @Post(':deviceId/threshold')
@@ -100,20 +43,7 @@ export class ControlController {
     description: 'Gửi lệnh thiết lập ngưỡng cảnh báo cho thiết bị qua MQTT',
   })
   @ApiBody({
-    schema: {
-      type: 'object',
-      properties: {
-        threshold: {
-          type: 'object',
-          properties: {
-            min: { type: 'number', example: 10 },
-            max: { type: 'number', example: 80 },
-          },
-        },
-        type: { type: 'string', example: 'temperature' },
-      },
-      required: ['threshold', 'type'],
-    },
+    type: PartialType(ThresholdPacketDto),
   })
   @ApiParam({
     name: 'deviceId',
@@ -122,20 +52,10 @@ export class ControlController {
   })
   async setWarningThreshold(
     @Body()
-    body: {
-      threshold: {
-        min: number;
-        max: number;
-      };
-      type: string;
-    },
+    body: Partial<ThresholdPacketDto>,
     @Param('deviceId') deviceId: string,
   ) {
-    return await this.controlService.setWarningThreshold(
-      deviceId,
-      body.threshold,
-      body.type,
-    );
+    return await this.controlService.setWarningThreshold(deviceId, body);
   }
 
   @Post('rfid/user/:userId')

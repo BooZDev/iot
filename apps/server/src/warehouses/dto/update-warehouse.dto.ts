@@ -33,6 +33,11 @@ class PolygonValidator implements ValidatorConstraintInterface {
 }
 
 export class UpdateWarehouseDto {
+  @ApiProperty({ description: 'Mã nhà kho' })
+  @IsOptional()
+  @IsString({ message: 'Mã kho không hợp lệ' })
+  warehouseCode: string;
+
   @ApiProperty({ description: 'Tên kho' })
   @IsOptional()
   @IsString({ message: 'Tên kho không hợp lệ' })

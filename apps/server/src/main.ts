@@ -27,8 +27,8 @@ async function bootstrap() {
     options: {
       clientId: process.env.MQTT_CLIENT_ID_1 || 'server-sub',
       url: process.env.MQTT_ULR,
-      username: process.env.MQTT_USERNAME,
-      password: process.env.MQTT_PASSWORD,
+      // username: process.env.MQTT_USERNAME,
+      // password: process.env.MQTT_PASSWORD,
       rejectUnauthorized: false,
       keepalive: 60,
       reconnectPeriod: 1000,

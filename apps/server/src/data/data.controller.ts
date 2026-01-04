@@ -18,7 +18,18 @@ export class DataController {
     type: String,
     description: 'ID của thiết bị',
   })
-  getHourlyAvgLast24h(@Param('deviceId') deviceId: string) {
-    return this.dataService.getHourlyAvgLast24h(new Types.ObjectId(deviceId));
+  async getHourlyAvgLast24h(@Param('deviceId') deviceId: string) {
+    return await this.dataService.getHourlyAvgLast24h(
+      new Types.ObjectId(deviceId),
+    );
+  }
+
+  @Get('latest')
+  @ApiOperation({
+    summary: 'Lấy dữ liệu mới nhất',
+    description: 'Trả về dữ liệu mới nhất trong hệ thống',
+  })
+  async getLatestData(warehouseId: string) {
+    return await this.dataService.findOne(warehouseId);
   }
 }
