@@ -8,6 +8,10 @@ import { FaTemperatureHigh } from "react-icons/fa";
 import { WiHumidity } from "react-icons/wi";
 import { GiSmokingOrb } from "react-icons/gi";
 import { MdOutlineWbTwilight } from "react-icons/md";
+import { useQuery } from "@tanstack/react-query";
+import axios from "axios";
+import { usePathname } from "next/navigation";
+import api from "../../../app/api/api";
 
 export default function SensorCards() {
   const [data, setData] = useState<{
@@ -16,6 +20,19 @@ export default function SensorCards() {
     gasLever: number;
     lightCurrent: number;
   }>({ temp: 0, hum: 0, gasLever: 0, lightCurrent: 0 });
+
+  const pathName = usePathname();
+  const warehouseId = pathName.split("/")[1];
+
+  useQuery({
+    queryKey: ['environmentalData'],
+    queryFn: async () => {
+      const response = await api.get(`http://localhost:5001/data/${warehouseId}/latest`);
+
+      setData(response.data.data);
+      return response.data;
+    },
+  })
 
   useEffect(() => {
     console.log("Attempting to connect to WebSocket server...");
@@ -27,7 +44,7 @@ export default function SensorCards() {
 
     socket.on("connect", () => {
       console.log("🟢 Connected to server:", socket.id);
-      socket.emit("joinRoom", "69504a30527142284b688278");
+      socket.emit("joinRoom", warehouseId);
     });
 
     socket.on("environmentalData", (msg) => {

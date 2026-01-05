@@ -24,12 +24,18 @@ export class DataController {
     );
   }
 
-  @Get('latest')
+  @Get('/:warehouseId/latest')
   @ApiOperation({
     summary: 'Lấy dữ liệu mới nhất',
     description: 'Trả về dữ liệu mới nhất trong hệ thống',
   })
-  async getLatestData(warehouseId: string) {
+  @ApiParam({
+    name: 'warehouseId',
+    type: String,
+    description: 'ID của kho',
+  })
+  async getLatestData(@Param('warehouseId') warehouseId: string) {
     return await this.dataService.findOne(warehouseId);
   }
 }
+

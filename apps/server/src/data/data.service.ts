@@ -65,6 +65,9 @@ export class DataService {
   }
 
   async findOne(warehouseId: string) {
-    return await this.dataModel.findOne({ warehouseId }).exec();
+    return await this.dataModel
+      .findOne({ warehouseId })
+      .sort({ timestamp: -1 })
+      .exec();
   }
 }

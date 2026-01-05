@@ -37,7 +37,11 @@ export default function Sidebar() {
 
         <div className="mt-auto pt-4 border-t border-divider">
           <SidebarItem Icon={<FiHelpCircle />} label="Help & Support" />
-          <SidebarItem Icon={<BiLogOut />} label="Logout" />
+          <SidebarItem
+            Icon={<BiLogOut />}
+            href="/api/signout"
+            label="Sign Out"
+          />
         </div>
       </div>
     </motion.div>
