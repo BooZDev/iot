@@ -15,7 +15,7 @@ export class DataService {
     return await this.dataModel.create(createDataDto);
   }
 
-  async getHourlyAvgLast24h(deviceId: Types.ObjectId): Promise<
+  async getHourlyAvgLast24h(warehouseId: string): Promise<
     {
       timestamp: Date;
       avgTemp: number;
@@ -29,7 +29,7 @@ export class DataService {
       timestamp: { $gte: start, $lte: end },
     };
 
-    match.metadata = deviceId;
+    match.warehouseId = warehouseId;
 
     return await this.dataModel.aggregate([
       { $match: match },

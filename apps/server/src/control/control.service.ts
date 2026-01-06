@@ -28,6 +28,11 @@ export class ControlService {
 
     this.mqttSevice.publicToTopic(topic, packet);
 
+    const updatedSubDevice =
+      packet.kind === 1 ? { status: packet.on } : { value: packet.value };
+
+    await this.subDevicesService.update(deviceId, updatedSubDevice);
+
     return { message: `${topic} ${JSON.stringify(packet)}` };
   }
 

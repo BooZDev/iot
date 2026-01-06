@@ -13,8 +13,29 @@ import {
 } from "recharts";
 import CustomTooltip from "./CustomTooltip";
 import CustomLegend from "./CustomLengend";
+import { useQuery } from "@tanstack/react-query";
+import api from "../../../app/api/api";
+import { usePathname } from "next/navigation";
+import { transformApiData } from "../../../libs/transformApiData";
+import { useState } from "react";
 
 export default function TempHumCharts() {
+  const [data, setData] = useState<Array<{ time: string; temp: number; hum: number }>>([]);
+
+  const pathName = usePathname();
+  const warehouseId = pathName.split("/")[1];
+
+  const data24h = useQuery({
+    queryKey: ['tempHum24h'],
+    queryFn: async () => {
+      const response = await api.get(`data/hourly-avg-last-24h/${warehouseId}`);
+      console.log(transformApiData(response.data));
+      setData(transformApiData(response.data));
+      return response.data;
+    }
+  })
+
+
   return (
     <div className="col-start-3 col-end-6">
       <Card className="border border-divider h-full">
@@ -25,21 +46,7 @@ export default function TempHumCharts() {
           <div className="w-full h-full font-bold">
             <ResponsiveContainer width="100%" height="100%">
               <LineChart
-                data={[
-                  { time: "10:00", temp: 22, hum: 55 },
-                  { time: "11:00", temp: 23, hum: 57 },
-                  { time: "12:00", temp: 24, hum: 60 },
-                  { time: "13:00", temp: 25, hum: 62 },
-                  { time: "14:00", temp: 26, hum: 65 },
-                  { time: "15:00", temp: 27, hum: 67 },
-                  { time: "16:00", temp: 28, hum: 70 },
-                  { time: "17:00", temp: 27, hum: 68 },
-                  { time: "18:00", temp: 26, hum: 66 },
-                  { time: "19:00", temp: 25, hum: 64 },
-                  { time: "20:00", temp: 24, hum: 62 },
-                  { time: "21:00", temp: 23, hum: 60 },
-                  { time: "22:00", temp: 22, hum: 58 },
-                ]}
+                data={data}
                 margin={{ top: 0, right: 5, left: 5, bottom: 0 }}
               >
                 <CartesianGrid

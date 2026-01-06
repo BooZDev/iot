@@ -11,74 +11,34 @@ import {
   Pagination,
 } from "@heroui/react";
 import { motion } from "framer-motion";
+import { useQuery } from "@tanstack/react-query";
+import api from "../../../app/api/api";
+import { usePathname } from "next/navigation";
 
 interface Device {
-  id: string;
+  _id: string;
   name: string;
-  icon: string;
-  isActive: boolean;
-  status: "Hoạt động" | "Không hoạt động" | "Bảo trì";
-  location: string;
-  powerUsage: number;
+  status: number;
+  state: "active" | "inactive" | "maintenance";
+  type: number;
 }
 
 export default function DeviceControls() {
-  const [devices, setDevices] = useState<Device[]>([
-    {
-      id: "fan-01",
-      name: "Quạt thông gió",
-      icon: "fan",
-      isActive: true,
-      status: "Hoạt động",
-      location: "Khu A",
-      powerUsage: 120,
+  const [devices, setDevices] = useState<Device[]>([]);
+
+  const pathName = usePathname();
+  const warehouseId = pathName.split("/")[1];
+
+  const diviceQuery = useQuery({
+    queryKey: ["devices"],
+    queryFn: async () => {
+      const response = await api.get(`/warehouses/${warehouseId}/sub-devices`);
+
+      if (!response.data) { return; }
+      setDevices(response.data)
+      return response.data;
     },
-    {
-      id: "pump-01",
-      name: "Máy lạnh",
-      icon: "droplet",
-      isActive: true,
-      status: "Hoạt động",
-      location: "Khu A",
-      powerUsage: 85,
-    },
-    {
-      id: "light-01",
-      name: "Máy sưởi",
-      icon: "lightbulb",
-      isActive: true,
-      status: "Hoạt động",
-      location: "Khu C",
-      powerUsage: 210,
-    },
-    {
-      id: "humidifier-01",
-      name: "Máy tạo ẩm",
-      icon: "cloud",
-      isActive: false,
-      status: "Bảo trì",
-      location: "Khu A",
-      powerUsage: 0,
-    },
-    {
-      id: "dehumidifier-01",
-      name: "Máy hút ẩm",
-      icon: "cloud-off",
-      isActive: false,
-      status: "Hoạt động",
-      location: "Khu D",
-      powerUsage: 0,
-    },
-    {
-      id: "light-02",
-      name: "Đèn chiếu sáng",
-      icon: "lightbulb",
-      isActive: true,
-      status: "Hoạt động",
-      location: "Khu B",
-      powerUsage: 60,
-    },
-  ]);
+  })
 
   const [page, setPage] = useState(1);
   const rowsPerPage = 5;
@@ -91,27 +51,33 @@ export default function DeviceControls() {
 
   const toggleDevice = (id: string) => {
     setDevices(
-      devices.map((device) =>
-        device.id === id && device.status !== "Bảo trì"
-          ? {
+      devices.map((device) => {
+        if (device._id === id && device.state !== "maintenance" && device.state !== "inactive") {
+          api.post(`/control/${device._id}`, {
+            kind: 1,
+            actuator: device.type,
+            on: device.status === 1 ? 0 : 1,
+          });
+
+          return {
             ...device,
-            isActive: !device.isActive,
-            powerUsage: device.isActive
-              ? 0
-              : Math.round(Math.random() * 100) + 50,
+            status: device.status === 1 ? 0 : 1,
           }
-          : device
+        }
+        else
+          return device
+      }
       )
     );
   };
 
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case "Hoạt động":
+  const getStatusColor = (state: string) => {
+    switch (state) {
+      case "active":
         return "success";
-      case "Không hoạt động":
+      case "inactive":
         return "danger";
-      case "Bảo trì":
+      case "maintenance":
         return "warning";
       default:
         return "default";
@@ -138,7 +104,7 @@ export default function DeviceControls() {
           />
 
           <Chip color="primary" variant="flat" size="sm">
-            {devices.filter((d) => d.isActive).length} Active
+            {devices.filter((d) => d.state).length} Active
           </Chip>
         </div>
       </CardHeader>
@@ -146,7 +112,7 @@ export default function DeviceControls() {
         <div className="grid grid-rows-5 gap-3">
           {curentPageDevices(page).map((device) => (
             <motion.div
-              key={device.id}
+              key={device._id}
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.3 }}
@@ -154,38 +120,31 @@ export default function DeviceControls() {
             >
               <div className="flex items-center gap-3">
                 <div
-                  className={`p-2 rounded-md ${device.isActive ? "bg-primary/10 text-primary" : "bg-default-100 text-default-500"}`}
+                  className={`p-2 rounded-md ${device.status ? "bg-primary/10 text-primary" : "bg-default-100 text-default-500"}`}
                 >
                   {/* <Icon icon={`lucide:${device.icon}`} width={20} /> */}
                 </div>
                 <div>
                   <p className="font-medium">{device.name}</p>
                   <div className="flex items-center gap-2 text-xs text-default-500">
-                    <span>{device.location}</span>
-                    <span>•</span>
                     <Chip
                       size="sm"
                       variant="flat"
-                      color={getStatusColor(device.status)}
+                      color={getStatusColor(device.state)}
                       className="h-5 px-1"
                     >
-                      {device.status}
+                      {device.state === "active" ? "Hoạt động" : device.state === "inactive" ? "Ngưng hoạt động" : "Bảo trì"}
                     </Chip>
                   </div>
                 </div>
               </div>
 
               <div className="flex items-center gap-4">
-                {device.isActive && (
-                  <span className="text-xs text-default-500">
-                    {device.powerUsage}W
-                  </span>
-                )}
                 <Tooltip
                   content={
-                    device.status === "Bảo trì"
+                    device.state === "maintenance"
                       ? "Device under maintenance"
-                      : device.isActive
+                      : device.status === 1
                         ? "Tắt"
                         : "Bật"
                   }
@@ -193,9 +152,9 @@ export default function DeviceControls() {
                   <Switch
                     size="sm"
                     color="primary"
-                    isSelected={device.isActive}
-                    isDisabled={device.status === "Bảo trì"}
-                    onValueChange={() => toggleDevice(device.id)}
+                    isSelected={device.status === 1}
+                    isDisabled={device.state === "maintenance"}
+                    onValueChange={() => toggleDevice(device._id)}
                   />
                 </Tooltip>
               </div>

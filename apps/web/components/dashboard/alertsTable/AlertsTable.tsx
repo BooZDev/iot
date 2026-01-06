@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   Card,
   CardHeader,
@@ -15,6 +15,7 @@ import {
   Pagination,
   Button,
 } from "@heroui/react";
+import { useSocket } from "../../../context/SocketContext";
 
 interface Alert {
   id: string;
@@ -26,8 +27,21 @@ interface Alert {
 }
 
 export default function AlertsTable() {
+  const {socket} = useSocket();
   const [page, setPage] = useState(1);
   const rowsPerPage = 5;
+
+  useEffect(() => {
+    if (!socket) return;
+
+    socket.on("alert", (alert: Alert) => {
+      console.log("Received alert:", alert);
+    });
+
+    return () => {
+      socket.off("alert");
+    };
+  }, [socket]);
 
   // Mock alerts data
   const [alerts, setAlerts] = useState<Alert[]>([

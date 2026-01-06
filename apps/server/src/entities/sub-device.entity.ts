@@ -15,12 +15,15 @@ export type PopulateSubDevice = SubDevice & {
 })
 export class SubDevice {
   @Prop({ type: String, required: true })
+  code: string;
+
+  @Prop({ type: String, required: true })
   name: string;
 
   @Prop({ type: Number, required: true })
   type: number;
 
-  @Prop({ type: String, required: true, default: SubDeviceStatus.OFF })
+  @Prop({ type: Number, required: true, default: SubDeviceStatus.OFF })
   status: SubDeviceStatus;
 
   @Prop({ type: String, required: true, default: SubDeviceState.INACTIVE })

@@ -37,30 +37,28 @@ export class SubDevicesService {
   }
 
   async finAllByWarehouseId(warehouseId: string) {
-    const gatewayIds =
-      await this.devicesService.findAllByWarehouseId(warehouseId);
+    const subDevices = await this.subDeviceModel
+      .find()
+      .populate({
+        path: 'deviceId',
+        model: Device.name,
+        select: 'gatewayId mac',
+        populate: {
+          path: 'gatewayId',
+          model: Device.name,
+          select: 'warehouseId mac',
+        },
+      })
+      .lean<PopulateSubDevice[]>()
+      .exec();
 
-    if (gatewayIds.length === 0) {
-      throw new NotFoundException('Không tìm thấy gateway với kho này');
-    }
-
-    const deviceIds = await Promise.all(
-      gatewayIds.map(async (gateway) => {
-        return this.devicesService.findAllByGatewayId(gateway._id);
-      }),
-    );
-
-    const flatDeviceIds = deviceIds.flat();
-
-    if (flatDeviceIds.length === 0) {
-      throw new NotFoundException('Không tìm thấy thiết bị nào cho kho này');
-    }
-
-    return await Promise.all(
-      flatDeviceIds.map(async (device) => {
-        return this.findAllByDeviceId(device._id);
-      }),
-    );
+    return subDevices.filter((subDevice) => {
+      return (
+        subDevice.deviceId &&
+        subDevice.deviceId.gatewayId &&
+        subDevice.deviceId.gatewayId.warehouseId.toString() === warehouseId
+      );
+    });
   }
 
   async findOne(id: string) {

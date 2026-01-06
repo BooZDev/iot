@@ -5,15 +5,15 @@ export default function Pagelayout({ children }: { children: React.ReactNode }) 
 
   return (
     <div className="flex min-h-screen bg-background">
-      <Sidebar />
-      <div className="flex flex-col flex-1">
-        <Navbar />
-        <main className="flex flex-1 overflow-auto p-4 justify-center">
-          <div className="container">
-            {children}
-          </div>
-        </main>
-      </div >
+        <Sidebar />
+        <div className="flex flex-col flex-1">
+          <Navbar />
+          <main className="flex flex-1 overflow-auto p-4 justify-center">
+            <div className="container">
+              {children}
+            </div>
+          </main>
+        </div >
     </div >
   )
 }

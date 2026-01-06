@@ -106,7 +106,7 @@ export class MqttController {
 
     const payload: CreateAlertDto = {
       level: message.level,
-      reason: `Giá trị cảnh báo: ${message.reason}`,
+      reason: message.reason,
       value: message.reason.includes('TEMP')
         ? message.temp
         : message.reason.includes('HUM')
@@ -128,15 +128,16 @@ export class MqttController {
     if (payload.level === 'danger') {
       this.wsGateway.server
         .to(`wh:${gateway.warehouseId.toString()}`)
-        .emit('alert', payload);
+        .emit('alert', {...payload, level: 'critical' });
       return await this.alertService.update(gateway.warehouseId.toString(), {
-        status: 'critical',
+        level: 'critical',
       });
     }
 
     this.wsGateway.server
       .to(`wh:${gateway.warehouseId.toString()}`)
       .emit('alert', payload);
+
     return await this.alertService.create(payload);
   }
 

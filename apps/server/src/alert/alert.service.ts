@@ -23,7 +23,7 @@ export class AlertService {
 
   async update(id: string, updateAlertDto: UpdateAlertDto) {
     return await this.alertModel
-      .findByIdAndUpdate({ warehouseId: id }, updateAlertDto)
+      .findOneAndUpdate({ warehouseId: id }, updateAlertDto)
       .exec();
   }
 }

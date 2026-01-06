@@ -9,11 +9,12 @@ import { WiHumidity } from "react-icons/wi";
 import { GiSmokingOrb } from "react-icons/gi";
 import { MdOutlineWbTwilight } from "react-icons/md";
 import { useQuery } from "@tanstack/react-query";
-import axios from "axios";
 import { usePathname } from "next/navigation";
 import api from "../../../app/api/api";
+import { useSocket } from "../../../context/SocketContext";
 
 export default function SensorCards() {
+  const { socket, joinRoom } = useSocket();
   const [data, setData] = useState<{
     temp: number;
     hum: number;
@@ -27,38 +28,25 @@ export default function SensorCards() {
   useQuery({
     queryKey: ['environmentalData'],
     queryFn: async () => {
-      const response = await api.get(`http://localhost:5001/data/${warehouseId}/latest`);
+      const response = await api.get(`/data/${warehouseId}/latest`);
 
+      if (!response.data) { return }
       setData(response.data.data);
       return response.data;
     },
   })
 
   useEffect(() => {
-    console.log("Attempting to connect to WebSocket server...");
-    const socket = io("http://localhost:5002", {
-      transports: ["websocket"],
-      reconnection: true,
-      reconnectionAttempts: 5,
-    });
-
-    socket.on("connect", () => {
-      console.log("🟢 Connected to server:", socket.id);
-      socket.emit("joinRoom", warehouseId);
-    });
+    if (!socket) return;
 
     socket.on("environmentalData", (msg) => {
       setData(msg);
     });
 
-    socket.on("disconnect", () => {
-      console.log("🔴 Disconnected from server");
-    });
-
     return () => {
-      socket.disconnect();
+      socket.off("environmentalData");
     };
-  }, []);
+  }, [socket]);
 
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">

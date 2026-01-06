@@ -16,6 +16,8 @@ import { RoleGuard } from 'src/auth/guards/role/role.guard';
 import { Roles } from 'src/auth/decorators/role.decorator';
 import { Role } from 'src/auth/enums/role.enum';
 import { ApiBody, ApiOperation, ApiParam, ApiTags } from '@nestjs/swagger';
+import { DevicesService } from 'src/devices/devices.service';
+import { SubDevicesService } from 'src/sub-devices/sub-devices.service';
 
 @ApiTags('warehouses')
 @Roles(Role.ADMIN, Role.MANAGER)
@@ -23,7 +25,11 @@ import { ApiBody, ApiOperation, ApiParam, ApiTags } from '@nestjs/swagger';
 @UseGuards(JwtAuthGuard)
 @Controller('warehouses')
 export class WarehousesController {
-  constructor(private readonly warehousesService: WarehousesService) {}
+  constructor(
+    private readonly warehousesService: WarehousesService,
+    private readonly devicesService: DevicesService,
+    private readonly subDevicesService: SubDevicesService,
+  ) {}
 
   // Create Warehouse
   @Roles(Role.ADMIN, Role.MANAGER)
@@ -59,6 +65,28 @@ export class WarehousesController {
   @ApiParam({ name: 'id', type: String, description: 'ID của nhà kho' })
   async findOne(@Param('id') id: string) {
     return this.warehousesService.findOne(id);
+  }
+
+  // Get Devices by Warehouse ID
+  @Get(':id/devices')
+  @ApiOperation({
+    summary: 'Lấy danh sách thiết bị trong nhà kho theo ID nhà kho',
+    description: 'Tất cả vai trò đều có thể thực hiện hành động này',
+  })
+  @ApiParam({ name: 'id', type: String, description: 'ID của nhà kho' })
+  async getDevicesByWarehouseId(@Param('id') warehouseId: string) {
+    return this.devicesService.findAllByWarehouseId(warehouseId);
+  }
+
+  // Get Sub-Devices by Warehouse ID
+  @Get(':id/sub-devices')
+  @ApiOperation({
+    summary: 'Lấy danh sách thiết bị con trong nhà kho theo ID nhà kho',
+    description: 'Tất cả vai trò đều có thể thực hiện hành động này',
+  })
+  @ApiParam({ name: 'id', type: String, description: 'ID của nhà kho' })
+  async getSubDevicesByWarehouseId(@Param('id') warehouseId: string) {
+    return this.subDevicesService.finAllByWarehouseId(warehouseId);
   }
 
   // Update Warehouse

@@ -1,10 +1,10 @@
 export enum SubDeviceState {
   ACTIVE = 'active',
   INACTIVE = 'inactive',
+  MAINTENANCE = 'maintenance',
 }
 
 export enum SubDeviceStatus {
-  ON = 'on',
-  OFF = 'off',
-  MAINTENANCE = 'maintenance',
+  ON = 1,
+  OFF = 0,
 }

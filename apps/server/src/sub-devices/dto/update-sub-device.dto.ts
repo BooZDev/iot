@@ -10,6 +10,11 @@ import { SubDeviceState, SubDeviceStatus } from '../enums/sub-device.enum';
 import { Types } from 'mongoose';
 
 export class UpdateSubDeviceDto {
+  @ApiProperty({ description: 'Mã thiết bị' })
+  @IsOptional({ message: 'Mã thiết bị không hợp lệ' })
+  @IsString({ message: 'Mã thiết bị không hợp lệ' })
+  code?: string;
+
   @ApiProperty({ description: 'Tên thiết bị' })
   @IsOptional({ message: 'Tên thiết bị không hợp lệ' })
   @IsString({ message: 'Tên thiết bị không hợp lệ' })
