@@ -6,6 +6,7 @@ import {
   Param,
   UseGuards,
   Patch,
+  Delete,
 } from '@nestjs/common';
 import { DevicesService } from './devices.service';
 import { CreateDeviceDto } from './dto/create-device.dto';
@@ -68,12 +69,15 @@ export class DevicesController {
   })
   @ApiParam({ name: 'id', type: String, description: 'ID của thiết bị' })
   @ApiBody({ type: UpdateDeviceDto })
-  update(@Param('id') id: string, @Body() updateDeviceDto: UpdateDeviceDto) {
-    return this.devicesService.update(id, updateDeviceDto);
+  async update(
+    @Param('id') id: string,
+    @Body() updateDeviceDto: UpdateDeviceDto,
+  ) {
+    return await this.devicesService.update(id, updateDeviceDto);
   }
 
   @Roles(Role.ADMIN, Role.MANAGER)
-  @Patch('remove/:id')
+  @Delete(':id')
   @ApiOperation({
     summary: 'Xóa thiết bị',
     description: 'Cần quyền admin và manager để thực hiện hành động này',

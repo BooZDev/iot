@@ -19,17 +19,16 @@ import { usePathname } from "next/navigation";
 import { transformApiData } from "../../../libs/transformApiData";
 import { useState } from "react";
 
-export default function TempHumCharts() {
+export default function TempHumCharts({ params }: { params?: { warehouseId: string } }) {
   const [data, setData] = useState<Array<{ time: string; temp: number; hum: number }>>([]);
 
-  const pathName = usePathname();
-  const warehouseId = pathName.split("/")[1];
+
+  const warehouseId = params?.warehouseId || usePathname().split("/")[2];
 
   const data24h = useQuery({
     queryKey: ['tempHum24h'],
     queryFn: async () => {
       const response = await api.get(`data/hourly-avg-last-24h/${warehouseId}`);
-      console.log(transformApiData(response.data));
       setData(transformApiData(response.data));
       return response.data;
     }
@@ -44,7 +43,7 @@ export default function TempHumCharts() {
         </CardHeader>
         <CardBody className="flex flex-col">
           <div className="w-full h-full font-bold">
-            <ResponsiveContainer width="100%" height="100%">
+            <ResponsiveContainer width="100%" height="100%" className={"aspect-[9/4]"}>
               <LineChart
                 data={data}
                 margin={{ top: 0, right: 5, left: 5, bottom: 0 }}

@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsMongoId, IsNotEmpty, IsString } from 'class-validator';
+import { IsMongoId, IsNotEmpty, IsNumber, IsString } from 'class-validator';
 
 export class CreateSubDeviceDto {
   @ApiProperty({ description: 'Mã thiết bị' })
@@ -14,8 +14,8 @@ export class CreateSubDeviceDto {
 
   @ApiProperty({ description: 'Loại thiết bị' })
   @IsNotEmpty({ message: 'Thiếu loại thiết bị' })
-  @IsString({ message: 'Loại thiết bị không hợp lệ' })
-  type: string;
+  @IsNumber({}, { message: 'Loại thiết bị không hợp lệ' })
+  type: number;
 
   @ApiProperty({ description: 'ID thiết bị cha' })
   @IsNotEmpty({ message: 'Thiếu deviceId' })

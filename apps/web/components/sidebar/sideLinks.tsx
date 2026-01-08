@@ -16,9 +16,21 @@ export const sideLinks: SideLink[] = [
     Icon: <LuLayoutDashboard />,
   },
   {
-    id: "inventory",
-    href: "/inventory",
-    label: "Nhà kho",
+    id: "overview",
+    href: "/overview",
+    label: "Tổng quan",
+    Icon: <MdOutlineInventory2 />,
+  },
+  {
+    id: "devices",
+    href: "/devices",
+    label: "Thiết bị",
+    Icon: <MdOutlineInventory2 />,
+  },
+  {
+    id: "controls",
+    href: "/controls",
+    label: "Điều khiển",
     Icon: <MdOutlineInventory2 />,
   }
 ]

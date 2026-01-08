@@ -8,10 +8,13 @@ import { sideLinks } from "./sideLinks";
 import useSidebarStore from "../../stores/UseSidebarStore";
 import { FiHelpCircle } from 'react-icons/fi';
 import { BiLogOut } from 'react-icons/bi';
+import { usePathname } from "next/navigation";
 
 export default function Sidebar() {
   const isOpen = useSidebarStore((state) => state.isOpen);
   const parentWidth = isOpen ? 240 : 60;
+  const pathName = usePathname();
+  const warehosueId = pathName.split("/")[2];
 
   return (
     <motion.div
@@ -19,7 +22,7 @@ export default function Sidebar() {
       className={`bg-content1 border-r border-divider full overflow-hidden md:block relative`}
     >
       <div className="flex flex-col h-screen p-4 fixed top-0 left-0 w-[inherit] max-h-screen">
-        <Link href={"/"} className="flex items-center justify-center mb-8 mt-2">
+        <Link href={"/warehouses"} className="flex items-center justify-center mb-8 mt-2">
           <Image src="/images/logo.webp" alt="Logo" width={30} height={30} />
           {isOpen && <span className="ml-2 text-xl font-bold text-blue-500">SynapseWare</span>}
         </Link>
@@ -29,7 +32,7 @@ export default function Sidebar() {
             <SidebarItem
               key={item.id}
               Icon={item.Icon}
-              href={item.href}
+              href={`/warehouses/${warehosueId}${item.href}`}
               label={item.label}
             />
           ))}

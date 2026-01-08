@@ -17,13 +17,30 @@ export class AlertService {
     return await this.alertModel.find().sort({ createdAt: -1 }).exec();
   }
 
+  async findByWarehouse(warehouseId: string) {
+    return await this.alertModel
+      .find({ warehouseId })
+      .sort({ createdAt: -1 })
+      .exec();
+  }
+
   async findOne() {
     return await this.alertModel.findOne().exec();
   }
 
   async update(id: string, updateAlertDto: UpdateAlertDto) {
+    return await this.alertModel.findByIdAndUpdate(id, updateAlertDto).exec();
+  }
+
+  async findLatestByWarehouseAndUpdate(
+    warehouseId: string,
+    updateAlertDto: UpdateAlertDto,
+  ) {
     return await this.alertModel
-      .findOneAndUpdate({ warehouseId: id }, updateAlertDto)
+      .findOneAndUpdate({ warehouseId }, updateAlertDto, {
+        sort: { createdAt: -1 },
+        new: true,
+      })
       .exec();
   }
 }

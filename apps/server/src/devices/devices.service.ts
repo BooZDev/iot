@@ -38,7 +38,9 @@ export class DevicesService {
   }
 
   async update(id: string, updateDeviceDto: Partial<UpdateDeviceDto>) {
-    return await this.deviceModel.findByIdAndUpdate(id, updateDeviceDto).exec();
+    return await this.deviceModel
+      .findByIdAndUpdate(id, updateDeviceDto, { new: true })
+      .exec();
   }
 
   async remove(id: string) {

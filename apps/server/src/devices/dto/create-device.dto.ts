@@ -1,12 +1,17 @@
 import {
+  ArrayMaxSize,
+  ArrayMinSize,
+  IsArray,
   IsEnum,
   IsMongoId,
   IsNotEmpty,
+  IsNumber,
   IsOptional,
   IsString,
 } from 'class-validator';
 import { DeviceType } from '../enums/device.enum';
 import { ApiProperty } from '@nestjs/swagger';
+import { Type } from 'class-transformer';
 
 export class CreateDeviceDto {
   @ApiProperty({ description: 'Mã thiết bị' })
@@ -30,6 +35,15 @@ export class CreateDeviceDto {
   @IsNotEmpty({ message: 'Địa chỉ MAC không được để trống' })
   @IsString({ message: 'Địa chỉ MAC không hợp lệ' })
   mac: string;
+
+  @ApiProperty({ description: 'Vị trí trong kho của thiết bị' })
+  @IsNotEmpty({ message: 'Vị trí trong kho không được để trống' })
+  @IsArray({ message: 'Vị trí trong kho phải là một mảng' })
+  @ArrayMinSize(2, { message: 'Vị trí trong kho phải có đúng 2 phần tử' })
+  @ArrayMaxSize(2, { message: 'Vị trí trong kho phải có đúng 2 phần tử' })
+  @Type(() => Number)
+  @IsNumber({}, { each: true })
+  locationsInWarehouse?: [number, number];
 
   @ApiProperty({ description: 'ID nhà kho chứa thiết bị' })
   @IsOptional()

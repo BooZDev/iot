@@ -128,10 +128,13 @@ export class MqttController {
     if (payload.level === 'danger') {
       this.wsGateway.server
         .to(`wh:${gateway.warehouseId.toString()}`)
-        .emit('alert', {...payload, level: 'critical' });
-      return await this.alertService.update(gateway.warehouseId.toString(), {
-        level: 'critical',
-      });
+        .emit('alert', { ...payload, level: 'critical' });
+      return await this.alertService.findLatestByWarehouseAndUpdate(
+        gateway.warehouseId.toString(),
+        {
+          level: 'critical',
+        },
+      );
     }
 
     this.wsGateway.server

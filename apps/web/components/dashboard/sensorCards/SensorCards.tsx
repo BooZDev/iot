@@ -13,7 +13,7 @@ import { usePathname } from "next/navigation";
 import api from "../../../app/api/api";
 import { useSocket } from "../../../context/SocketContext";
 
-export default function SensorCards() {
+export default function SensorCards({ params }: { params?: { warehouseId: string } }) {
   const { socket, joinRoom } = useSocket();
   const [data, setData] = useState<{
     temp: number;
@@ -22,8 +22,7 @@ export default function SensorCards() {
     lightCurrent: number;
   }>({ temp: 0, hum: 0, gasLever: 0, lightCurrent: 0 });
 
-  const pathName = usePathname();
-  const warehouseId = pathName.split("/")[1];
+  const warehouseId = params?.warehouseId || usePathname().split("/")[2];
 
   useQuery({
     queryKey: ['environmentalData'],

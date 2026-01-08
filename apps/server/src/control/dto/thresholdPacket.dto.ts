@@ -23,7 +23,7 @@ export class ThresholdPacketDto {
 
   @IsOptional()
   @IsNumber()
-  light_lo: number = 0;
+  light_lo: number = -100;
 
   @IsOptional()
   @IsNumber()

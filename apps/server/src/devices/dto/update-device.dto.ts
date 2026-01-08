@@ -12,6 +12,11 @@ import { DeviceState, DeviceType } from '../enums/device.enum';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class UpdateDeviceDto {
+  @ApiProperty({ description: 'Mã thiết bị' })
+  @IsOptional()
+  @IsString({ message: 'Mã thiết bị không hợp lệ' })
+  deviceCode?: string;
+
   @ApiProperty({ description: 'Tên thiết bị' })
   @IsOptional()
   @IsString({ message: 'Tên thiết bị không hợp lệ' })

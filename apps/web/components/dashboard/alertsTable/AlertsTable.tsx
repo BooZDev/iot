@@ -16,100 +16,66 @@ import {
   Button,
 } from "@heroui/react";
 import { useSocket } from "../../../context/SocketContext";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import api from "../../../app/api/api";
+import { usePathname } from "next/navigation";
 
 interface Alert {
-  id: string;
-  message: string;
-  severity: "info" | "warning" | "error";
-  source: string;
-  timestamp: Date;
+  _id: string;
+  level: "info" | "warning" | "critical";
+  reason: string;
+  value: number;
   status: "new" | "acknowledged" | "resolved";
+  warehouseId: string;
+  createdAt: string;
+  updatedAt: string;
+  __v: number;
 }
 
-export default function AlertsTable() {
-  const {socket} = useSocket();
+export default function AlertsTable({ params }: { params?: { warehouseId: string } }) {
+  const { socket } = useSocket();
+  const warehouseId = params?.warehouseId || usePathname().split("/")[2];
+  const queryClient = useQueryClient();
   const [page, setPage] = useState(1);
   const rowsPerPage = 5;
 
+  // Fetch alerts from API
+  const { data: alerts = [], isLoading } = useQuery({
+    queryKey: ['alerts', warehouseId],
+    queryFn: async () => {
+      const response = await api.get(`/alerts/${warehouseId}`);
+      return response.data || [];
+    }
+  });
+
+  // Mutation to update alert status
+  const updateAlertMutation = useMutation({
+    mutationFn: async ({ id, status }: { id: string; status: "acknowledged" | "resolved" }) => {
+      const response = await api.patch(`/alerts/${id}`, { status });
+      return response.data;
+    },
+    onSuccess: () => {
+      // Refetch alerts after successful update
+      queryClient.invalidateQueries({ queryKey: ['alerts', warehouseId] });
+    },
+  });
+
+  // Listen for new alerts from socket
   useEffect(() => {
     if (!socket) return;
 
     socket.on("alert", (alert: Alert) => {
-      console.log("Received alert:", alert);
+      // Only add alert if it belongs to current warehouse
+      if (alert.warehouseId === warehouseId) {
+        console.log("Received alert:", alert);
+        queryClient.invalidateQueries({ queryKey: ['alerts', warehouseId] });
+      }
     });
 
     return () => {
       socket.off("alert");
     };
-  }, [socket]);
-
-  // Mock alerts data
-  const [alerts, setAlerts] = useState<Alert[]>([
-    {
-      id: "alert-001",
-      message: "Temperature exceeded threshold in Zone B",
-      severity: "warning",
-      source: "Temperature Sensor",
-      timestamp: new Date(Date.now() - 15 * 60000),
-      status: "new",
-    },
-    {
-      id: "alert-002",
-      message: "Humidity level dropped below 50% in Zone A",
-      severity: "warning",
-      source: "Humidity Sensor",
-      timestamp: new Date(Date.now() - 45 * 60000),
-      status: "acknowledged",
-    },
-    {
-      id: "alert-003",
-      message: "Water pump maintenance required",
-      severity: "info",
-      source: "Water Pump",
-      timestamp: new Date(Date.now() - 120 * 60000),
-      status: "acknowledged",
-    },
-    {
-      id: "alert-004",
-      message: "Power consumption spike detected",
-      severity: "warning",
-      source: "Energy Monitor",
-      timestamp: new Date(Date.now() - 180 * 60000),
-      status: "resolved",
-    },
-    {
-      id: "alert-005",
-      message: "System update available",
-      severity: "info",
-      source: "System",
-      timestamp: new Date(Date.now() - 240 * 60000),
-      status: "new",
-    },
-    {
-      id: "alert-006",
-      message: "Network connectivity issues in Zone C",
-      severity: "error",
-      source: "Network Monitor",
-      timestamp: new Date(Date.now() - 300 * 60000),
-      status: "acknowledged",
-    },
-    {
-      id: "alert-007",
-      message: "Low inventory alert: Chamomile",
-      severity: "warning",
-      source: "Inventory System",
-      timestamp: new Date(Date.now() - 360 * 60000),
-      status: "new",
-    },
-    {
-      id: "alert-008",
-      message: "Camera motion detection triggered",
-      severity: "info",
-      source: "AI Camera",
-      timestamp: new Date(Date.now() - 420 * 60000),
-      status: "resolved",
-    },
-  ]);
+  }, [socket, warehouseId, queryClient]);
 
   // Calculate pagination
   const pages = Math.ceil(alerts.length / rowsPerPage);
@@ -120,43 +86,39 @@ export default function AlertsTable() {
   }, [page, alerts]);
 
   // Update alert status
-  const updateAlertStatus = (
-    id: string,
-    status: "acknowledged" | "resolved",
-  ) => {
-    setAlerts(
-      alerts.map((alert) => (alert.id === id ? { ...alert, status } : alert)),
-    );
+  const updateAlertStatus = (id: string, status: "acknowledged" | "resolved") => {
+    updateAlertMutation.mutate({ id, status });
   };
 
   // Format relative time
-  const formatRelativeTime = (date: Date) => {
+  const formatRelativeTime = (dateString: string) => {
+    const date = new Date(dateString);
     const now = new Date();
     const diffInMinutes = Math.floor((now.getTime() - date.getTime()) / 60000);
 
-    if (diffInMinutes < 1) return "Just now";
-    if (diffInMinutes < 60) return `${diffInMinutes}m ago`;
+    if (diffInMinutes < 1) return "Vừa xong";
+    if (diffInMinutes < 60) return `${diffInMinutes} phút trước`;
 
     const diffInHours = Math.floor(diffInMinutes / 60);
-    if (diffInHours < 24) return `${diffInHours}h ago`;
+    if (diffInHours < 24) return `${diffInHours} giờ trước`;
 
     const diffInDays = Math.floor(diffInHours / 24);
-    return `${diffInDays}d ago`;
+    return `${diffInDays} ngày trước`;
   };
 
-  // Get severity color
-  // const getSeverityColor = (severity: string) => {
-  //   switch (severity) {
-  //     case "error":
-  //       return "danger";
-  //     case "warning":
-  //       return "warning";
-  //     case "info":
-  //       return "primary";
-  //     default:
-  //       return "default";
-  //   }
-  // };
+  // Get level color
+  const getLevelColor = (level: string) => {
+    switch (level) {
+      case "critical":
+        return "danger";
+      case "warning":
+        return "warning";
+      case "info":
+        return "primary";
+      default:
+        return "default";
+    }
+  };
 
   // Get status color
   const getStatusColor = (status: string) => {
@@ -172,74 +134,156 @@ export default function AlertsTable() {
     }
   };
 
+  // Get sensor type in Vietnamese
+  const getSensorType = (reason: string) => {
+    const reasonUpper = reason.toUpperCase();
+
+    if (reasonUpper.includes("TEMP")) return "Cảm biến nhiệt độ";
+    if (reasonUpper.includes("LIGHT")) return "Cảm biến ánh sáng";
+    if (reasonUpper.includes("HUMID") || reasonUpper.includes("HUM")) return "Cảm biến độ ẩm";
+    if (reasonUpper.includes("GAS")) return "Cảm biến khí gas";
+
+    return "Hệ thống";
+  };
+
+  // Parse alert message to Vietnamese
+  const parseAlertMessage = (reason: string) => {
+    const reasonUpper = reason.toUpperCase();
+
+    // Temperature alerts
+    if (reasonUpper.includes("TEMP_LOW")) {
+      return `Nhiệt độ thấp`;
+    }
+    if (reasonUpper.includes("TEMP_HIGH")) {
+      return `Nhiệt độ cao`;
+    }
+
+    // Light alerts
+    if (reasonUpper.includes("LIGHT_LOW")) {
+      return `Ánh sáng thấp`;
+    }
+    if (reasonUpper.includes("LIGHT_HIGH")) {
+      return `Ánh sáng cao`;
+    }
+
+    // Humidity alerts
+    if (reasonUpper.includes("HUMID_LOW") || reasonUpper.includes("HUM_LOW")) {
+      return `Độ ẩm thấp`;
+    }
+    if (reasonUpper.includes("HUMID_HIGH") || reasonUpper.includes("HUM_HIGH")) {
+      return `Độ ẩm cao`;
+    }
+    // Gas alerts
+    if (reasonUpper.includes("GAS_HIGH")) {
+      return `Khí gas cao`;
+    }
+
+    // Default fallback
+    return reason;
+  };
+
+  // Get level label in Vietnamese
+  const getLevelLabel = (level: string) => {
+    switch (level) {
+      case "critical":
+        return "Nghiêm trọng";
+      case "warning":
+        return "Cảnh báo";
+      case "info":
+        return "Thông tin";
+      default:
+        return level;
+    }
+  };
+
+  // Get status label in Vietnamese
+  const getStatusLabel = (status: string) => {
+    switch (status) {
+      case "new":
+        return "Mới";
+      case "acknowledged":
+        return "Đã xác nhận";
+      case "resolved":
+        return "Đã giải quyết";
+      default:
+        return status;
+    }
+  };
+
   return (
     <Card className="border border-divider h-full col-start-1 col-end-4">
       <CardHeader className="flex justify-between">
         <div className="flex items-center gap-2">
-          {/* <Icon icon="lucide:bell" className="text-primary" width={20} /> */}
-          <h2 className="text-lg font-medium">Recent Alerts</h2>
+          <h2 className="text-lg font-medium">Cảnh báo gần đây</h2>
+          {alerts.length > 0 && (
+            <Chip size="sm" color="danger" variant="flat">
+              {alerts.filter((a: Alert) => a.status === "new").length} mới
+            </Chip>
+          )}
         </div>
-        <Button
-          size="sm"
-          variant="flat"
-          color="primary"
-          // startContent={<Icon icon="lucide:filter" width={16} />}
-        >
-          Filter
-        </Button>
       </CardHeader>
       <CardBody className="px-0">
         <Table
-          aria-label="Alerts and system logs"
+          aria-label="Bảng cảnh báo hệ thống"
           removeWrapper
           bottomContent={
-            <div className="flex w-full justify-center">
-              <Pagination
-                isCompact
-                showControls
-                showShadow
-                color="secondary"
-                page={page}
-                total={pages}
-                onChange={(page) => setPage(page)}
-                className="text-green-500"
-              />
-            </div>
+            pages > 1 ? (
+              <div className="flex w-full justify-center">
+                <Pagination
+                  isCompact
+                  showControls
+                  showShadow
+                  color="secondary"
+                  page={page}
+                  total={pages}
+                  onChange={(page) => setPage(page)}
+                />
+              </div>
+            ) : null
           }
         >
           <TableHeader>
-            <TableColumn>MESSAGE</TableColumn>
-            <TableColumn>SOURCE</TableColumn>
-            <TableColumn>TIME</TableColumn>
-            <TableColumn>STATUS</TableColumn>
-            <TableColumn>ACTIONS</TableColumn>
+            <TableColumn className="text-md">THÔNG BÁO</TableColumn>
+            <TableColumn className="text-md">NGUỒN</TableColumn>
+            <TableColumn className="text-md">GIÁ TRỊ</TableColumn>
+            <TableColumn className="text-md">THỜI GIAN</TableColumn>
+            <TableColumn className="text-md">TRẠNG THÁI</TableColumn>
+            <TableColumn className="text-md">HÀNH ĐỘNG</TableColumn>
           </TableHeader>
-          <TableBody>
-            {items.map((alert) => (
-              <TableRow key={alert.id}>
+          <TableBody
+            emptyContent={isLoading ? "Đang tải..." : "Không có cảnh báo nào"}
+            isLoading={isLoading}
+          >
+            {items.map((alert: Alert) => (
+              <TableRow key={alert._id}>
                 <TableCell>
-                  <div className="flex items-center gap-2">
-                    {/* <Icon
-                      icon={
-                        alert.severity === "error" ? "lucide:alert-circle" :
-                          alert.severity === "warning" ? "lucide:alert-triangle" :
-                            "lucide:info"
-                      }
-                      className={`text-${getSeverityColor(alert.severity)}`}
-                      width={16}
-                    /> */}
-                    <span>{alert.message}</span>
+                  <div className="flex items-center justify-between gap-2">
+                    <span>{parseAlertMessage(alert.reason)}</span>
+                    <Chip
+                      size="sm"
+                      color={getLevelColor(alert.level)}
+                      variant="dot"
+                    >
+                      {getLevelLabel(alert.level)}
+                    </Chip>
                   </div>
                 </TableCell>
-                <TableCell>{alert.source}</TableCell>
-                <TableCell>{formatRelativeTime(alert.timestamp)}</TableCell>
+                <TableCell>{getSensorType(alert.reason)}</TableCell>
+                <TableCell>
+                  <span className="font-medium">{alert.value}</span>
+                </TableCell>
+                <TableCell>
+                  <span className="text-sm text-default-500">
+                    {formatRelativeTime(alert.createdAt)}
+                  </span>
+                </TableCell>
                 <TableCell>
                   <Chip
                     size="sm"
                     color={getStatusColor(alert.status)}
                     variant="flat"
                   >
-                    {alert.status}
+                    {getStatusLabel(alert.status)}
                   </Chip>
                 </TableCell>
                 <TableCell>
@@ -249,27 +293,29 @@ export default function AlertsTable() {
                         size="sm"
                         variant="light"
                         color="warning"
+                        isLoading={updateAlertMutation.isPending}
                         onPress={() =>
-                          updateAlertStatus(alert.id, "acknowledged")
+                          updateAlertStatus(alert._id, "acknowledged")
                         }
                       >
-                        Acknowledge
+                        Xác nhận
                       </Button>
                     )}
                     {(alert.status === "new" ||
                       alert.status === "acknowledged") && (
-                      <Button
-                        size="sm"
-                        variant="light"
-                        color="success"
-                        onPress={() => updateAlertStatus(alert.id, "resolved")}
-                      >
-                        Resolve
-                      </Button>
-                    )}
+                        <Button
+                          size="sm"
+                          variant="light"
+                          color="success"
+                          isLoading={updateAlertMutation.isPending}
+                          onPress={() => updateAlertStatus(alert._id, "resolved")}
+                        >
+                          Giải quyết
+                        </Button>
+                      )}
                     {alert.status === "resolved" && (
                       <span className="text-xs text-default-500">
-                        No action needed
+                        Không cần hành động
                       </span>
                     )}
                   </div>

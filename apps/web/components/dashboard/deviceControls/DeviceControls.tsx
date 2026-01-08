@@ -23,11 +23,10 @@ interface Device {
   type: number;
 }
 
-export default function DeviceControls() {
+export default function DeviceControls({ params }: { params?: { warehouseId: string } }) {
   const [devices, setDevices] = useState<Device[]>([]);
 
-  const pathName = usePathname();
-  const warehouseId = pathName.split("/")[1];
+  const warehouseId = params?.warehouseId || usePathname().split("/")[2];
 
   const diviceQuery = useQuery({
     queryKey: ["devices"],

@@ -3,8 +3,9 @@
 import { HeroUIProvider } from "@heroui/react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ThemeProvider, ThemeProviderProps } from "next-themes";
-import { usePathname, useRouter } from "next/navigation";
-import { SocketProvider, useSocket } from "../context/SocketContext";
+import { useRouter } from "next/navigation";
+import { useSocket } from "../context/SocketContext";
+import { useEffect } from "react";
 
 export interface ProvidersProps {
   children: React.ReactNode;
@@ -28,17 +29,12 @@ export default function Providers({ children, themeProps }: ProvidersProps) {
   const router = useRouter();
   const useHref = (href: string) => href;
 
-
   return (
     <QueryClientProvider client={queryClient}>
       <HeroUIProvider navigate={router.push} useHref={useHref}>
-        <SocketProvider>
-          <ThemeProvider {...themeProps}>
-            <JoinRoom>
-              {children}
-            </JoinRoom>
-          </ThemeProvider>
-        </SocketProvider>
+        <ThemeProvider {...themeProps}>
+          {children}
+        </ThemeProvider>
       </HeroUIProvider>
     </QueryClientProvider>
   );
@@ -46,20 +42,46 @@ export default function Providers({ children, themeProps }: ProvidersProps) {
 
 interface JoinRoomProps {
   children: React.ReactNode;
+  warehouseId?: string;
 }
 
-const JoinRoom = ({ children }: JoinRoomProps) => {
-  const { joinRoom } = useSocket();
+export const JoinRoom = ({ children, warehouseId }: JoinRoomProps) => {
+  const { joinRoom, socket } = useSocket();
 
-  const pathName: string | null = usePathname();
-  if (pathName) {
-    const segments: string[] = pathName.split("/").filter(Boolean);
-    const firstSegment: string | undefined = segments[0];
-    
-    if (firstSegment && isMongoId(firstSegment)) {
-      joinRoom(firstSegment);
+  useEffect(() => {
+
+    if (!warehouseId) return;
+
+    if (!isMongoId(warehouseId)) return;
+
+    const handleJoinRoom = () => {
+      joinRoom(warehouseId);
+    };
+
+    if (!socket) {
+      return;
     }
-  }
+
+    // Join room when socket is already connected
+    if (socket.connected) {
+      handleJoinRoom();
+    }
+
+    // Listen for connect event (handles reconnection after refresh)
+    socket.on("connect", () => {
+      handleJoinRoom();
+    });
+
+    // Optional: Handle disconnect
+    socket.on("disconnect", () => {
+    });
+
+    // Cleanup
+    return () => {
+      socket.off("connect", handleJoinRoom);
+      socket.off("disconnect");
+    };
+  }, [socket, warehouseId, joinRoom]);
 
   return <>{children}</>;
 };

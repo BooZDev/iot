@@ -22,8 +22,8 @@ export class UpdateSubDeviceDto {
 
   @ApiProperty({ description: 'Loại thiết bị' })
   @IsOptional({ message: 'Loại thiết bị không hợp lệ' })
-  @IsString({ message: 'Loại thiết bị không hợp lệ' })
-  type?: string;
+  @IsNumber({}, { message: 'Loại thiết bị không hợp lệ' })
+  type?: number;
 
   @ApiProperty({ description: 'Trạng thái thiết bị' })
   @IsOptional({ message: 'Trạng thái thiết bị không hợp lệ' })

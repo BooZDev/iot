@@ -3,7 +3,7 @@ import { AlertService } from './alert.service';
 import { CreateAlertDto } from './dto/create-alert.dto';
 import { UpdateAlertDto } from './dto/update-alert.dto';
 
-@Controller('alert')
+@Controller('alerts')
 export class AlertController {
   constructor(private readonly alertService: AlertService) {}
 
@@ -12,7 +12,11 @@ export class AlertController {
     return this.alertService.create(createAlertDto);
   }
 
-  @Get()
+  @Get(':warehouseId')
+  findByWarehouse(@Param('warehouseId') warehouseId: string) {
+    return this.alertService.findByWarehouse(warehouseId);
+  }
+
   findAll() {
     return this.alertService.findAll();
   }

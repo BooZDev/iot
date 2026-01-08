@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, useContext, useEffect, useRef, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 import { io, Socket } from "socket.io-client";
 
 type SocketContextType = {
@@ -12,33 +12,63 @@ type SocketContextType = {
 const SocketContext = createContext<SocketContextType | null>(null);
 
 export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
-  const socketRef = useRef<Socket | null>(null);
+  const [socket, setSocket] = useState<Socket | null>(null);
   const [room, setRoom] = useState<string | null>(null);
 
   useEffect(() => {
-    socketRef.current = io("http://localhost:5002", {
-      transports: ["websocket"],
+    const socketInstance = io("http://localhost:5002", {
+      transports: ["websocket", "polling"],
+      reconnection: true,
+      reconnectionDelay: 1000,
+      reconnectionAttempts: 5,
     });
 
+    socketInstance.on("connect", () => {
+    });
+
+    socketInstance.on("disconnect", () => {
+    });
+
+    socketInstance.on("connect_error", (error) => {
+    });
+
+    setSocket(socketInstance);
+
     return () => {
-      socketRef.current?.disconnect();
+      socketInstance.disconnect();
     };
-  }, []);
+  }, [children]);
 
   const joinRoom = (newRoom: string) => {
-    if (!socketRef.current) return;
+    if (!socket) {
+      return;
+    }
 
-    if (room === newRoom) return;
+    if (room === newRoom) {
+      return;
+    }
 
-    console.log(`🔵 Joining room: ${newRoom}`);
-    socketRef.current.emit("joinRoom", newRoom);
-    setRoom(newRoom);
+    // Leave old room if exists
+    if (room) {
+      socket.emit("leaveRoom", room);
+    }
+
+    // Join new room
+    if (socket.connected) {
+      socket.emit("joinRoom", newRoom);
+      setRoom(newRoom);
+    } else {
+      socket.once("connect", () => {
+        socket.emit("joinRoom", newRoom);
+        setRoom(newRoom);
+      });
+    }
   };
 
   return (
     <SocketContext.Provider
       value={{
-        socket: socketRef.current,
+        socket,
         room,
         joinRoom,
       }}
