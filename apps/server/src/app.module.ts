@@ -19,7 +19,7 @@ import { OutboundScheduleModule } from './outbound-schedule/outbound-schedule.mo
 
 @Module({
   imports: [
-    ConfigModule.forRoot({ isGlobal: true, envFilePath: '.env' }),
+    ConfigModule.forRoot({ isGlobal: true, envFilePath: '../../.env' }),
     MongooseModule.forRoot(process.env.MONGO_URI as string),
     UserModule,
     AuthModule,
