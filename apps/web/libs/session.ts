@@ -2,6 +2,7 @@
 
 import { jwtVerify, SignJWT } from "jose";
 import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
 
 export type Session = {
   user: {
@@ -28,7 +29,7 @@ export async function createSession(payload: Session) {
     name: "session",
     value: session,
     httpOnly: true,
-    secure: true,
+    secure: false,
     expires: exporedAt,
     sameSite: "lax",
     path: "/",

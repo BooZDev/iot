@@ -5,7 +5,6 @@ import {
   Card,
   CardHeader,
   CardBody,
-  Button,
   Tabs,
   Tab,
   useDisclosure,
@@ -15,6 +14,7 @@ import api from "../../app/api/api";
 import CreateProductForm from "./components/CreateProductForm";
 import ScheduleOutboundForm from "./components/ScheduleOutboundForm";
 import OutboundSchedulesList from "./components/OutboundSchedulesList";
+import UpdateProductStateForm from "./components/UpdateProductStateForm";
 import DeleteConfirmModal from "../user/components/DeleteConfirmModal";
 import useUserStore from "../../stores/UseUserStore";
 
@@ -23,6 +23,7 @@ export interface Product {
   skuCode: string;
   name: string;
   productTypeId: string;
+  flowState: string;
   createdBy: string;
 }
 
@@ -65,7 +66,7 @@ export default function CreateProductPage() {
         warehouses.map(async (warehouse: any) => {
           try {
             const response = await api.get(
-              `inventories/items/warehouse/${warehouse._id}`
+              `/inventories/items/warehouse/${warehouse._id}`
             );
             return response.data.map((item: any) => ({
               ...item,
@@ -117,10 +118,8 @@ export default function CreateProductPage() {
     },
   });
 
-  const { user } = useUserStore();
-
-  // Fetch current user (mock - replace with actual auth)
-  const currentUserId = user.id // Replace with actual user ID from auth
+  const { user } = useUserStore()
+  const currentUserId = user.id; // Replace with actual user ID from auth
 
   // Create product mutation
   const createProductMutation = useMutation({
@@ -133,6 +132,17 @@ export default function CreateProductPage() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["products"] });
+    },
+  });
+
+  // Create product type mutation
+  const createProductTypeMutation = useMutation({
+    mutationFn: async (data: any) => {
+      const response = await api.post("/product-types", data);
+      return response.data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["product-types"] });
     },
   });
 
@@ -162,8 +172,25 @@ export default function CreateProductPage() {
     },
   });
 
+  // Update product state mutation
+  const updateProductStateMutation = useMutation({
+    mutationFn: async (data: { productId: string; flowState: string }) => {
+      const response = await api.patch(`/products/${data.productId}`, {
+        flowState: data.flowState,
+      });
+      return response.data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["products"] });
+    },
+  });
+
   const handleCreateProduct = async (data: any) => {
     await createProductMutation.mutateAsync(data);
+  };
+
+  const handleCreateProductType = async (data: any) => {
+    return await createProductTypeMutation.mutateAsync(data);
   };
 
   const handleCreateSchedule = async (data: any) => {
@@ -185,15 +212,22 @@ export default function CreateProductPage() {
     }
   };
 
+  const handleUpdateProductState = async (data: {
+    productId: string;
+    flowState: string;
+  }) => {
+    await updateProductStateMutation.mutateAsync(data);
+  };
+
   return (
     <div className="p-6 max-w-7xl mx-auto space-y-6">
       {/* Header */}
       <div>
         <h1 className="text-3xl font-bold flex items-center gap-3">
-          ➕ Tạo mới & Lập lịch
+          ➕ Tạo mới & Quản lý
         </h1>
         <p className="text-default-500 mt-1">
-          Tạo sản phẩm mới và lập lịch xuất kho cho sản phẩm
+          Tạo sản phẩm, loại sản phẩm, lập lịch xuất kho và cập nhật trạng thái
         </p>
       </div>
 
@@ -213,6 +247,15 @@ export default function CreateProductPage() {
                 <div className="flex items-center gap-2">
                   <span>📦</span>
                   <span>Tạo sản phẩm</span>
+                </div>
+              }
+            />
+            <Tab
+              key="update-state"
+              title={
+                <div className="flex items-center gap-2">
+                  <span>🔄</span>
+                  <span>Cập nhật trạng thái</span>
                 </div>
               }
             />
@@ -241,7 +284,18 @@ export default function CreateProductPage() {
             <CreateProductForm
               productTypes={productTypes}
               onSubmit={handleCreateProduct}
+              onCreateProductType={handleCreateProductType}
               isLoading={createProductMutation.isPending}
+              isCreatingType={createProductTypeMutation.isPending}
+            />
+          )}
+
+          {selectedTab === "update-state" && (
+            <UpdateProductStateForm
+              products={products}
+              inventoryItems={inventoryItems}
+              onSubmit={handleUpdateProductState}
+              isLoading={updateProductStateMutation.isPending}
             />
           )}
 

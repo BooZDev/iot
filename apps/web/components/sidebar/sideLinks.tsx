@@ -1,8 +1,10 @@
-import { LuLayoutDashboard } from 'react-icons/lu';
+import { LuArrowLeftRight, LuClipboardList, LuLayoutDashboard, LuPackage } from 'react-icons/lu';
 import { MdOutlineInventory2 } from 'react-icons/md';
 import { GrOverview } from "react-icons/gr";
 import { IoGameControllerOutline } from "react-icons/io5";
 import { FaRegUser } from "react-icons/fa";
+import { MdDeviceHub } from "react-icons/md";
+
 
 export type SideLink = {
   id?: string;
@@ -22,13 +24,13 @@ export const sideLinks: SideLink[] = [
     id: "overview",
     href: "/overview",
     label: "Tổng quan",
-    Icon: <MdOutlineInventory2 />,
+    Icon: <GrOverview />,
   },
   {
     id: "devices",
     href: "/devices",
     label: "Thiết bị",
-    Icon: <GrOverview />,
+    Icon: <MdDeviceHub />,
   },
   {
     id: "controls",
@@ -46,12 +48,18 @@ export const sideLinks: SideLink[] = [
     id: "products",
     href: "/products",
     label: "Sản phẩm",
-    Icon: <MdOutlineInventory2 />,
+    Icon: <LuPackage />,
   },
   {
     id: "product-manage",
     href: "/product-manage",
     label: "Quản lý sản phẩm",
-    Icon: <MdOutlineInventory2 />,
+    Icon: <LuClipboardList />,
+  },
+  {
+    id: "inventory-transaction",
+    href: "/inventory-transaction",
+    label: "Giao dịch kho",
+    Icon: <LuArrowLeftRight />,
   }
 ]

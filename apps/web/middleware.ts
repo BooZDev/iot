@@ -9,7 +9,7 @@ export default async function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
 
   // if (!session && PROTECTED_ROUTES.some((p) => pathname.startsWith(p))) {
-  if (!session && !session?.user && !AUTH_ROUTES.includes(pathname)) {
+  if (!session && !AUTH_ROUTES.includes(pathname)) {
     return NextResponse.redirect(new URL("/login", req.nextUrl));
   }
 

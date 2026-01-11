@@ -1,9 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
-import { deleteSession } from "../../../libs/session";
+// import { deleteSession } from "../../../libs/session";
 import { revalidatePath } from "next/cache";
 
 export async function GET(req: NextRequest) {
-  await deleteSession();
+  // await deleteSession();
 
   revalidatePath("/");
   return NextResponse.redirect(new URL("/", req.nextUrl));

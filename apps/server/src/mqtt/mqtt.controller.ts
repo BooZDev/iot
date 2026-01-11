@@ -269,6 +269,15 @@ export class MqttController {
         return;
       }
 
+      if (inventoryItem.quantity === transaction.quantity) {
+        await this.inventoryItemModel.deleteOne({
+          _id: inventoryItem._id,
+        });
+        transaction.status = InventoryTransactionStatus.COMPLETED;
+        await transaction.save();
+        return;
+      }
+
       transaction.status = InventoryTransactionStatus.COMPLETED;
       await transaction.save();
 

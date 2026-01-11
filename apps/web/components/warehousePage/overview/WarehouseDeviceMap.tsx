@@ -38,6 +38,7 @@ import {
 import WarehouseInfo from "./components/WarehouseInfo"
 import DeviceMapView from "./components/DeviceMapView";
 import DeviceListView from "./components/DeviceListView";
+import InventoryView from "./components/InventoryView";
 
 interface WarehouseDeviceMapProps {
   warehouseId: string;
@@ -482,6 +483,7 @@ export default function WarehouseDeviceMap({
               <Tab key="info" title="ℹ️ Thông tin" />
               <Tab key="map" title="🗺️ Bản đồ" />
               <Tab key="list" title="📋 Danh sách" />
+              <Tab key="inventory" title="📦 Tồn kho" />
             </Tabs>
             <div className="flex gap-2">
               {isAddingDevice ? (
@@ -525,7 +527,7 @@ export default function WarehouseDeviceMap({
               toggleSubDeviceMutation={toggleSubDeviceMutation}
               setMapRef={setMapRef}
             />
-          ) : (
+          ) : selectedTab === "list" ? (
             <DeviceListView
               devices={devicesWithSubs}
               onStartAddingDevice={() => {
@@ -536,6 +538,8 @@ export default function WarehouseDeviceMap({
               onEditSubDevice={handleEditSubDevice}
               onOpenSubDeviceModal={handleOpenSubDeviceModal}
             />
+          ) : (
+            <InventoryView warehouseId={warehouseId} />
           )}
         </CardBody>
       </Card>

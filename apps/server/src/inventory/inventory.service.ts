@@ -4,6 +4,8 @@ import { Model } from 'mongoose';
 import { InventoryItem } from 'src/entities/inventoryItem.entity';
 import { InventoryTransaction } from 'src/entities/inventoryTransaction.entity';
 import CreateInventoryTransactionDto from './dto/create-inventoryTransaction.dto';
+import { Product } from 'src/entities/product.entity';
+import { ProductType } from 'src/entities/product-type.entity';
 
 @Injectable()
 export class InventoryService {
@@ -50,6 +52,15 @@ export class InventoryService {
     return await this.inventoryItemModel
       .find({ warehouseId })
       .sort({ createdAt: -1 })
+      .populate({
+        path: 'productId',
+        model: Product.name,
+        populate: {
+          path: 'productTypeId',
+          model: ProductType.name,
+          select: 'name',
+        },
+      })
       .exec();
   }
 
