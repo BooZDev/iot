@@ -15,7 +15,7 @@ export default function SidebarItem({
       href={href || "#"}
       variant={isActive ? "flat" : "light"}
       color={isActive ? "primary" : "default"}
-      className={`justify-start w-full mb-1 ${isActive ? "font-medium" : "font-normal  text-white"}`}
+      className={`justify-start w-full text-lg mb-1 ${isActive ? "font-bold" : "font-medium"}`}
       startContent={Icon}
     >
       <span>{label}</span>

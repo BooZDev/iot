@@ -11,11 +11,22 @@ import { AlertService } from 'src/alert/alert.service';
 import { InjectModel } from '@nestjs/mongoose';
 import { Product } from 'src/entities/product.entity';
 import { Model } from 'mongoose';
+import { InventoryItem } from 'src/entities/inventoryItem.entity';
+import {
+  InventoryTransaction,
+  InventoryTransactionStatus,
+  InventoryTransactionType,
+} from 'src/entities/inventoryTransaction.entity';
+import { CreateInventoryItemDto } from 'src/inventory/dto/create-inventoryItem.dto';
 
 @Controller('mqtt')
 export class MqttController {
   constructor(
     @InjectModel(Product.name) private productModel: Model<Product>,
+    @InjectModel(InventoryItem.name)
+    private inventoryItemModel: Model<InventoryItem>,
+    @InjectModel(InventoryTransaction.name)
+    private inventoryTransactionModel: Model<InventoryTransaction>,
     private readonly dataService: DataService,
     private readonly devicesService: DevicesService,
     private readonly wsGateway: RealtimeGateway,
@@ -173,28 +184,97 @@ export class MqttController {
     }
 
     const product = await this.productModel
-      .findOne({ productCode: message.id })
+      .findOne({ skuCode: message.id })
       .exec();
 
     if (!product) {
-      console.error('Product not found for product code:', message.id);
+      console.error('Không có sản phầm mang mã này:', message.id);
       return;
     }
 
-    if (product.status == 'READY_IN' && message.op == 1) {
-      await this.productModel.findByIdAndUpdate(product._id, {
-        status: 'IN_STOCK',
+    if (message.op === 3) {
+      const transaction = await this.inventoryTransactionModel.findOne({
+        productId: product._id.toString(),
+        warehouseId: gateway.warehouseId,
+        transactionType: InventoryTransactionType.IN,
+        status: InventoryTransactionStatus.PENDING,
       });
-    }
 
-    if (product.status == 'READY_OUT' && message.op == 1) {
-      await this.productModel.findByIdAndUpdate(product._id, {
-        status: 'OUT_STOCK',
+      if (!transaction) {
+        console.error(
+          'Không tìm thấy giao dịch nhập kho phù hợp để cập nhật trạng thái hoàn thành.',
+        );
+        return;
+      }
+
+      transaction.status = InventoryTransactionStatus.COMPLETED;
+      await transaction.save();
+
+      const inventoryItem = await this.inventoryItemModel.findOne({
+        productId: product._id.toString(),
+        warehouseId: gateway.warehouseId,
       });
-    }
 
-    this.wsGateway.server
-      .to(`wh:${gateway.warehouseId.toString()}`)
-      .emit('rfidData', message);
+      if (inventoryItem) {
+        inventoryItem.quantity += transaction.quantity;
+        inventoryItem.lastInAt = new Date();
+        await inventoryItem.save();
+        return;
+      }
+
+      const createInventoryItem: CreateInventoryItemDto = {
+        productId: product._id.toString(),
+        warehouseId: gateway.warehouseId.toString(),
+        quantity: transaction.quantity,
+        lastInAt: new Date(),
+      };
+
+      await this.inventoryItemModel.create(createInventoryItem);
+    } else if (message.op === 1) {
+      const transaction = await this.inventoryTransactionModel.findOne({
+        productId: product._id.toString(),
+        warehouseId: gateway.warehouseId,
+        transactionType: InventoryTransactionType.OUT,
+        status: InventoryTransactionStatus.PENDING,
+      });
+
+      if (
+        !transaction ||
+        transaction.transactionType !== InventoryTransactionType.OUT
+      ) {
+        console.error(
+          'Không tìm thấy giao dịch xuất kho phù hợp để cập nhật trạng thái hoàn thành.',
+        );
+        return;
+      }
+
+      const inventoryItem = await this.inventoryItemModel.findOne({
+        productId: product._id.toString(),
+        warehouseId: gateway.warehouseId,
+      });
+
+      if (!inventoryItem) {
+        console.error(
+          'Không tìm thấy mục tồn kho phù hợp để cập nhật số lượng.',
+        );
+        return;
+      }
+
+      if (inventoryItem.quantity < transaction.quantity) {
+        console.error(
+          'Số lượng trong kho không đủ để thực hiện giao dịch xuất kho.',
+        );
+        transaction.status = InventoryTransactionStatus.CANCELLED;
+        await transaction.save();
+        return;
+      }
+
+      transaction.status = InventoryTransactionStatus.COMPLETED;
+      await transaction.save();
+
+      inventoryItem.quantity -= transaction.quantity;
+      inventoryItem.lastOutAt = new Date();
+      await inventoryItem.save();
+    }
   }
 }

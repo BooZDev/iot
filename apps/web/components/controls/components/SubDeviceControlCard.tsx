@@ -123,20 +123,20 @@ export default function SubDeviceControlCard({
   };
 
   const handleApplyValue = () => {
-    onControlValue(deviceId, subDevice.type, subDevice.status, localValue);
+    onControlValue(subDevice._id, subDevice.type, subDevice.status, localValue);
     setIsEditing(false);
   };
 
   const handleQuickSet = (value: number) => {
     setLocalValue(value);
-    onControlValue(deviceId, subDevice.type, subDevice.status, value);
+    onControlValue(subDevice._id, subDevice.type, subDevice.status, value);
   };
 
   return (
     <Card
       className={`border-2 transition-all ${isOn
-          ? `border-${info.color} bg-${info.color}-50/30`
-          : "border-default-200 bg-default-50"
+        ? `border-${info.color} bg-${info.color}-50/30`
+        : "border-default-200 bg-default-50"
         }`}
     >
       <CardBody className="p-4 space-y-4">
@@ -152,7 +152,7 @@ export default function SubDeviceControlCard({
           <Switch
             size="lg"
             isSelected={isOn}
-            onValueChange={() => onToggleStatus(subDevice._id, subDevice.status)}
+            onValueChange={() => onToggleStatus(subDevice._id, subDevice.status, subDevice.type)}
             isDisabled={isUpdating}
             color={info.color as any}
           />

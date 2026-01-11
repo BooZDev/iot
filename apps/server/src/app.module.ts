@@ -13,6 +13,9 @@ import { SubDevicesModule } from './sub-devices/sub-devices.module';
 import { AlertModule } from './alert/alert.module';
 import { ThresholdModule } from './threshold/threshold.module';
 import { ProductModule } from './product/product.module';
+import { ProductTypesModule } from './product-types/product-types.module';
+import { InventoryModule } from './inventory/inventory.module';
+import { OutboundScheduleModule } from './outbound-schedule/outbound-schedule.module';
 
 @Module({
   imports: [
@@ -30,6 +33,9 @@ import { ProductModule } from './product/product.module';
     AlertModule,
     ThresholdModule,
     ProductModule,
+    ProductTypesModule,
+    InventoryModule,
+    OutboundScheduleModule,
   ],
 })
 export class AppModule {}

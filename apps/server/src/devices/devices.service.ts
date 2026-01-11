@@ -22,7 +22,11 @@ export class DevicesService {
   }
 
   async findAllByWarehouseId(warehouseId: string) {
-    return await this.deviceModel.find({ warehouseId }).exec();
+    return await this.deviceModel
+      .find({ warehouseId })
+      .populate('gatewayId')
+      .lean<PopulateDevice>()
+      .exec();
   }
 
   async findOne(id: string) {

@@ -9,10 +9,22 @@ import { RealtimeModule } from 'src/realtime/realtime.module';
 import { AlertModule } from 'src/alert/alert.module';
 import { MongooseModule } from '@nestjs/mongoose';
 import { Product, ProductSchema } from 'src/entities/product.entity';
+import {
+  InventoryItem,
+  InventoryItemSchema,
+} from 'src/entities/inventoryItem.entity';
+import {
+  InventoryTransaction,
+  InventoryTransactionSchema,
+} from 'src/entities/inventoryTransaction.entity';
 
 @Module({
   imports: [
-    MongooseModule.forFeature([{ name: Product.name, schema: ProductSchema }]),
+    MongooseModule.forFeature([
+      { name: Product.name, schema: ProductSchema },
+      { name: InventoryItem.name, schema: InventoryItemSchema },
+      { name: InventoryTransaction.name, schema: InventoryTransactionSchema },
+    ]),
     ClientsModule.register([mqttConfig]),
     DataModule,
     DevicesModule,

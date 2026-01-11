@@ -80,12 +80,16 @@ export default function ControlPage() {
   const updateStatusMutation = useMutation({
     mutationFn: async ({
       subDeviceId,
+      type,
       status,
     }: {
       subDeviceId: string;
+      type : number,
       status: SubDeviceStatus;
     }) => {
       const response = await api.post(`/control/${subDeviceId}`, {
+        kind:1,
+        actuator: type,
         on: status,
       });
       return response.data;
@@ -109,7 +113,7 @@ export default function ControlPage() {
       value: number;
     }) => {
       const controlPacket = {
-        kind: 1,
+        kind: 2,
         actuator: actuatorType,
         on: status === SubDeviceStatus.ON ? 1 : 0,
         value: value,
@@ -166,9 +170,10 @@ export default function ControlPage() {
   });
 
   // Handlers
-  const handleToggleStatus = (subDeviceId: string, currentStatus: SubDeviceStatus) => {
+  const handleToggleStatus = (subDeviceId: string, currentStatus: SubDeviceStatus, currentType) => {
     updateStatusMutation.mutate({
       subDeviceId,
+      currentType,
       status:
         currentStatus === SubDeviceStatus.ON
           ? SubDeviceStatus.OFF

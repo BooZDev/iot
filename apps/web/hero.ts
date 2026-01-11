@@ -69,7 +69,7 @@ const heroUIInstance: ReturnType<typeof heroui> = heroui({
           800: "#1E293B",
           900: "#0F172A",
           DEFAULT: "#64748B",
-          foreground: "#FFFFFF",
+          foreground: "#000000",
         },
         primary: {
           50: "#ECFDF5",

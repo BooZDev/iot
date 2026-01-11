@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Type } from 'class-transformer';
+import { Transform, Type } from 'class-transformer';
 import {
   IsArray,
   IsDate,
@@ -8,7 +8,6 @@ import {
   IsMongoId,
   IsOptional,
   IsString,
-  IsUrl,
 } from 'class-validator';
 import { Types } from 'mongoose';
 import { Role } from 'src/auth/enums/role.enum';
@@ -32,6 +31,7 @@ export class UpdateUserDto {
 
   @ApiProperty({ description: 'Ngày sinh người dùng' })
   @IsOptional()
+  @Transform(({ value }: { value: string }) => new Date(value))
   @IsDate({ message: 'Ngày sinh không hợp lệ' })
   dateOfBirth?: Date;
 
@@ -42,7 +42,7 @@ export class UpdateUserDto {
 
   @ApiProperty({ description: 'URL ảnh đại diện người dùng' })
   @IsOptional()
-  @IsUrl({}, { message: 'URL ảnh đại diện không hợp lệ' })
+  @IsString({ message: 'URL ảnh đại diện không hợp lệ' })
   avatarUrl?: string;
 
   @ApiProperty({ description: 'Vai trò người dùng' })
