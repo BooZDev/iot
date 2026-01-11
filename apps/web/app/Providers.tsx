@@ -5,7 +5,9 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ThemeProvider, ThemeProviderProps } from "next-themes";
 import { useRouter } from "next/navigation";
 import { useSocket } from "../context/SocketContext";
-import { useEffect } from "react";
+import { use, useEffect } from "react";
+import { getSession } from "../libs/session";
+import useUserStore from "../stores/UseUserStore";
 
 export interface ProvidersProps {
   children: React.ReactNode;
@@ -28,6 +30,17 @@ const isMongoId = (value: string) =>
 export default function Providers({ children, themeProps }: ProvidersProps) {
   const router = useRouter();
   const useHref = (href: string) => href;
+  const { setUser } = useUserStore();
+
+  useEffect(() => {
+    async function fetchSession() {
+      const session = await getSession();
+      if (session && session.user) {
+        setUser({ id: session.user.id });
+      }
+    }
+    fetchSession();
+  }, []);
 
   return (
     <QueryClientProvider client={queryClient}>

@@ -41,5 +41,17 @@ export const sideLinks: SideLink[] = [
     href: "/employees",
     label: "Nhân viên",
     Icon: <FaRegUser />,
+  },
+  {
+    id: "products",
+    href: "/products",
+    label: "Sản phẩm",
+    Icon: <MdOutlineInventory2 />,
+  },
+  {
+    id: "product-manage",
+    href: "/product-manage",
+    label: "Quản lý sản phẩm",
+    Icon: <MdOutlineInventory2 />,
   }
 ]

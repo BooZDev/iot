@@ -26,7 +26,6 @@ export default function LoginPage() {
       setError(res.error);
       return;
     }
-
   }
 
   return <Form onSubmit={onSubmit} className="flex flex-col gap-4 w-80 items-center bg-white/20 p-6 rounded-lg shadow-cyan-950 shadow-lg">

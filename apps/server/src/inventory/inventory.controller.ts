@@ -26,6 +26,21 @@ export class InventoryController {
     private readonly productService: ProductService,
   ) {}
 
+  @ApiOperation({ summary: 'Lấy tất cả mục tồn kho' })
+  @Get()
+  async getAllInventoryItems() {
+    return this.inventoryService.findAllInventoryItems();
+  }
+
+  @ApiOperation({ summary: 'Lấy mục tồn kho theo ID kho' })
+  @ApiParam({ name: 'warehouseId', description: 'ID của kho' })
+  @Get('items/warehouse/:warehouseId')
+  async getInventoryItemsByWarehouseId(
+    @Param('warehouseId') warehouseId: string,
+  ) {
+    return this.inventoryService.findInventoryItemByWarehouseId(warehouseId);
+  }
+
   @ApiOperation({ summary: 'Lấy tất cả yêu cầu nhập kho theo ID kho' })
   @ApiParam({ name: 'warehouseId', description: 'ID của kho' })
   @Get('in/:warehouseId')
