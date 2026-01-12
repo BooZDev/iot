@@ -2,7 +2,7 @@
 
 import { motion } from "framer-motion";
 import Link from "next/link";
-import { Image } from "@heroui/react";
+import { Button, Image } from "@heroui/react";
 import SidebarItem from "./SiderbarItem";
 import { sideLinks } from "./sideLinks";
 import useSidebarStore from "../../stores/UseSidebarStore";
@@ -39,12 +39,15 @@ export default function Sidebar() {
         </div>
 
         <div className="mt-auto pt-4 border-t border-divider">
-          <SidebarItem Icon={<FiHelpCircle />} label="Help & Support" />
-          <SidebarItem
-            Icon={<BiLogOut />}
-            href="/api/signout"
-            label="Sign Out"
-          />
+          <Button
+            className={`justify-start w-full text-lg mb-1 font-medium`}
+            startContent={<BiLogOut />}
+            color="danger"
+            variant="light"
+            onPress={() => { window.location.href = '/api/signout' }}
+          >
+            <span>Đăng xuất</span>
+          </Button>
         </div>
       </div>
     </motion.div>

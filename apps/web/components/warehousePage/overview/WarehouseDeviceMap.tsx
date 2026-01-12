@@ -21,7 +21,7 @@ import {
   Textarea,
 } from "@heroui/react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import api from "../../../app/api/api";
+import api from "../../../libs/api";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import {

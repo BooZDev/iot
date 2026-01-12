@@ -13,7 +13,7 @@ import {
   Spinner,
 } from "@heroui/react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import api from "../../app/api/api";
+import api from "../../libs/api";
 import {
   Device,
   DeviceWithSubDevices,
@@ -84,11 +84,11 @@ export default function ControlPage() {
       status,
     }: {
       subDeviceId: string;
-      type : number,
+      type: number,
       status: SubDeviceStatus;
     }) => {
       const response = await api.post(`/control/${subDeviceId}`, {
-        kind:1,
+        kind: 1,
         actuator: type,
         on: status,
       });
@@ -372,10 +372,10 @@ export default function ControlPage() {
                 <div className="flex items-center gap-3">
                   <div
                     className={`w-3 h-3 rounded-full ${device.state === DeviceState.ACTIVE
-                        ? "bg-success animate-pulse"
-                        : device.state === DeviceState.UNAUTHORIZED
-                          ? "bg-default-400"
-                          : "bg-danger"
+                      ? "bg-success animate-pulse"
+                      : device.state === DeviceState.UNAUTHORIZED
+                        ? "bg-default-400"
+                        : "bg-danger"
                       }`}
                   />
                   <div>

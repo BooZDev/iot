@@ -15,8 +15,10 @@ export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
   const [socket, setSocket] = useState<Socket | null>(null);
   const [room, setRoom] = useState<string | null>(null);
 
+  const url = process.env.NEXT_PUBLIC_WEBSOCKET_URL || "http://localhost:5002";
+
   useEffect(() => {
-    const socketInstance = io("http://localhost:5002", {
+    const socketInstance = io(url, {
       transports: ["websocket", "polling"],
       reconnection: true,
       reconnectionDelay: 1000,

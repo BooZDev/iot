@@ -12,7 +12,7 @@ import {
 } from "@heroui/react";
 import { motion } from "framer-motion";
 import { useQuery } from "@tanstack/react-query";
-import api from "../../../app/api/api";
+import api from "../../../libs/api";
 import { usePathname } from "next/navigation";
 
 interface Device {

@@ -1,18 +1,36 @@
-import { Inject, Injectable, OnModuleInit } from '@nestjs/common';
-import { ClientProxy } from '@nestjs/microservices';
-import { mqttConfig } from './config/mqtt.config';
+import { Injectable, OnModuleInit } from '@nestjs/common';
+import * as mqtt from 'mqtt';
 
 @Injectable()
 export class MqttService implements OnModuleInit {
-  constructor(@Inject(mqttConfig.name) private readonly client: ClientProxy) {}
+  private client: mqtt.MqttClient;
 
   onModuleInit() {
-    this.client.connect().catch((err) => {
-      console.error('Error connecting to MQTT broker:', err);
+    this.client = mqtt.connect('mqtt://broker.emqx.io:1883', {
+      clientId: 'nestjs-backend-001',
+      clean: false, // ✅ giữ session
+      reconnectPeriod: 2000,
     });
+
+    this.client.on('connect', () => {
+      console.log('✅ MQTT connected');
+    });
+
+    this.client.on('reconnect', () => {
+      console.log('🔁 MQTT reconnecting...');
+    });
+
+    this.client.on('offline', () => {
+      console.log('⚠️ MQTT offline');
+    });
+
+    this.client.on('error', console.error);
   }
 
-  publicToTopic(topic: string, message: any = {}) {
-    return this.client.emit(topic, message);
+  publicToTopic(topic: string, payload: any) {
+    this.client.publish(topic, JSON.stringify(payload), {
+      qos: 1,
+      retain: true,
+    });
   }
 }

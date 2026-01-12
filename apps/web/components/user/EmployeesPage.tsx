@@ -14,7 +14,7 @@ import {
   Tab,
 } from "@heroui/react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import api from "../../app/api/api";
+import api from "../../libs/api";
 import EmployeeTable from "./components/EmployeeTable";
 import EmployeeGrid from "./components/EmployeeGrid";
 import EmployeeFormModal from "./components/EmployeeFormModal";
@@ -148,10 +148,10 @@ export default function EmployeesPage() {
     onSuccess: (results) => {
       const succeeded = results.filter((r) => r.status === "fulfilled").length;
       const failed = results.filter((r) => r.status === "rejected").length;
-      
+
       queryClient.invalidateQueries({ queryKey: ["employees"] });
       onImportModalClose();
-      
+
       // You can add a toast notification here
       alert(`Import thành công: ${succeeded} nhân viên\nThất bại: ${failed} nhân viên`);
     },

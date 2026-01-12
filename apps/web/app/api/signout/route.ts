@@ -1,10 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
-// import { deleteSession } from "../../../libs/session";
-import { revalidatePath } from "next/cache";
+import { deleteSession } from "../../../libs/session";
+import { redirect, RedirectType } from "next/navigation";
 
 export async function GET(req: NextRequest) {
-  // await deleteSession();
+  await deleteSession();
 
-  revalidatePath("/");
-  return NextResponse.redirect(new URL("/", req.nextUrl));
+  redirect("/", RedirectType.push);
 }

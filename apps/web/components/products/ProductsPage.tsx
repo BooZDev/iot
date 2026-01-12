@@ -13,7 +13,7 @@ import {
   Tab,
 } from "@heroui/react";
 import { useQuery } from "@tanstack/react-query";
-import api from "../../app/api/api";
+import api from "../../libs/api";
 import ProductsTable from "./components/ProductsTable";
 import ProductsGrid from "./components/ProductsGrid";
 import ProductStatsCards from "./components/ProductStatsCards";

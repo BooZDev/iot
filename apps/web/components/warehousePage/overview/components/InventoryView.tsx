@@ -13,7 +13,7 @@ import {
   Spinner,
 } from "@heroui/react";
 import { useQuery } from "@tanstack/react-query";
-import api from "../../../../app/api/api";
+import api from "../../../../libs/api";
 
 interface Product {
   _id: string;

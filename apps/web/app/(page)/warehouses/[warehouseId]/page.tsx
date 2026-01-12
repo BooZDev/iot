@@ -4,7 +4,7 @@ import AlertsTable from "../../../../components/dashboard/alertsTable/AlertsTabl
 import DeviceControls from "../../../../components/dashboard/deviceControls/DeviceControls";
 import SensorCards from "../../../../components/dashboard/sensorCards/SensorCards";
 import TempHumCharts from "../../../../components/dashboard/tempHumCharts/TempHumCharts";
-import api from "../../../api/api";
+import api from "../../../../libs/api";
 import { JoinRoom } from "../../../Providers";
 
 export default async function Page({ params }: { params: { warehouseId: string } }) {

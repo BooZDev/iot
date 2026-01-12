@@ -14,7 +14,7 @@ import {
 import CustomTooltip from "./CustomTooltip";
 import CustomLegend from "./CustomLengend";
 import { useQuery } from "@tanstack/react-query";
-import api from "../../../app/api/api";
+import api from "../../../libs/api";
 import { usePathname } from "next/navigation";
 import { transformApiData } from "../../../libs/transformApiData";
 import { useState } from "react";

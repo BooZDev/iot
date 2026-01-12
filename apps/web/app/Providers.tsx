@@ -1,11 +1,11 @@
 "use client";
 
-import { HeroUIProvider } from "@heroui/react";
+import { addToast, HeroUIProvider, Toast, ToastProvider } from "@heroui/react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ThemeProvider, ThemeProviderProps } from "next-themes";
 import { useRouter } from "next/navigation";
 import { useSocket } from "../context/SocketContext";
-import { use, useEffect } from "react";
+import { use, useEffect, useState } from "react";
 import { getSession } from "../libs/session";
 import useUserStore from "../stores/UseUserStore";
 
@@ -46,6 +46,7 @@ export default function Providers({ children, themeProps }: ProvidersProps) {
     <QueryClientProvider client={queryClient}>
       <HeroUIProvider navigate={router.push} useHref={useHref}>
         <ThemeProvider {...themeProps}>
+          <ToastProvider placement="top-right" toastOffset={40} />
           {children}
         </ThemeProvider>
       </HeroUIProvider>
@@ -62,7 +63,6 @@ export const JoinRoom = ({ children, warehouseId }: JoinRoomProps) => {
   const { joinRoom, socket } = useSocket();
 
   useEffect(() => {
-
     if (!warehouseId) return;
 
     if (!isMongoId(warehouseId)) return;
@@ -85,6 +85,27 @@ export const JoinRoom = ({ children, warehouseId }: JoinRoomProps) => {
       handleJoinRoom();
     });
 
+    socket.on("rfidError", (data: { message: string }) => {
+      addToast({
+        title: "Lỗi RFID",
+        description: data.message,
+        timeout: 5000,
+        color: "danger",
+      });
+    });
+
+    socket.on("alert", (data: {
+      reason: string;
+      level: 'warning' | 'danger'
+    }) => {
+      addToast({
+        title: "Thông báo",
+        description: data.reason,
+        timeout: 5000,
+        color: data.level === 'warning' ? 'warning' : 'danger',
+      });
+    });
+
     // Optional: Handle disconnect
     socket.on("disconnect", () => {
     });
@@ -96,5 +117,9 @@ export const JoinRoom = ({ children, warehouseId }: JoinRoomProps) => {
     };
   }, [socket, warehouseId, joinRoom]);
 
-  return <>{children}</>;
+  return (
+    <div className="relative">
+      {children}
+    </div>
+  )
 };

@@ -10,7 +10,7 @@ import { GiSmokingOrb } from "react-icons/gi";
 import { MdOutlineWbTwilight } from "react-icons/md";
 import { useQuery } from "@tanstack/react-query";
 import { usePathname } from "next/navigation";
-import api from "../../../app/api/api";
+import api from "../../../libs/api";
 import { useSocket } from "../../../context/SocketContext";
 
 export default function SensorCards({ params }: { params?: { warehouseId: string } }) {

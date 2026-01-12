@@ -11,6 +11,7 @@ export type SideLink = {
   href?: string;
   label: string;
   Icon: React.ReactNode;
+  onClick?: () => void;
 }
 
 export const sideLinks: SideLink[] = [

@@ -17,7 +17,7 @@ import {
 } from "@heroui/react";
 import { useSocket } from "../../../context/SocketContext";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import api from "../../../app/api/api";
+import api from "../../../libs/api";
 import { usePathname } from "next/navigation";
 
 interface Alert {

@@ -18,6 +18,7 @@ import {
   InventoryTransactionType,
 } from 'src/entities/inventoryTransaction.entity';
 import { CreateInventoryItemDto } from 'src/inventory/dto/create-inventoryItem.dto';
+import { MailService } from 'src/mail/mail.service';
 
 @Controller('mqtt')
 export class MqttController {
@@ -32,6 +33,7 @@ export class MqttController {
     private readonly wsGateway: RealtimeGateway,
     private readonly realtimeService: RealtimeService,
     private readonly alertService: AlertService,
+    private readonly mailService: MailService,
   ) {}
 
   @EventPattern('warehouse/+/+/env/data')
@@ -140,6 +142,12 @@ export class MqttController {
       this.wsGateway.server
         .to(`wh:${gateway.warehouseId.toString()}`)
         .emit('alert', { ...payload, level: 'critical' });
+
+      await this.mailService.senToEmail(
+        '',
+        `Cảnh báo: ${payload.reason} với mức độ CRITICAL!`,
+      );
+
       return await this.alertService.findLatestByWarehouseAndUpdate(
         gateway.warehouseId.toString(),
         {
@@ -151,6 +159,11 @@ export class MqttController {
     this.wsGateway.server
       .to(`wh:${gateway.warehouseId.toString()}`)
       .emit('alert', payload);
+
+    await this.mailService.senToEmail(
+      '',
+      `Cảnh báo: ${payload.reason} với mức độ ${payload.level.toUpperCase()}!`,
+    );
 
     return await this.alertService.create(payload);
   }
@@ -242,6 +255,17 @@ export class MqttController {
         !transaction ||
         transaction.transactionType !== InventoryTransactionType.OUT
       ) {
+        this.wsGateway.server
+          .to(`wh:${gateway.warehouseId.toString()}`)
+          .emit('rfidError', {
+            message: `Giao dịch xuất kho không hợp lệ cho sản phẩm ${product.name} (SKU: ${product.skuCode}). Vui lòng kiểm tra lại.`,
+          });
+
+        await this.mailService.senToEmail(
+          '',
+          `Cảnh báo giao dịch xuất kho cho sản phẩm ${product.name} (SKU: ${product.skuCode}).`,
+        );
+
         console.error(
           'Không tìm thấy giao dịch xuất kho phù hợp để cập nhật trạng thái hoàn thành.',
         );

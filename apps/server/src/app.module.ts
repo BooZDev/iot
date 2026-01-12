@@ -16,6 +16,7 @@ import { ProductModule } from './product/product.module';
 import { ProductTypesModule } from './product-types/product-types.module';
 import { InventoryModule } from './inventory/inventory.module';
 import { OutboundScheduleModule } from './outbound-schedule/outbound-schedule.module';
+import { MailModule } from './mail/mail.module';
 
 @Module({
   imports: [
@@ -28,6 +29,7 @@ import { OutboundScheduleModule } from './outbound-schedule/outbound-schedule.mo
     DevicesModule,
     ControlModule,
     RealtimeModule,
+    MailModule,
     MqttModule,
     SubDevicesModule,
     AlertModule,

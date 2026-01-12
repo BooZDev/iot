@@ -1,9 +1,9 @@
-import WarehouseComponent from "../../../components/warehousePage/home/WarehouseComponent";
+import WarehousesPage from "../../../components/warehouse/Warehousespage";
 
 export default function Page() {
   return (
-    <div className="grid gap-6">
-      <WarehouseComponent />
+    <div>
+      <WarehousesPage />
     </div>
   );
 }

@@ -1,8 +1,8 @@
 import axios from "axios";
-import { getSession } from "../../libs/session";
+import { getSession } from "./session";
 
 const api = axios.create({
-  baseURL: "http://localhost:5001",
+  baseURL: process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:5001",
   timeout: 5000,
 });
 

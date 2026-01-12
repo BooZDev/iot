@@ -17,6 +17,7 @@ import {
   InventoryTransaction,
   InventoryTransactionSchema,
 } from 'src/entities/inventoryTransaction.entity';
+import { MailModule } from 'src/mail/mail.module';
 
 @Module({
   imports: [
@@ -30,6 +31,7 @@ import {
     DevicesModule,
     RealtimeModule,
     AlertModule,
+    MailModule,
   ],
   controllers: [MqttController],
   providers: [MqttService],

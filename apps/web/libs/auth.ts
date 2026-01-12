@@ -7,7 +7,9 @@ export async function login(formData: FormData) {
   const email = formData.get("email");
   const password = formData.get("password");
 
-  const res = await fetch("http://localhost:5001/auth/login", {
+  const url = process.env.BACKEND_URL || "http://localhost:5001";
+
+  const res = await fetch(`${url}/auth/login`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ email, password }),

@@ -1,5 +1,5 @@
 import WarehouseDeviceMap from "../../../../../components/warehousePage/overview/WarehouseDeviceMap";
-import api from "../../../../api/api";
+import api from "../../../../../libs/api";
 
 export default async function Page({ params }: { params: { warehouseId: string } }) {
   const { warehouseId } = await params;

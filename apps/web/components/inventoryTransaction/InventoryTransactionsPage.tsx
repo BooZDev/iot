@@ -9,7 +9,7 @@ import {
   Tab,
 } from "@heroui/react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import api from "../../app/api/api";
+import api from "../../libs/api";
 import InboundTransactionForm from "./components/InboundTransactionForm";
 import OutboundTransactionForm from "./components/OutboundTransactionForm";
 import TransactionHistory from "./components/TransactionHistory";
