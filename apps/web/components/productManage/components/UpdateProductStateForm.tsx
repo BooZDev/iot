@@ -48,16 +48,9 @@ export default function UpdateProductStateForm({
   const productsInWarehouse = selectedWarehouse
     ? inventoryItems
       .filter((item: any) => item.warehouseId === selectedWarehouse)
-      .map((item: any) => {
-        const product = products.find((p) => p._id === item.productId);
-        return {
-          ...product,
-          quantity: item.quantity,
-          inventoryItem: item,
-        };
-      })
-      .filter((p: any) => p._id) // Remove null products
     : [];
+
+  console.log(productsInWarehouse);
 
   const selectedProductData = products.find((p) => p._id === selectedProduct);
 
@@ -118,6 +111,7 @@ export default function UpdateProductStateForm({
               placeholder="Chọn nhà kho để xem sản phẩm"
               selectedKeys={selectedWarehouse ? [selectedWarehouse] : []}
               onSelectionChange={(keys) => {
+                console.log("Selected keys:", keys);
                 const selected = Array.from(keys)[0] as string;
                 setSelectedWarehouse(selected);
                 setSelectedProduct("");
@@ -151,9 +145,9 @@ export default function UpdateProductStateForm({
                         <TableRow key={product._id}>
                           <TableCell>
                             <div>
-                              <p className="font-semibold">{product.name}</p>
+                              <p className="font-semibold">{product.productId.name}</p>
                               <p className="text-xs text-default-500 font-mono">
-                                {product.skuCode}
+                                {product.productId.skuCode}
                               </p>
                             </div>
                           </TableCell>
@@ -166,9 +160,9 @@ export default function UpdateProductStateForm({
                             <Chip
                               size="sm"
                               variant="flat"
-                              color={getFlowStateColor(product.flowState)}
+                              color={getFlowStateColor(product.productId.flowState)}
                             >
-                              {getFlowStateLabel(product.flowState)}
+                              {getFlowStateLabel(product.productId.flowState)}
                             </Chip>
                           </TableCell>
                           <TableCell>
@@ -177,12 +171,12 @@ export default function UpdateProductStateForm({
                               color="warning"
                               variant="flat"
                               onPress={() => {
-                                setSelectedProduct(product._id);
+                                setSelectedProduct(product.productId._id);
                                 setTargetState("");
                               }}
-                              isDisabled={selectedProduct === product._id}
+                              isDisabled={selectedProduct === product.productId._id}
                             >
-                              {selectedProduct === product._id
+                              {selectedProduct === product.productId._id
                                 ? "✅ Đã chọn"
                                 : "Cập nhật"}
                             </Button>
@@ -239,19 +233,19 @@ export default function UpdateProductStateForm({
                     }}
                     startContent={<span className="text-default-400">🎯</span>}
                   >
-                    <SelectItem key="READY_IN" value="READY_IN">
+                    <SelectItem key={"READY_IN"}>
                       <div className="flex items-center gap-2">
                         <span>🟢</span>
                         <span>READY_IN - Sẵn sàng nhập</span>
                       </div>
                     </SelectItem>
-                    <SelectItem key="READY_OUT" value="READY_OUT">
+                    <SelectItem key="READY_OUT">
                       <div className="flex items-center gap-2">
                         <span>🔵</span>
                         <span>READY_OUT - Sẵn sàng xuất</span>
                       </div>
                     </SelectItem>
-                    <SelectItem key="BLOCKED" value="BLOCKED">
+                    <SelectItem key="BLOCKED">
                       <div className="flex items-center gap-2">
                         <span>🔴</span>
                         <span>BLOCKED - Bị khóa</span>

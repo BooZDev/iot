@@ -7,7 +7,7 @@ export async function login(formData: FormData) {
   const email = formData.get("email");
   const password = formData.get("password");
 
-  const url = process.env.BACKEND_URL || "http://localhost:5001";
+  const url = process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:5001";
 
   const res = await fetch(`${url}/auth/login`, {
     method: "POST",

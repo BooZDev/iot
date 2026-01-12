@@ -7,9 +7,10 @@ export class MqttService implements OnModuleInit {
 
   onModuleInit() {
     this.client = mqtt.connect('mqtt://broker.emqx.io:1883', {
-      clientId: 'nestjs-backend-001',
-      clean: false, // ✅ giữ session
-      reconnectPeriod: 2000,
+      clientId: process.env.MQTT_CLIENT_ID_2 || 'server-pub',
+      rejectUnauthorized: false,
+      keepalive: 60,
+      reconnectPeriod: 3000,
     });
 
     this.client.on('connect', () => {
