@@ -1,3 +1,6 @@
+/* eslint-disable react-hooks/exhaustive-deps */
+"use client";
+
 import { useEffect, useState, useRef } from "react";
 import L, { LatLngExpression } from "leaflet";
 import "leaflet-draw";
