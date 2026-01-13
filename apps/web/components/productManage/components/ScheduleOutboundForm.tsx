@@ -162,11 +162,11 @@ export default function ScheduleOutboundForm({
               startContent={<span className="text-default-400">📦</span>}
             >
               {availableProducts.map((product: any) => (
-                <SelectItem key={product._id} data-value={product._id}>
+                <SelectItem key={product.productId._id} data-value={product.productId._id}>
                   <div className="flex justify-between items-center w-full">
-                    <span>{product.name}</span>
+                    <span>{product.productId.name}</span>
                     <Chip size="sm" variant="flat" color="primary">
-                      SL: {product.quantity}
+                      SL: {product.productId.quantity}
                     </Chip>
                   </div>
                 </SelectItem>
@@ -183,11 +183,11 @@ export default function ScheduleOutboundForm({
                         ✅ Sản phẩm đã chọn
                       </p>
                       <p className="text-xs text-success-600 mt-1">
-                        {selectedProduct.name} (SKU: {selectedProduct.skuCode})
+                        {selectedProduct.productId.name} (SKU: {selectedProduct.productId.skuCode})
                       </p>
                     </div>
                     <Chip size="md" color="success" variant="solid">
-                      Số lượng: {selectedInventory.quantity}
+                      Số lượng: {selectedInventory.productId.quantity}
                     </Chip>
                   </div>
                 </CardBody>
