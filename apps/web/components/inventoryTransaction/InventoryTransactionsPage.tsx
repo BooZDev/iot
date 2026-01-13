@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import { useState } from "react";
@@ -14,6 +15,7 @@ import InboundTransactionForm from "./components/InboundTransactionForm";
 import OutboundTransactionForm from "./components/OutboundTransactionForm";
 import TransactionHistory from "./components/TransactionHistory";
 import TransactionStatsCards from "./components/TransactionStatsCards";
+import useUserStore from "../../stores/UseUserStore";
 
 export enum InventoryTransactionType {
   IN = "IN",
@@ -120,7 +122,7 @@ export default function InventoryTransactionsPage() {
                 transactionType: "OUT",
               })),
             ];
-          } catch (error) {
+          } catch {
             return [];
           }
         });
@@ -130,8 +132,8 @@ export default function InventoryTransactionsPage() {
       enabled: warehouses.length > 0,
     });
 
-  // Mock current user ID (replace with actual auth)
-  const currentUserId = "current-user-id";
+  const { user } = useUserStore()
+  const currentUserId = user?.id || "";
 
   // Create inbound transaction mutation
   const createInboundMutation = useMutation({

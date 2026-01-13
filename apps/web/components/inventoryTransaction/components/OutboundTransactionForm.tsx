@@ -1,3 +1,5 @@
+/* eslint-disable react-hooks/exhaustive-deps */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState, useEffect } from "react";
 import {
   Card,
@@ -188,7 +190,7 @@ export default function OutboundTransactionForm({
               startContent={<span className="text-default-400">📦</span>}
             >
               {products.map((product: any) => (
-                <SelectItem key={product._id} value={product._id}>
+                <SelectItem key={product._id} data-value={product._id} textValue={product.name}>
                   <div className="flex justify-between items-center w-full">
                     <div>
                       <span className="font-semibold">{product.name}</span>
@@ -219,7 +221,7 @@ export default function OutboundTransactionForm({
               startContent={<span className="text-default-400">🏭</span>}
             >
               {warehouses.map((warehouse: any) => (
-                <SelectItem key={warehouse._id} value={warehouse._id}>
+                <SelectItem key={warehouse._id} data-value={warehouse._id} textValue={warehouse.name}>
                   {warehouse.name}
                 </SelectItem>
               ))}
@@ -295,7 +297,7 @@ export default function OutboundTransactionForm({
               isDisabled={!scheduleStatus.canExport}
             >
               {devices.map((device: any) => (
-                <SelectItem key={device._id} value={device._id}>
+                <SelectItem key={device._id} data-value={device._id} textValue={device.name}>
                   {device.name} ({device.code})
                 </SelectItem>
               ))}

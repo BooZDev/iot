@@ -1,7 +1,5 @@
+import ControlPage from "../../../components/controls/ControlPage";
+
 export default function Page() {
-  return (
-    <div className="grid gap-6">
-     ControlPage
-    </div>
-  );
+  return <div><ControlPage /></div>;
 }

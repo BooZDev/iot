@@ -6,7 +6,6 @@ import { Button, Image } from "@heroui/react";
 import SidebarItem from "./SiderbarItem";
 import { sideLinks } from "./sideLinks";
 import useSidebarStore from "../../stores/UseSidebarStore";
-import { FiHelpCircle } from 'react-icons/fi';
 import { BiLogOut } from 'react-icons/bi';
 import { usePathname } from "next/navigation";
 
@@ -28,14 +27,24 @@ export default function Sidebar() {
         </Link>
 
         <div className="flex-1 overflow-y-auto overflow-x-hidden">
-          {sideLinks.map((item) => (
-            <SidebarItem
-              key={item.id}
-              Icon={item.Icon}
-              href={`/warehouses/${warehosueId}${item.href}`}
-              label={item.label}
-            />
-          ))}
+          {sideLinks.map((item) => {
+            return !item.muchWarehouseId ? (
+              <SidebarItem
+                key={item.id}
+                Icon={item.Icon}
+                href={item.href}
+                label={item.label}
+              />
+            ) : warehosueId ? (
+              <SidebarItem
+                key={item.id}
+                Icon={item.Icon}
+                href={`/warehouses/${warehosueId}${item.href}`}
+                label={item.label}
+              />
+            ) : null;
+          }
+          )}
         </div>
 
         <div className="mt-auto pt-4 border-t border-divider">

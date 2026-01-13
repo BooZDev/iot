@@ -1,5 +1,4 @@
 import { LuArrowLeftRight, LuClipboardList, LuLayoutDashboard, LuPackage } from 'react-icons/lu';
-import { MdOutlineInventory2 } from 'react-icons/md';
 import { GrOverview } from "react-icons/gr";
 import { IoGameControllerOutline } from "react-icons/io5";
 import { FaRegUser } from "react-icons/fa";
@@ -11,6 +10,7 @@ export type SideLink = {
   href?: string;
   label: string;
   Icon: React.ReactNode;
+  muchWarehouseId?: boolean;
   onClick?: () => void;
 }
 
@@ -20,12 +20,14 @@ export const sideLinks: SideLink[] = [
     href: "/",
     label: "Dashboard",
     Icon: <LuLayoutDashboard />,
+    muchWarehouseId: true,
   },
   {
     id: "overview",
     href: "/overview",
     label: "Tổng quan",
     Icon: <GrOverview />,
+    muchWarehouseId: true,
   },
   {
     id: "devices",

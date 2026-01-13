@@ -182,6 +182,21 @@ export default function CreateProductForm({
                     const selected = Array.from(keys)[0] as string;
                     setFormData({ ...formData, productTypeId: selected });
                   }}
+                  renderValue={(items) => {
+                    return items.map((item) => {
+                      const type = productTypes.find((t) => t._id === item.key);
+                      return (
+                        <div key={type._id}>
+                          {type.name}
+                          {type.description && (
+                            <span className="text-xs text-default-400 ml-2">
+                              - {type.description}
+                            </span>
+                          )}
+                        </div>
+                      );
+                    });
+                  }}
                   isRequired
                   isInvalid={!!errors.productTypeId}
                   errorMessage={errors.productTypeId}

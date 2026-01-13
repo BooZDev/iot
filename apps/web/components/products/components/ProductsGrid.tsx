@@ -139,8 +139,7 @@ export default function ProductsGrid({
                   size="sm"
                   variant="flat"
                   color="primary"
-                  onPress={(e) => {
-                    e.stopPropagation();
+                  onPress={() => {
                     onView(product);
                   }}
                 >

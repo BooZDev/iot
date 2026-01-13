@@ -12,11 +12,15 @@ export type Session = {
   // refreshToken: string;
 };
 
+export type RfSession = {
+  refreshToken: string;
+};
+
 const secresKey = process.env.SESSION_SECRET_KEY;
 const encodeedKey = new TextEncoder().encode(secresKey);
 
 export async function createSession(payload: Session) {
-  const exporedAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000); // 7 days
+  const exporedAt = new Date(Date.now() + 60 * 60 * 1000); // 1 hour
 
   const session = await new SignJWT(payload)
     .setProtectedHeader({ alg: "HS256" })
@@ -34,6 +38,45 @@ export async function createSession(payload: Session) {
     sameSite: "lax",
     path: "/",
   });
+}
+
+export async function createRfSession(payload: RfSession) {
+  const exporedAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000); // 7 days
+
+  const session = await new SignJWT(payload)
+    .setProtectedHeader({ alg: "HS256" })
+    .setIssuedAt()
+    .setExpirationTime("7d")
+    .sign(encodeedKey);
+
+  const cookieStore = await cookies();
+  cookieStore.set({
+    name: "rfSession",
+    value: session,
+    httpOnly: true,
+    secure: false,
+    expires: exporedAt,
+    sameSite: "lax",
+    path: "/",
+  });
+}
+
+export async function getRfSession() {
+  const cookieStore = await cookies();
+  const session = cookieStore.get("rfSession")?.value;
+  if (!session) {
+    return null;
+  }
+
+  try {
+    const { payload } = await jwtVerify(session as string, encodeedKey, {
+      algorithms: ["HS256"],
+    });
+    return payload as RfSession;
+  } catch (err) {
+    console.error("Lỗi xác thực phiên làm mới:", err);
+    return null;
+  }
 }
 
 export async function getSession() {

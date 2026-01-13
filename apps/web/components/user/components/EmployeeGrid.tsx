@@ -158,8 +158,7 @@ export default function EmployeeGrid({
                   size="sm"
                   variant="flat"
                   color="primary"
-                  onPress={(e) => {
-                    e.stopPropagation();
+                  onPress={() => {
                     onView(employee);
                   }}
                 >
@@ -172,8 +171,7 @@ export default function EmployeeGrid({
                   size="sm"
                   variant="flat"
                   color="warning"
-                  onPress={(e) => {
-                    e.stopPropagation();
+                  onPress={() => {
                     onEdit(employee);
                   }}
                 >
@@ -186,8 +184,7 @@ export default function EmployeeGrid({
                   size="sm"
                   variant="flat"
                   color="danger"
-                  onPress={(e) => {
-                    e.stopPropagation();
+                  onPress={() => {
                     onDelete(employee);
                   }}
                 >

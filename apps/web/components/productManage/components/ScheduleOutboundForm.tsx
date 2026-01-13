@@ -155,6 +155,21 @@ export default function ScheduleOutboundForm({
                 const selected = Array.from(keys)[0] as string;
                 setFormData({ ...formData, productId: selected });
               }}
+              renderValue={(items) =>
+                items.map((item) => {
+                  const product = availableProducts.find(
+                    (p) => p.productId._id === item.key
+                  );
+                  return (
+                    <div key={product.productId._id} className="flex justify-between items-center w-full">
+                      <span>{product.productId.name}</span>
+                      <Chip size="sm" variant="flat" color="primary">
+                        SL : {product.quantity}
+                      </Chip>
+                    </div>
+                  );
+                })
+              }
               isRequired
               isInvalid={!!errors.productId}
               errorMessage={errors.productId}

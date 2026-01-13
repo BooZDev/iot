@@ -13,7 +13,7 @@ interface ProductStatsCardsProps {
 export default function ProductStatsCards({ stats }: ProductStatsCardsProps) {
   return (
     <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
-      <Card className="border border-divider bg-gradient-to-br from-primary-50 to-primary-100">
+      <Card className="border border-divider bg-linear-to-br from-primary-50 to-primary-100">
         <CardBody className="p-4">
           <div className="flex items-center gap-3">
             <div className="p-3 bg-primary-100 rounded-xl">
@@ -29,7 +29,7 @@ export default function ProductStatsCards({ stats }: ProductStatsCardsProps) {
         </CardBody>
       </Card>
 
-      <Card className="border border-divider bg-gradient-to-br from-success-50 to-success-100">
+      <Card className="border border-divider bg-linear-to-br from-success-50 to-success-100">
         <CardBody className="p-4">
           <div className="flex items-center gap-3">
             <div className="p-3 bg-success-100 rounded-xl">
@@ -43,7 +43,7 @@ export default function ProductStatsCards({ stats }: ProductStatsCardsProps) {
         </CardBody>
       </Card>
 
-      <Card className="border border-divider bg-gradient-to-br from-secondary-50 to-secondary-100">
+      <Card className="border border-divider bg-linear-to-br from-secondary-50 to-secondary-100">
         <CardBody className="p-4">
           <div className="flex items-center gap-3">
             <div className="p-3 bg-secondary-100 rounded-xl">
@@ -57,7 +57,7 @@ export default function ProductStatsCards({ stats }: ProductStatsCardsProps) {
         </CardBody>
       </Card>
 
-      <Card className="border border-divider bg-gradient-to-br from-danger-50 to-danger-100">
+      <Card className="border border-divider bg-linear-to-br from-danger-50 to-danger-100">
         <CardBody className="p-4">
           <div className="flex items-center gap-3">
             <div className="p-3 bg-danger-100 rounded-xl">
@@ -71,7 +71,7 @@ export default function ProductStatsCards({ stats }: ProductStatsCardsProps) {
         </CardBody>
       </Card>
 
-      <Card className="border border-divider bg-gradient-to-br from-warning-50 to-warning-100">
+      <Card className="border border-divider bg-linear-to-br from-warning-50 to-warning-100">
         <CardBody className="p-4">
           <div className="flex items-center gap-3">
             <div className="p-3 bg-warning-100 rounded-xl">

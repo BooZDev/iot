@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState } from "react";
 import {
   Card,
@@ -94,7 +95,7 @@ export default function InboundTransactionForm({
             <div>
               <h3 className="text-xl font-bold">Nhập sản phẩm vào kho</h3>
               <p className="text-sm text-default-500">
-                Chỉ nhập được sản phẩm có trạng thái "READY_IN"
+                Chỉ nhập được sản phẩm có trạng thái &quot;READY_IN&quot;
               </p>
             </div>
           </div>
@@ -125,7 +126,7 @@ export default function InboundTransactionForm({
               startContent={<span className="text-default-400">📦</span>}
             >
               {products.map((product: any) => (
-                <SelectItem key={product._id} value={product._id}>
+                <SelectItem key={product._id} data-key={product._id} textValue={product.name}>
                   <div className="flex justify-between items-center w-full">
                     <div>
                       <span className="font-semibold">{product.name}</span>
@@ -172,7 +173,7 @@ export default function InboundTransactionForm({
               startContent={<span className="text-default-400">🏭</span>}
             >
               {warehouses.map((warehouse: any) => (
-                <SelectItem key={warehouse._id} value={warehouse._id}>
+                <SelectItem key={warehouse._id} data-key={warehouse._id} textValue={warehouse.name}>
                   {warehouse.name}
                 </SelectItem>
               ))}
@@ -209,7 +210,7 @@ export default function InboundTransactionForm({
               startContent={<span className="text-default-400">📡</span>}
             >
               {devices.map((device: any) => (
-                <SelectItem key={device._id} value={device._id}>
+                <SelectItem key={device._id} data-value={device._id} textValue={device.name}>
                   {device.name} ({device.code})
                 </SelectItem>
               ))}

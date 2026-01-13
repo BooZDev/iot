@@ -1,3 +1,6 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable prefer-const */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState } from "react";
 import {
   Modal,
@@ -48,7 +51,11 @@ export default function ImportExcelModal({
     try {
       const data = await file.arrayBuffer();
       const workbook = XLSX.read(data);
-      const worksheet = workbook.Sheets[workbook.SheetNames[0]];
+      const firstSheetName = workbook.SheetNames[0];
+      const worksheet = firstSheetName ? workbook.Sheets[firstSheetName] : undefined;
+      if (!worksheet) {
+        throw new Error("No valid worksheet found in the Excel file.");
+      }
       const jsonData = XLSX.utils.sheet_to_json(worksheet);
 
       const validationErrors: string[] = [];
@@ -384,7 +391,7 @@ export default function ImportExcelModal({
                       {parsedData.slice(0, 5).map((emp, index) => (
                         <div
                           key={index}
-                          className="p-2 bg-white rounded text-sm flex justify-between items-center"
+                          className="p-2 bg-white text-black rounded text-sm flex justify-between items-center"
                         >
                           <div>
                             <span className="font-semibold">{emp.fullName || emp.username}</span>
@@ -392,7 +399,7 @@ export default function ImportExcelModal({
                           </div>
                           <div className="flex gap-1">
                             {emp.role.map((r: Role) => (
-                              <Chip key={r} size="sm" variant="flat">
+                              <Chip key={r} color="primary" size="sm" variant="solid">
                                 {r}
                               </Chip>
                             ))}

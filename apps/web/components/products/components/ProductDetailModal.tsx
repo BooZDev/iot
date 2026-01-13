@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import {
   Modal,
   ModalContent,
@@ -52,8 +53,7 @@ const getFlowStateIcon = (state: ProductFlowState) => {
 export default function ProductDetailModal({
   product,
   productTypes,
-  warehouses,
-  onClose,
+  onClose
 }: ProductDetailModalProps) {
   if (!product) return null;
 
@@ -81,7 +81,7 @@ export default function ProductDetailModal({
         <ModalBody>
           <div className="space-y-6">
             {/* Product Header */}
-            <Card className="bg-gradient-to-br from-primary-50 to-primary-100 border-none">
+            <Card className="bg-linear-to-br from-primary-50 to-primary-100 border-none">
               <CardBody className="p-6">
                 <div className="flex items-center gap-6">
                   <div className="w-24 h-24 bg-white rounded-2xl flex items-center justify-center shadow-lg">

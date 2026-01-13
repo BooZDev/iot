@@ -1,7 +1,7 @@
 "use server";
 
 import { redirect } from "next/navigation";
-import { createSession } from "./session";
+import { createRfSession, createSession } from "./session";
 
 export async function login(formData: FormData) {
   const email = formData.get("email");
@@ -26,6 +26,10 @@ export async function login(formData: FormData) {
   await createSession({
     user: { id: data.id },
     accessToken: data.accessToken,
+  });
+
+  await createRfSession({
+    refreshToken: data.refreshToken,
   });
 
   redirect("/");
