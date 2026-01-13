@@ -164,6 +164,7 @@ export default function ScheduleOutboundForm({
               {availableProducts.map((product: any) => (
                 <SelectItem key={product.productId._id} data-value={product.productId._id}>
                   {`${product.productId.name} (SKU: ${product.productId.skuCode})`}
+                  <span className="text-green-400">{`Tồn kho: ${product.quantity}`}</span>
                 </SelectItem>
               ))}
             </Select>
