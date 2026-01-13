@@ -163,12 +163,7 @@ export default function ScheduleOutboundForm({
             >
               {availableProducts.map((product: any) => (
                 <SelectItem key={product.productId._id} data-value={product.productId._id}>
-                  <div className="flex justify-between items-center w-full">
-                    <span>{product.productId.name}</span>
-                    <Chip size="sm" variant="flat" color="primary">
-                      SL: {product.productId.quantity}
-                    </Chip>
-                  </div>
+                  {`${product.productId.name} (SKU: ${product.productId.skuCode})`}
                 </SelectItem>
               ))}
             </Select>
