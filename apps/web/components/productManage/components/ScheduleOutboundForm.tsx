@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState } from "react";
 import {
   Card,
@@ -37,14 +38,6 @@ export default function ScheduleOutboundForm({
   const availableProducts = formData.warehouseId
     ? inventoryItems
       .filter((item) => item.warehouseId === formData.warehouseId)
-      .map((item) => {
-        const product = products.find((p) => p._id === item.productId);
-        return {
-          ...product,
-          quantity: item.quantity,
-        };
-      })
-      .filter((p) => p._id) // Remove null products
     : [];
 
   const validate = () => {
@@ -143,7 +136,7 @@ export default function ScheduleOutboundForm({
               startContent={<span className="text-default-400">🏭</span>}
             >
               {warehouses.map((warehouse: any) => (
-                <SelectItem key={warehouse._id} value={warehouse._id}>
+                <SelectItem key={warehouse._id} data-value={warehouse._id}>
                   {warehouse.name}
                 </SelectItem>
               ))}
@@ -169,7 +162,7 @@ export default function ScheduleOutboundForm({
               startContent={<span className="text-default-400">📦</span>}
             >
               {availableProducts.map((product: any) => (
-                <SelectItem key={product._id} value={product._id}>
+                <SelectItem key={product._id} data-value={product._id}>
                   <div className="flex justify-between items-center w-full">
                     <span>{product.name}</span>
                     <Chip size="sm" variant="flat" color="primary">
@@ -237,7 +230,7 @@ export default function ScheduleOutboundForm({
                 <p className="text-sm text-warning-700">
                   <span className="font-semibold">⚠️ Lưu ý:</span> Sản phẩm chỉ
                   có thể xuất kho trong khoảng thời gian đã đặt lịch. Sau khi đặt
-                  lịch, trạng thái sản phẩm sẽ chuyển sang <strong>"READY_OUT"</strong> khi đến thời gian xuất kho.
+                  lịch, trạng thái sản phẩm sẽ chuyển sang <strong>&quot;READY_OUT&quot;</strong> khi đến thời gian xuất kho.
                 </p>
               </CardBody>
             </Card>

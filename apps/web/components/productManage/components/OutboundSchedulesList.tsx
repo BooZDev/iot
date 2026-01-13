@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import {
   Table,
   TableHeader,
@@ -57,12 +58,6 @@ export default function OutboundSchedulesList({
     return now < start;
   };
 
-  const isScheduleExpired = (schedule: OutboundSchedule) => {
-    const now = new Date();
-    const end = new Date(schedule.endAt);
-    return now > end;
-  };
-
   const getScheduleStatus = (schedule: OutboundSchedule) => {
     if (isScheduleActive(schedule)) {
       return { label: "Đang hoạt động", color: "success" as const, icon: "✅" };
@@ -87,7 +82,7 @@ export default function OutboundSchedulesList({
         <div className="text-6xl mb-4">📅</div>
         <p className="text-lg text-default-500">Chưa có lịch xuất kho nào</p>
         <p className="text-sm text-default-400 mt-2">
-          Tạo lịch xuất kho mới tại tab "Lập lịch xuất kho"
+          Tạo lịch xuất kho mới tại tab &quot;Lập lịch xuất kho&quot;
         </p>
       </div>
     );

@@ -143,8 +143,9 @@ export class MqttController {
         .to(`wh:${gateway.warehouseId.toString()}`)
         .emit('alert', { ...payload, level: 'critical' });
 
-      await this.mailService.senToEmail(
-        '',
+      await this.mailService.sendMailAPI(
+        process.env.MAIL_TO as string,
+        'Cảnh báo CRITICAL từ hệ thống IoT Warehouse!',
         `Cảnh báo: ${payload.reason} với mức độ CRITICAL!`,
       );
 
@@ -160,8 +161,9 @@ export class MqttController {
       .to(`wh:${gateway.warehouseId.toString()}`)
       .emit('alert', payload);
 
-    await this.mailService.senToEmail(
-      '',
+    await this.mailService.sendMailAPI(
+      process.env.MAIL_TO as string,
+      'Cảnh báo từ hệ thống IoT Warehouse!',
       `Cảnh báo: ${payload.reason} với mức độ ${payload.level.toUpperCase()}!`,
     );
 
@@ -261,9 +263,10 @@ export class MqttController {
             message: `Giao dịch xuất kho không hợp lệ cho sản phẩm ${product.name} (SKU: ${product.skuCode}). Vui lòng kiểm tra lại.`,
           });
 
-        await this.mailService.senToEmail(
-          '',
-          `Cảnh báo giao dịch xuất kho cho sản phẩm ${product.name} (SKU: ${product.skuCode}).`,
+        await this.mailService.sendMailAPI(
+          process.env.MAIL_TO as string,
+          'Lỗi giao dịch xuất kho từ hệ thống IoT Warehouse!',
+          `Giao dịch xuất kho không hợp lệ cho sản phẩm ${product.name} (SKU: ${product.skuCode}). Vui lòng kiểm tra lại.`,
         );
 
         console.error(

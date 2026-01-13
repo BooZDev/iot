@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState } from "react";
 import {
   Card,
@@ -136,7 +137,7 @@ export default function CreateProductForm({
             <div>
               <h3 className="text-xl font-bold">Tạo sản phẩm mới</h3>
               <p className="text-sm text-default-500">
-                Sản phẩm mới sẽ có trạng thái "Sẵn sàng nhập kho"
+                Sản phẩm mới sẽ có trạng thái &quot;Sẵn sàng nhập kho&quot;
               </p>
             </div>
           </div>
@@ -188,7 +189,7 @@ export default function CreateProductForm({
                   className="flex-1"
                 >
                   {productTypes.map((type) => (
-                    <SelectItem key={type._id} value={type._id}>
+                    <SelectItem key={type._id} data-key={type._id}>
                       {type.name}
                       {type.description && (
                         <span className="text-xs text-default-400 ml-2">
@@ -214,9 +215,9 @@ export default function CreateProductForm({
               <CardBody className="p-4">
                 <p className="text-sm text-primary-700">
                   <span className="font-semibold">ℹ️ Lưu ý:</span> Sản phẩm sau
-                  khi tạo sẽ có trạng thái <strong>"READY_IN"</strong> (Sẵn sàng
+                  khi tạo sẽ có trạng thái <strong>&quot;READY_IN&quot;</strong> (Sẵn sàng
                   nhập kho). Bạn có thể nhập sản phẩm vào kho tại trang
-                  "Nhập/Xuất kho".
+                  &quot;Nhập/Xuất kho&quot;.
                 </p>
               </CardBody>
             </Card>

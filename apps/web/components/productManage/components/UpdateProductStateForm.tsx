@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState } from "react";
 import {
   Card,
@@ -120,7 +121,7 @@ export default function UpdateProductStateForm({
               startContent={<span className="text-default-400">🏭</span>}
             >
               {warehouses.map((warehouse: any) => (
-                <SelectItem key={warehouse._id} value={warehouse._id}>
+                <SelectItem key={warehouse._id}>
                   {warehouse.name}
                 </SelectItem>
               ))}
