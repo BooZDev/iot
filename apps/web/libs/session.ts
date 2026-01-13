@@ -2,7 +2,6 @@
 
 import { jwtVerify, SignJWT } from "jose";
 import { cookies } from "next/headers";
-import { redirect } from "next/navigation";
 
 export type Session = {
   user: {

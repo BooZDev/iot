@@ -105,12 +105,6 @@ export default function WarehouseInfo({
               </p>
             </div>
             <Divider />
-            <div>
-              <p className="text-sm text-default-500 mb-1">Diện tích</p>
-              <p className="font-medium">
-                {warehouse?.locations?.length || 0} điểm tọa độ
-              </p>
-            </div>
           </CardBody>
         </Card>
 

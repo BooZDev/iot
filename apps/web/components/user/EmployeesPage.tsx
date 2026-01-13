@@ -8,8 +8,6 @@ import {
   CardBody,
   Button,
   Input,
-  Avatar,
-  Chip,
   useDisclosure,
   Tabs,
   Tab,

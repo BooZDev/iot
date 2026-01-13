@@ -1,4 +1,4 @@
-import { LuArrowLeftRight, LuClipboardList, LuLayoutDashboard, LuPackage } from 'react-icons/lu';
+import { LuArrowLeftRight, LuClipboardList, LuLayoutDashboard, LuMap, LuPackage } from 'react-icons/lu';
 import { GrOverview } from "react-icons/gr";
 import { IoGameControllerOutline } from "react-icons/io5";
 import { FaRegUser } from "react-icons/fa";
@@ -28,6 +28,12 @@ export const sideLinks: SideLink[] = [
     label: "Tổng quan",
     Icon: <GrOverview />,
     muchWarehouseId: true,
+  },
+  {
+    id: "map",
+    href: "/map",
+    label: "Bản đồ",
+    Icon: <LuMap />,
   },
   {
     id: "devices",

@@ -652,22 +652,22 @@ export default function WarehouseDeviceMap({
                   setNewDevice({ ...newDevice, type: selected });
                 }}
               >
-                <SelectItem key={DeviceType.GATEWAY} value={DeviceType.GATEWAY}>
+                <SelectItem key={DeviceType.GATEWAY} data-value={DeviceType.GATEWAY}>
                   Gateway
                 </SelectItem>
                 <SelectItem
                   key={DeviceType.ENV_SENSOR}
-                  value={DeviceType.ENV_SENSOR}
+                  data-value={DeviceType.ENV_SENSOR}
                 >
                   Cảm biến môi trường
                 </SelectItem>
                 <SelectItem
                   key={DeviceType.RFID_READER}
-                  value={DeviceType.RFID_READER}
+                  data-value={DeviceType.RFID_READER}
                 >
                   Đầu đọc RFID
                 </SelectItem>
-                <SelectItem key={DeviceType.OTHER} value={DeviceType.OTHER}>
+                <SelectItem key={DeviceType.OTHER} data-value={DeviceType.OTHER}>
                   Node điều khiển
                 </SelectItem>
               </Select>
@@ -683,7 +683,7 @@ export default function WarehouseDeviceMap({
                   }}
                 >
                   {gateways.map((gateway) => (
-                    <SelectItem key={gateway._id} value={gateway._id}>
+                    <SelectItem key={gateway._id} data-value={gateway._id}>
                       {gateway.name}
                     </SelectItem>
                   ))}
@@ -773,24 +773,24 @@ export default function WarehouseDeviceMap({
                   setEditDeviceForm({ ...editDeviceForm, state: selected });
                 }}
               >
-                <SelectItem key={DeviceState.ACTIVE} value={DeviceState.ACTIVE}>
+                <SelectItem key={DeviceState.ACTIVE} data-value={DeviceState.ACTIVE}>
                   Hoạt động
                 </SelectItem>
                 <SelectItem
                   key={DeviceState.INACTIVE}
-                  value={DeviceState.INACTIVE}
+                  data-value={DeviceState.INACTIVE}
                 >
                   Không hoạt động
                 </SelectItem>
                 <SelectItem
                   key={DeviceState.MAINTENANCE}
-                  value={DeviceState.MAINTENANCE}
+                  data-value={DeviceState.MAINTENANCE}
                 >
                   Bảo trì
                 </SelectItem>
                 <SelectItem
                   key={DeviceState.UNAUTHORIZED}
-                  value={DeviceState.UNAUTHORIZED}
+                  data-value={DeviceState.UNAUTHORIZED}
                 >
                   Chưa xác thực
                 </SelectItem>
@@ -813,7 +813,7 @@ export default function WarehouseDeviceMap({
                     }}
                   >
                     {gateways.map((gateway) => (
-                      <SelectItem key={gateway._id} value={gateway._id}>
+                      <SelectItem key={gateway._id} data-value={gateway._id}>
                         {gateway.name}
                       </SelectItem>
                     ))}
@@ -880,22 +880,22 @@ export default function WarehouseDeviceMap({
                   setNewSubDevice({ ...newSubDevice, type: selected });
                 }}
               >
-                <SelectItem key="1" value="1">
+                <SelectItem key="1" data-value="1">
                   🌀 Quạt thông gió
                 </SelectItem>
-                <SelectItem key="2" value="2">
+                <SelectItem key="2" data-value="2">
                   💡 Đèn chiếu sáng
                 </SelectItem>
-                <SelectItem key="3" value="3">
+                <SelectItem key="3" data-value="3">
                   ❄️ Điều hòa
                 </SelectItem>
-                <SelectItem key="4" value="4">
+                <SelectItem key="4" data-value="4">
                   🔥 Máy sưởi
                 </SelectItem>
-                <SelectItem key="5" value="5">
+                <SelectItem key="5" data-value="5">
                   💧 Máy tạo ẩm
                 </SelectItem>
-                <SelectItem key="6" value="6">
+                <SelectItem key="6" data-value="6">
                   💨 Máy hút ẩm
                 </SelectItem>
               </Select>
@@ -962,22 +962,22 @@ export default function WarehouseDeviceMap({
                   setEditSubDeviceForm({ ...editSubDeviceForm, type: selected });
                 }}
               >
-                <SelectItem key="1" value="1">
+                <SelectItem key="1" data-value="1">
                   🌀 Quạt thông gió
                 </SelectItem>
-                <SelectItem key="2" value="2">
+                <SelectItem key="2" data-value="2">
                   💡 Đèn chiếu sáng
                 </SelectItem>
-                <SelectItem key="3" value="3">
+                <SelectItem key="3" data-value="3">
                   ❄️ Điều hòa
                 </SelectItem>
-                <SelectItem key="4" value="4">
+                <SelectItem key="4" data-value="4">
                   🔥 Máy sưởi
                 </SelectItem>
-                <SelectItem key="5" value="5">
+                <SelectItem key="5" data-value="5">
                   💧 Máy tạo ẩm
                 </SelectItem>
-                <SelectItem key="6" value="6">
+                <SelectItem key="6" data-value="6">
                   💨 Máy hút ẩm
                 </SelectItem>
               </Select>
