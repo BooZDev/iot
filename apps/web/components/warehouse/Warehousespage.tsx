@@ -22,6 +22,7 @@ import DeleteConfirmModal from "../user/components/DeleteConfirmModal";
 
 export interface Warehouse {
   _id: string;
+  warehouseCode: string;
   name: string;
   type: string;
   locations?: number[][]; // Array of [longitude, latitude] coordinates
@@ -163,6 +164,7 @@ export default function WarehousesPage() {
   // Filter warehouses
   const filteredWarehouses = warehouses.filter(
     (warehouse) =>
+      warehouse.warehouseCode.toLowerCase().includes(searchQuery.toLowerCase()) ||
       warehouse.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       warehouse.type.toLowerCase().includes(searchQuery.toLowerCase()) ||
       warehouse.address.toLowerCase().includes(searchQuery.toLowerCase())

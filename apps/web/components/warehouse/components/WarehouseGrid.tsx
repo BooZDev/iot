@@ -64,7 +64,7 @@ export default function WarehouseGrid({
                   <span className="text-4xl">🏭</span>
                 </div>
                 <h3 className="font-bold text-lg text-center">
-                  {warehouse.name}
+                  {warehouse.name} ({warehouse.warehouseCode})
                 </h3>
               </div>
 

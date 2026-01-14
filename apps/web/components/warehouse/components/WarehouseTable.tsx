@@ -51,6 +51,7 @@ export default function WarehouseTable({
     <Table aria-label="Bảng nhà kho">
       <TableHeader>
         <TableColumn>NHÀ KHO</TableColumn>
+        <TableColumn>MÃ NHÀ KHO</TableColumn>
         <TableColumn>LOẠI</TableColumn>
         <TableColumn>ĐỊA CHỈ</TableColumn>
         <TableColumn>TỌA ĐỘ</TableColumn>
@@ -79,6 +80,9 @@ export default function WarehouseTable({
                     )}
                   </div>
                 </div>
+              </TableCell>
+              <TableCell>
+                <span className="font-mono">{warehouse.warehouseCode}</span>
               </TableCell>
               <TableCell>
                 <Chip size="sm" variant="flat" color="secondary">

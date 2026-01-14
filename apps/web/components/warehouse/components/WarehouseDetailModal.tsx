@@ -53,7 +53,7 @@ export default function WarehouseDetailModal({
                   </div>
                   <div className="flex-1">
                     <h2 className="text-2xl font-bold mb-2">
-                      {warehouse.name}
+                      {warehouse.name} ({warehouse.warehouseCode})
                     </h2>
                     <div className="flex gap-2 flex-wrap">
                       <Chip size="lg" variant="solid" color="secondary">
