@@ -36,7 +36,6 @@ export default function WarehouseFormModal({
     address: "",
     description: "",
     imageUrl: "",
-    isActive: true,
   });
 
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -50,7 +49,6 @@ export default function WarehouseFormModal({
         address: warehouse.address,
         description: warehouse.description || "",
         imageUrl: warehouse.imageUrl || "",
-        isActive: warehouse.isActive !== false,
       });
     } else {
       setFormData({
@@ -60,7 +58,6 @@ export default function WarehouseFormModal({
         address: "",
         description: "",
         imageUrl: "",
-        isActive: true,
       });
     }
     setErrors({});
@@ -96,7 +93,6 @@ export default function WarehouseFormModal({
         name: formData.name,
         type: formData.type,
         address: formData.address,
-        isActive: formData.isActive,
       };
 
       if (formData.description.trim()) {
@@ -119,7 +115,6 @@ export default function WarehouseFormModal({
       address: "",
       description: "",
       imageUrl: "",
-      isActive: true,
     });
     setErrors({});
     onClose();
@@ -227,13 +222,6 @@ export default function WarehouseFormModal({
                   Nhà kho có đang hoạt động không?
                 </p>
               </div>
-              <Switch
-                isSelected={formData.isActive}
-                onValueChange={(value) =>
-                  setFormData({ ...formData, isActive: value })
-                }
-                color="success"
-              />
             </div>
 
             {/* Info Box */}
