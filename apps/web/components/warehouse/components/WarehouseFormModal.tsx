@@ -214,16 +214,6 @@ export default function WarehouseFormModal({
               startContent={<span className="text-default-400">🖼️</span>}
             />
 
-            {/* Active Status */}
-            <div className="flex items-center justify-between p-3 bg-default-50 rounded-lg">
-              <div>
-                <p className="font-medium text-sm">Trạng thái hoạt động</p>
-                <p className="text-xs text-default-500">
-                  Nhà kho có đang hoạt động không?
-                </p>
-              </div>
-            </div>
-
             {/* Info Box */}
             <Card className="bg-primary-50 border-none">
               <CardBody className="p-4">
