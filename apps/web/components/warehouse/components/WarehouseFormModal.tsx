@@ -149,6 +149,7 @@ export default function WarehouseFormModal({
                 setFormData({ ...formData, warehouseCode: value })
               }
               isRequired
+              disabled={!!warehouse}
               isInvalid={!!errors.warehouseCode}
               errorMessage={errors.warehouseCode}
               startContent={<span className="text-default-400">🏷️</span>}
