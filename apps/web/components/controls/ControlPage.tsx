@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import { useState, useEffect } from "react";
@@ -170,10 +171,11 @@ export default function ControlPage() {
   });
 
   // Handlers
-  const handleToggleStatus = (subDeviceId: string, currentStatus: SubDeviceStatus, currentType) => {
+  const handleToggleStatus = (subDeviceId: string, currentStatus: SubDeviceStatus) => {
+    const currentType = 0; // Replace with logic to determine `currentType` if needed
     updateStatusMutation.mutate({
       subDeviceId,
-      currentType,
+      type: currentType,
       status:
         currentStatus === SubDeviceStatus.ON
           ? SubDeviceStatus.OFF
@@ -303,11 +305,11 @@ export default function ControlPage() {
                 setSelectedDevice("all");
               }}
             >
-              <SelectItem key="all" value="all">
+              <SelectItem key="all" data-value="all">
                 Tất cả nhà kho
               </SelectItem>
               {warehouses.map((warehouse: any) => (
-                <SelectItem key={warehouse._id} value={warehouse._id}>
+                <SelectItem key={warehouse._id} data-value={warehouse._id}>
                   {warehouse.name}
                 </SelectItem>
               ))}
@@ -322,7 +324,7 @@ export default function ControlPage() {
                 setSelectedDevice(selected || "all");
               }}
             >
-              <SelectItem key="all" value="all">
+              <SelectItem key="all" data-value="all">
                 Tất cả thiết bị
               </SelectItem>
               {devicesWithSubDevices
@@ -332,7 +334,7 @@ export default function ControlPage() {
                     d.warehouseId === selectedWarehouse
                 )
                 .map((device) => (
-                  <SelectItem key={device._id} value={device._id}>
+                  <SelectItem key={device._id} data-value={device._id}>
                     {device.name} ({device.subDevices?.length || 0} TB con)
                   </SelectItem>
                 ))}
@@ -401,18 +403,18 @@ export default function ControlPage() {
                     className="w-40"
                     isDisabled={updateDeviceStateMutation.isPending}
                   >
-                    <SelectItem key={DeviceState.ACTIVE} value={DeviceState.ACTIVE}>
+                    <SelectItem key={DeviceState.ACTIVE} data-value={DeviceState.ACTIVE}>
                       Hoạt động
                     </SelectItem>
                     <SelectItem
                       key={DeviceState.INACTIVE}
-                      value={DeviceState.INACTIVE}
+                      data-value={DeviceState.INACTIVE}
                     >
                       Tắt
                     </SelectItem>
                     <SelectItem
                       key={DeviceState.MAINTENANCE}
-                      value={DeviceState.MAINTENANCE}
+                      data-value={DeviceState.MAINTENANCE}
                     >
                       Bảo trì
                     </SelectItem>

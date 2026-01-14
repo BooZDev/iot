@@ -8,6 +8,7 @@ import {
   Divider,
 } from "@heroui/react";
 import { DeviceWithSubDevices } from "../../../types/device";
+import api from "../../../libs/api";
 
 interface ThresholdControlPanelProps {
   device: DeviceWithSubDevices;
@@ -55,31 +56,43 @@ export default function ThresholdControlPanel({
   });
 
   useEffect(() => {
-    if (device.threshold) {
-      const t = device.threshold;
-      setThresholdData({
-        temperature: {
-          enabled: t.temp_lo !== -99 || t.temp_hi !== 200,
-          min: t.temp_lo !== -99 ? t.temp_lo : 18,
-          max: t.temp_hi !== 200 ? t.temp_hi : 30,
-        },
-        humidity: {
-          enabled: t.hum_lo !== -1 || t.hum_hi !== 101,
-          min: t.hum_lo !== -1 ? t.hum_lo : 40,
-          max: t.hum_hi !== 101 ? t.hum_hi : 70,
-        },
-        gas: {
-          enabled: t.gas_hi !== 1000,
-          max: t.gas_hi !== 1000 ? t.gas_hi : 1000,
-        },
-        light: {
-          enabled: t.light_lo !== -100 || t.light_hi !== 3000,
-          min: t.light_lo !== -100 ? t.light_lo : 200,
-          max: t.light_hi !== 3000 ? t.light_hi : 800,
-        },
-      });
-    }
-  }, [device]);
+    const fetchThreshold = async () => {
+      if (!device.warehouseId) return;
+
+      try {
+        const response = await api.get(`/threshold/${device.warehouseId}`);
+
+        if (response.data) {
+          const t = response.data.thresholds;
+          setThresholdData({
+            temperature: {
+              enabled: t.temp_lo !== -99 || t.temp_hi !== 200,
+              min: t.temp_lo !== -99 ? t.temp_lo : 18,
+              max: t.temp_hi !== 200 ? t.temp_hi : 30,
+            },
+            humidity: {
+              enabled: t.hum_lo !== -1 || t.hum_hi !== 101,
+              min: t.hum_lo !== -1 ? t.hum_lo : 40,
+              max: t.hum_hi !== 101 ? t.hum_hi : 70,
+            },
+            gas: {
+              enabled: t.gas_hi !== 1000,
+              max: t.gas_hi !== 1000 ? t.gas_hi : 1000,
+            },
+            light: {
+              enabled: t.light_lo !== -100 || t.light_hi !== 3000,
+              min: t.light_lo !== -100 ? t.light_lo : 200,
+              max: t.light_hi !== 3000 ? t.light_hi : 800,
+            },
+          });
+        }
+      } catch (error) {
+        console.error("Failed to fetch threshold:", error);
+      }
+    };
+
+    fetchThreshold();
+  }, [device.warehouseId]);
 
   const handleSaveThreshold = () => {
     const packet = {

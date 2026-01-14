@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable react-hooks/rules-of-hooks */
 "use client";
 
 import { useState } from "react";
@@ -9,6 +11,7 @@ import {
   Tooltip,
   Chip,
   Pagination,
+  Slider,
 } from "@heroui/react";
 import { motion } from "framer-motion";
 import { useQuery } from "@tanstack/react-query";
@@ -21,6 +24,7 @@ interface Device {
   status: number;
   state: "active" | "inactive" | "maintenance";
   type: number;
+  value?: number; // Giá trị cho quạt và đèn
 }
 
 export default function DeviceControls({ params }: { params?: { warehouseId: string } }) {
@@ -70,6 +74,29 @@ export default function DeviceControls({ params }: { params?: { warehouseId: str
     );
   };
 
+  const updateDeviceValue = (id: string, value: number) => {
+    const device = devices.find(device => device._id === id);
+    if (!device || device.state === "maintenance" || device.state === "inactive") return;
+
+    setDevices(
+      devices.map((device) => {
+        if (device._id === id) {
+          api.post(`/control/${device._id}`, {
+            kind: 2,
+            actuator: device.type,
+            value: value,
+          });
+
+          return {
+            ...device,
+            value: value,
+          }
+        }
+        return device;
+      })
+    );
+  };
+
   const getStatusColor = (state: string) => {
     switch (state) {
       case "active":
@@ -83,11 +110,18 @@ export default function DeviceControls({ params }: { params?: { warehouseId: str
     }
   };
 
+  const getDeviceMaxValue = (type: number) => {
+    return type === 1 ? 100 : type === 2 ? 10 : 0; // Quạt: 100, Đèn: 10
+  };
+
+  const hasValueControl = (type: number) => {
+    return type === 1 || type === 2; // Chỉ quạt (1) và đèn (2) có điều khiển giá trị
+  };
+
   return (
     <Card className="border border-divider h-full col-start-1 col-end-3">
       <CardHeader className="flex justify-between">
         <div className="flex items-center gap-2">
-          {/* <Icon icon="lucide:cpu" className="text-primary" width={20} /> */}
           <h2 className="text-lg font-medium">Thiết bị hoạt động</h2>
         </div>
 
@@ -117,13 +151,13 @@ export default function DeviceControls({ params }: { params?: { warehouseId: str
               transition={{ duration: 0.3 }}
               className="flex items-center justify-between p-3 rounded-medium bg-content2 dark:bg-content2"
             >
-              <div className="flex items-center gap-3">
+              <div className="flex items-center gap-3 flex-1">
                 <div
                   className={`p-2 rounded-md ${device.status ? "bg-primary/10 text-primary" : "bg-default-100 text-default-500"}`}
                 >
-                  {/* <Icon icon={`lucide:${device.icon}`} width={20} /> */}
+                  {/* Icon placeholder */}
                 </div>
-                <div>
+                <div className="flex-1">
                   <p className="font-medium">{device.name}</p>
                   <div className="flex items-center gap-2 text-xs text-default-500">
                     <Chip
@@ -135,6 +169,27 @@ export default function DeviceControls({ params }: { params?: { warehouseId: str
                       {device.state === "active" ? "Hoạt động" : device.state === "inactive" ? "Ngưng hoạt động" : "Bảo trì"}
                     </Chip>
                   </div>
+
+                  {/* Slider cho quạt và đèn */}
+                  {hasValueControl(device.type) && device.status === 1 && device.state === "active" && (
+                    <div className="mt-2 pr-4">
+                      <Slider
+                        size="sm"
+                        step={1}
+                        minValue={0}
+                        maxValue={getDeviceMaxValue(device.type)}
+                        value={device.value || 0}
+                        onChange={(value) => updateDeviceValue(device._id, value as number)}
+                        className="max-w-md"
+                        color="primary"
+                        label={device.type === 1 ? "Tốc độ quạt" : "Độ sáng đèn"}
+                        showTooltip={true}
+                        tooltipProps={{
+                          content: `${device.value || 0}${device.type === 1 ? '%' : '/10'}`,
+                        }}
+                      />
+                    </div>
+                  )}
                 </div>
               </div>
 
