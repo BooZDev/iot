@@ -5,6 +5,7 @@ import {
   Get,
   Param,
   Post,
+  UseGuards,
 } from '@nestjs/common';
 import { InventoryService } from './inventory.service';
 import { ApiBody, ApiOperation, ApiParam, ApiTags } from '@nestjs/swagger';
@@ -14,8 +15,10 @@ import { MqttService } from 'src/mqtt/mqtt.service';
 import { DevicesService } from 'src/devices/devices.service';
 import { ProductService } from 'src/product/product.service';
 import { ProductFlowState } from 'src/product/enums/productFlowState.enum';
+import { JwtAuthGuard } from 'src/auth/guards/jwt-auth/jwt-auth.guard';
 
 @ApiTags('inventory')
+@UseGuards(JwtAuthGuard)
 @Controller('inventories')
 export class InventoryController {
   constructor(

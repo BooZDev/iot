@@ -6,13 +6,20 @@ import {
   Patch,
   Param,
   Delete,
+  UseGuards,
 } from '@nestjs/common';
 import { ProductService } from './product.service';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { ApiBody, ApiOperation, ApiParam, ApiTags } from '@nestjs/swagger';
+import { RoleGuard } from 'src/auth/guards/role/role.guard';
+import { JwtAuthGuard } from 'src/auth/guards/jwt-auth/jwt-auth.guard';
+import { Roles } from 'src/auth/decorators/role.decorator';
+import { Role } from 'src/auth/enums/role.enum';
 
 @ApiTags('product')
+@UseGuards(RoleGuard)
+@UseGuards(JwtAuthGuard)
 @Controller('products')
 export class ProductController {
   constructor(private readonly productService: ProductService) {}
@@ -37,6 +44,7 @@ export class ProductController {
     return this.productService.findAllWithFlowState(flowState.toUpperCase());
   }
 
+  @Roles(Role.ADMIN, Role.MANAGER)
   @Post()
   @ApiOperation({ summary: 'Tạo mới sản phẩm' })
   @ApiBody({ type: CreateProductDto })
@@ -44,6 +52,7 @@ export class ProductController {
     return this.productService.create(createProductDto);
   }
 
+  @Roles(Role.ADMIN, Role.MANAGER)
   @Patch(':id')
   @ApiOperation({ summary: 'Cập nhật thông tin sản phẩm' })
   @ApiBody({ type: UpdateProductDto })
@@ -52,6 +61,7 @@ export class ProductController {
     return this.productService.update(id, updateProductDto);
   }
 
+  @Roles(Role.ADMIN, Role.MANAGER)
   @Patch(':id/lock')
   @ApiOperation({ summary: 'Đặt trạng thái sản phẩm thành LOCKED' })
   @ApiParam({ name: 'id', description: 'ID của sản phẩm' })
@@ -59,6 +69,7 @@ export class ProductController {
     return this.productService.update(id, { flowState: 'LOCKED' });
   }
 
+  @Roles(Role.ADMIN, Role.MANAGER)
   @Delete(':id')
   @ApiOperation({ summary: 'Xóa sản phẩm' })
   @ApiParam({ name: 'id', description: 'ID của sản phẩm' })

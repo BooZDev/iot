@@ -1,8 +1,10 @@
-import { Controller, Get, Param } from '@nestjs/common';
+import { Controller, Get, Param, UseGuards } from '@nestjs/common';
 import { DataService } from './data.service';
 import { ApiOperation, ApiParam, ApiTags } from '@nestjs/swagger';
+import { JwtAuthGuard } from 'src/auth/guards/jwt-auth/jwt-auth.guard';
 
 @ApiTags('Data')
+@UseGuards(JwtAuthGuard)
 @Controller('data')
 export class DataController {
   constructor(private readonly dataService: DataService) {}
