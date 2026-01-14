@@ -234,11 +234,9 @@ export class MqttController {
         inventoryItem.quantity += transaction.quantity;
         inventoryItem.lastInAt = new Date();
         await inventoryItem.save();
-        this.wsGateway.server
-          .to(`wh:${gateway.warehouseId.toString()}`)
-          .emit('rfidInSuccess', {
-            message: `Nhập kho thành công sản phẩm ${product.name} (SKU: ${product.skuCode}).`,
-          });
+        this.wsGateway.server.emit('rfidInSuccess', {
+          message: `Nhập kho thành công sản phẩm ${product.name} (SKU: ${product.skuCode}).`,
+        });
         return;
       }
 
@@ -250,11 +248,9 @@ export class MqttController {
       };
 
       await this.inventoryItemModel.create(createInventoryItem);
-      this.wsGateway.server
-        .to(`wh:${gateway.warehouseId.toString()}`)
-        .emit('rfidInSuccess', {
-          message: `Nhập kho thành công sản phẩm ${product.name} (SKU: ${product.skuCode}).`,
-        });
+      this.wsGateway.server.emit('rfidInSuccess', {
+        message: `Nhập kho thành công sản phẩm ${product.name} (SKU: ${product.skuCode}).`,
+      });
     } else if (message.op === 1) {
       const transaction = await this.inventoryTransactionModel.findOne({
         productId: product._id.toString(),
@@ -267,11 +263,9 @@ export class MqttController {
         !transaction ||
         transaction.transactionType !== InventoryTransactionType.OUT
       ) {
-        this.wsGateway.server
-          .to(`wh:${gateway.warehouseId.toString()}`)
-          .emit('rfidError', {
-            message: `Giao dịch xuất kho không hợp lệ cho sản phẩm ${product.name} (SKU: ${product.skuCode}). Vui lòng kiểm tra lại.`,
-          });
+        this.wsGateway.server.emit('rfidError', {
+          message: `Giao dịch xuất kho không hợp lệ cho sản phẩm ${product.name} (SKU: ${product.skuCode}). Vui lòng kiểm tra lại.`,
+        });
 
         await this.mailService.sendMailAPI(
           process.env.MAIL_TO as string,
@@ -313,11 +307,9 @@ export class MqttController {
       inventoryItem.lastOutAt = new Date();
       await inventoryItem.save();
 
-      this.wsGateway.server
-        .to(`wh:${gateway.warehouseId.toString()}`)
-        .emit('rfidOutSuccess', {
-          message: `Xuất kho thành công sản phẩm ${product.name} (SKU: ${product.skuCode}).`,
-        });
+      this.wsGateway.server.emit('rfidOutSuccess', {
+        message: `Xuất kho thành công sản phẩm ${product.name} (SKU: ${product.skuCode}).`,
+      });
     }
   }
 }
