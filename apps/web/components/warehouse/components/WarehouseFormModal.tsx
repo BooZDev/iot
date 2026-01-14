@@ -30,6 +30,7 @@ export default function WarehouseFormModal({
   isLoading,
 }: WarehouseFormModalProps) {
   const [formData, setFormData] = useState({
+    warehouseCode: "",
     name: "",
     type: "",
     address: "",
@@ -43,6 +44,7 @@ export default function WarehouseFormModal({
   useEffect(() => {
     if (warehouse) {
       setFormData({
+        warehouseCode: warehouse.warehouseCode,
         name: warehouse.name,
         type: warehouse.type,
         address: warehouse.address,
@@ -52,6 +54,7 @@ export default function WarehouseFormModal({
       });
     } else {
       setFormData({
+        warehouseCode: "",
         name: "",
         type: "",
         address: "",
@@ -65,6 +68,10 @@ export default function WarehouseFormModal({
 
   const validate = () => {
     const newErrors: Record<string, string> = {};
+
+    if (!formData.warehouseCode.trim()) {
+      newErrors.warehouseCode = "Mã nhà kho là bắt buộc";
+    }
 
     if (!formData.name.trim()) {
       newErrors.name = "Tên nhà kho là bắt buộc";
@@ -85,6 +92,7 @@ export default function WarehouseFormModal({
   const handleSubmit = () => {
     if (validate()) {
       const submitData: any = {
+        warehouseCode: formData.warehouseCode,
         name: formData.name,
         type: formData.type,
         address: formData.address,
@@ -105,6 +113,7 @@ export default function WarehouseFormModal({
 
   const handleClose = () => {
     setFormData({
+      warehouseCode: "",
       name: "",
       type: "",
       address: "",
@@ -131,6 +140,20 @@ export default function WarehouseFormModal({
         </ModalHeader>
         <ModalBody>
           <div className="space-y-4">
+            {/* Warehouse Code */}
+            <Input
+              label="Mã nhà kho"
+              placeholder="Nhập mã nhà kho"
+              value={formData.warehouseCode}
+              onValueChange={(value) =>
+                setFormData({ ...formData, warehouseCode: value })
+              }
+              isRequired
+              isInvalid={!!errors.warehouseCode}
+              errorMessage={errors.warehouseCode}
+              startContent={<span className="text-default-400">🏷️</span>}
+            />
+
             {/* Warehouse Name */}
             <Input
               label="Tên nhà kho"
