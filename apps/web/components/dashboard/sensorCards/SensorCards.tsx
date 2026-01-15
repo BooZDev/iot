@@ -109,7 +109,7 @@ export default function SensorCards({ params }: { params?: { warehouseId: string
 
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-      {/* Temperature Card */}
+      {/* Temperature C0ard */}
       <Card className="border border-divider">
         <CardBody className="flex flex-col">
           <div className="flex items-center justify-between mb-3">

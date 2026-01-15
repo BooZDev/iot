@@ -16,6 +16,12 @@ export type SideLink = {
 
 export const sideLinks: SideLink[] = [
   {
+    id: "warehouses",
+    href: "/warehouses",
+    label: "Kho hàng",
+    Icon: <LuPackage />,
+  },
+  {
     id: "dashboard",
     href: "/",
     label: "Dashboard",

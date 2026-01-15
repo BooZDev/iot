@@ -11,6 +11,8 @@ type SocketContextType = {
 
 const SocketContext = createContext<SocketContextType | null>(null);
 
+let roomCurrent: string | null = null;
+
 export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
   const [socket, setSocket] = useState<Socket | null>(null);
   const [room, setRoom] = useState<string | null>(null);
@@ -26,6 +28,10 @@ export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
     });
 
     socketInstance.on("connect", () => {
+      if (roomCurrent) {
+        socketInstance.emit("joinRoom", roomCurrent);
+        setRoom(roomCurrent);
+      }
     });
 
     socketInstance.on("disconnect", () => {
@@ -58,9 +64,10 @@ export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
     // Join new room
     if (socket.connected) {
       socket.emit("joinRoom", newRoom);
+      roomCurrent = newRoom;
       setRoom(newRoom);
     } else {
-      socket.once("connect", () => {
+      socket.on("connect", () => {
         socket.emit("joinRoom", newRoom);
         setRoom(newRoom);
       });
