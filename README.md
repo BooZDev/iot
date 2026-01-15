@@ -1,58 +1,116 @@
-# Turborepo Tailwind CSS starter
+# IoT Smart Warehouse Management System
 
-This Turborepo starter is maintained by the Turborepo core team.
+Hệ thống quản lý kho thông minh tích hợp IoT, sử dụng:
+- ESP32 (Sensor / RFID / Actuator / Gateway)
+- ESP-NOW + MQTT
+- NestJS (Backend)
+- MongoDB
+- Next.js (Frontend)
+- WebSocket Realtime
 
-## Using this example
+---
 
-Run the following command:
+## 1. Requirements
 
-```sh
-npx create-turbo@latest -e with-tailwind
-```
+Trước khi chạy project, đảm bảo máy đã cài:
 
-## What's inside?
+- **Node.js** >= 18  
+  Kiểm tra:
+  ```bash
+  node -v
 
-This Turborepo includes the following packages/apps:
+pnpm >= 8
+Cài pnpm:
 
-### Apps and Packages
+npm install -g pnpm
 
-- `docs`: a [Next.js](https://nextjs.org/) app with [Tailwind CSS](https://tailwindcss.com/)
-- `web`: another [Next.js](https://nextjs.org/) app with [Tailwind CSS](https://tailwindcss.com/)
-- `ui`: a stub React component library with [Tailwind CSS](https://tailwindcss.com/) shared by both `web` and `docs` applications
-- `@repo/eslint-config`: `eslint` configurations (includes `eslint-config-next` and `eslint-config-prettier`)
-- `@repo/typescript-config`: `tsconfig.json`s used throughout the monorepo
 
-Each package/app is 100% [TypeScript](https://www.typescriptlang.org/).
+MongoDB
 
-### Building packages/ui
+Local: mongodb://localhost:27017
 
-This example is set up to produce compiled styles for `ui` components into the `dist` directory. The component `.tsx` files are consumed by the Next.js apps directly using `transpilePackages` in `next.config.ts`. This was chosen for several reasons:
+Hoặc MongoDB Atlas
 
-- Make sharing one `tailwind.config.ts` to apps and packages as easy as possible.
-- Make package compilation simple by only depending on the Next.js Compiler and `tailwindcss`.
-- Ensure Tailwind classes do not overwrite each other. The `ui` package uses a `ui-` prefix for it's classes.
-- Maintain clear package export boundaries.
+Internet (để dùng MQTT broker)
 
-Another option is to consume `packages/ui` directly from source without building. If using this option, you will need to update the `tailwind.config.ts` in your apps to be aware of your package locations, so it can find all usages of the `tailwindcss` class names for CSS compilation.
+2. Clone project
+git clone <repository-url>
+cd <project-folder>
 
-For example, in [tailwind.config.ts](packages/tailwind-config/tailwind.config.ts):
+3. Install dependencies
+pnpm install
 
-```js
-  content: [
-    // app content
-    `src/**/*.{js,ts,jsx,tsx}`,
-    // include packages if not transpiling
-    "../../packages/ui/*.{js,ts,jsx,tsx}",
-  ],
-```
+4. Environment variables (.env)
+4.1. Tạo file .env
 
-If you choose this strategy, you can remove the `tailwindcss` and `autoprefixer` dependencies from the `ui` package.
+Tạo file .env tại thư mục gốc của project.
 
-### Utilities
+# =========================
+# Database
+# =========================
+# MongoDB connection string
+# Example: mongodb://localhost:27017/iot-warehouse
+MONGO_URI=
 
-This Turborepo has some additional tools already setup for you:
+# =========================
+# Backend Server
+# =========================
+# Port for NestJS backend
+PORT=5001
 
-- [Tailwind CSS](https://tailwindcss.com/) for styles
-- [TypeScript](https://www.typescriptlang.org/) for static type checking
-- [ESLint](https://eslint.org/) for code linting
-- [Prettier](https://prettier.io) for code formatting
+# =========================
+# MQTT Configuration
+# =========================
+# MQTT broker URL
+# Example: mqtt://broker.emqx.io:1883
+MQTT_ULR=http://broker.emqx.io:1883
+
+# MQTT credentials
+MQTT_USERNAME=
+MQTT_PASSWORD=
+
+# MQTT client IDs (must be unique)
+MQTT_CLIENT_ID_1=
+MQTT_CLIENT_ID_2=
+
+# =========================
+# JWT Authentication
+# =========================
+# Secret key for access token
+JWT_SECRET=your_jwt_secret
+JWT_EXPIRES_IN=3600
+
+# Secret key for refresh token
+REFRESH_JWT_SECRET=your_refresh_jwt_secret
+REFRESH_JWT_EXPIRES_IN=604800
+
+# =========================
+# Mail Service
+# =========================
+# Resend API key or SMTP configuration
+RESEND_API_KEY=
+
+# Sender email
+MAIL_FROM=
+
+# Receiver email for alerts
+MAIL_TO=
+
+# SMTP login (if used)
+MAIL_USER=
+MAIL_PASS=
+
+# =========================
+# Frontend Configuration
+# =========================
+# Backend API URL
+NEXT_PUBLIC_BACKEND_URL=http://localhost:5001
+
+# WebSocket URL for realtime data
+NEXT_PUBLIC_WEBSOCKET_URL=http://localhost:5002
+
+# =========================
+# Session
+# =========================
+# Secret for session encryption
+SESSION_SECRET_KEY=
