@@ -39,48 +39,6 @@ export default function Providers({ children, themeProps }: ProvidersProps) {
     fetchSession();
   }, [setUser]);
 
-  const { joinRoom, socket } = useSocket();
-
-  useEffect(() => {
-    if (!socket) {
-      return;
-    }
-
-    socket.on("connect", () => {
-    });
-
-    socket.on("rfidError", (data: { message: string }) => {
-      addToast({
-        title: "Lỗi RFID",
-        description: data.message,
-        timeout: 5000,
-        color: "danger",
-      });
-    });
-
-    socket.on("alert", (data: {
-      reason: string;
-      level: 'warning' | 'danger'
-    }) => {
-      addToast({
-        title: "Thông báo",
-        description: data.reason,
-        timeout: 5000,
-        color: data.level === 'warning' ? 'warning' : 'danger',
-      });
-    });
-
-    // Optional: Handle disconnect
-    socket.on("disconnect", () => {
-    });
-
-    // Cleanup
-    return () => {
-      socket.off("connect");
-      socket.off("disconnect");
-    };
-  }, [socket, joinRoom]);
-
   return (
     <QueryClientProvider client={queryClient}>
       <HeroUIProvider navigate={router.push} useHref={useHref}>

@@ -12,6 +12,7 @@ import {
   DropdownItem,
   Button,
   useDisclosure,
+  addToast,
 } from "@heroui/react";
 import { ThemeSwitcher } from "../themeSwitcher/ThemeSwitcher";
 import { GiHamburgerMenu } from "react-icons/gi";
@@ -22,12 +23,57 @@ import api from '../../libs/api';
 import EditProfileModal from './components/EditProfileModal';
 import ChangePasswordModal from './components/ChangePasswordModal';
 import axios from "axios";
+import { useEffect } from "react";
+import { useSocket } from "../../context/SocketContext";
 
 // Main Navbar Component
 export default function Navbar() {
   const { toggleSidebar } = useSidebarStore();
   const editModal = useDisclosure();
   const passwordModal = useDisclosure();
+
+  const { joinRoom, socket } = useSocket();
+
+  useEffect(() => {
+    if (!socket) {
+      return;
+    }
+
+    socket.on("connect", () => {
+    });
+
+    socket.on("rfidError", (data: { message: string }) => {
+      addToast({
+        title: "Lỗi RFID",
+        description: data.message,
+        timeout: 5000,
+        color: "danger",
+      });
+    });
+
+    socket.on("alert", (data: {
+      reason: string;
+      level: 'warning' | 'danger'
+    }) => {
+      addToast({
+        title: "Thông báo",
+        description: data.reason,
+        timeout: 5000,
+        color: data.level === 'warning' ? 'warning' : 'danger',
+      });
+    });
+
+    // Optional: Handle disconnect
+    socket.on("disconnect", () => {
+    });
+
+    // Cleanup
+    return () => {
+      socket.off("connect");
+      socket.off("disconnect");
+    };
+  }, [socket, joinRoom]);
+
 
   // Fetch user profile
   const { data: userData } = useQuery({
