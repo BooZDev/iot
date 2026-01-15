@@ -61,7 +61,7 @@ export const JoinRoom = ({ children, warehouseId }: JoinRoomProps) => {
 
   useEffect(() => {
     const handleJoinRoom = () => {
-      joinRoom(warehouseId);
+      joinRoom(warehouseId as string);
     };
 
     if (!socket) {
