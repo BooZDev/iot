@@ -71,6 +71,8 @@ export const JoinRoom = ({ children, warehouseId }: JoinRoomProps) => {
     // Join room when socket is already connected
     if (socket.connected) {
       handleJoinRoom();
+    } else {
+      socket.connect();
     }
 
     // Listen for connect event (handles reconnection after refresh)

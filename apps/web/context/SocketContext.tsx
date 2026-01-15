@@ -50,6 +50,7 @@ export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
     };
   }, [children]);
 
+
   const joinRoom = (newRoom: string | undefined) => {
     if (!socket) {
       return;
