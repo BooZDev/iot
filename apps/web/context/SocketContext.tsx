@@ -37,6 +37,15 @@ export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
       }
     });
 
+    socketInstance.on("rfidError", (data: { message: string }) => {
+    });
+
+    socketInstance.on("alert", (data: {
+      reason: string;
+      level: 'warning' | 'danger'
+    }) => {
+    });
+
     socketInstance.on("disconnect", () => {
     });
 
