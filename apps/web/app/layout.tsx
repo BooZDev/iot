@@ -4,7 +4,7 @@ import type { Metadata } from "next";
 import Providers from "./Providers";
 
 export const metadata: Metadata = {
-  title: "Project 1 - Web",
+  title: "IOT - Web",
   description: "Web application for Project 1",
 };
 
