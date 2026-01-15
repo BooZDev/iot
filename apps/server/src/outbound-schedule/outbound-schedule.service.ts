@@ -43,6 +43,7 @@ export class OutboundScheduleService {
     return (
       (await this.outboundScheduleModel
         .findOne({ warehouseId, productId: productId })
+        .sort({ createdAt: -1 })
         .exec()) || null
     );
   }
