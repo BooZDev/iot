@@ -24,9 +24,6 @@ declare module "@react-types/shared" {
   }
 }
 
-const isMongoId = (value: string) =>
-  /^[a-f\d]{24}$/i.test(value);
-
 export default function Providers({ children, themeProps }: ProvidersProps) {
   const router = useRouter();
   const useHref = (href: string) => href;
@@ -63,10 +60,6 @@ export const JoinRoom = ({ children, warehouseId }: JoinRoomProps) => {
   const { joinRoom, socket } = useSocket();
 
   useEffect(() => {
-    if (!warehouseId) return;
-
-    if (!isMongoId(warehouseId)) return;
-
     const handleJoinRoom = () => {
       joinRoom(warehouseId);
     };

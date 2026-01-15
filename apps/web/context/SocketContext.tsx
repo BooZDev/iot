@@ -13,6 +13,9 @@ const SocketContext = createContext<SocketContextType | null>(null);
 
 let roomCurrent: string | null = null;
 
+const isMongoId = (value: string) =>
+  /^[a-f\d]{24}$/i.test(value);
+
 export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
   const [socket, setSocket] = useState<Socket | null>(null);
   const [room, setRoom] = useState<string | null>(null);
@@ -47,7 +50,7 @@ export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
     };
   }, [children]);
 
-  const joinRoom = (newRoom: string) => {
+  const joinRoom = (newRoom: string | undefined) => {
     if (!socket) {
       return;
     }
@@ -59,6 +62,11 @@ export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
     // Leave old room if exists
     if (room) {
       socket.emit("leaveRoom", room);
+    }
+
+    if (!newRoom || !isMongoId(newRoom)) {
+      setRoom(null);
+      return;
     }
 
     // Join new room
