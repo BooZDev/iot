@@ -51,15 +51,30 @@ export default function Navbar() {
       });
     });
 
-    socket.on("alert", (data: {
-      reason: string;
-      level: 'warning' | 'danger'
-    }) => {
+    socket.on("generalAlert", (data: { message: string }) => {
       addToast({
         title: "Thông báo",
-        description: data.reason,
+        description: data.message,
         timeout: 5000,
-        color: data.level === 'warning' ? 'warning' : 'danger',
+        color: 'warning'
+      });
+    });
+
+    socket.on("rfidInSuccess", (data: { message: string }) => {
+      addToast({
+        title: "RFID In Thành Công",
+        description: data.message,
+        timeout: 5000,
+        color: "success",
+      });
+    });
+
+    socket.on("rfidOutSuccess", (data: { message: string }) => {
+      addToast({
+        title: "RFID Out Thành Công",
+        description: data.message,
+        timeout: 5000,
+        color: "success",
       });
     });
 

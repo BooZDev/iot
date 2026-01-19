@@ -5,6 +5,7 @@ import {
   Tooltip,
   Spinner,
   Chip,
+  Image,
 } from "@heroui/react";
 import { Warehouse } from "../Warehousespage";
 import Link from "next/link";
@@ -61,7 +62,17 @@ export default function WarehouseGrid({
               {/* Warehouse Icon & Name */}
               <div className="flex flex-col items-center mb-4">
                 <div className="w-20 h-20 bg-primary-100 rounded-xl flex items-center justify-center mb-3">
-                  <span className="text-4xl">🏭</span>
+                  {
+                    warehouse.imageUrl ? (
+                      <Image
+                        src={warehouse.imageUrl}
+                        alt={warehouse.name}
+                        className="w-16 h-16 object-cover rounded-lg"
+                      />
+                    ) : (
+                      <span className="text-4xl">🏭</span>
+                    )
+                  }
                 </div>
                 <h3 className="font-bold text-lg text-center">
                   {warehouse.name} ({warehouse.warehouseCode})

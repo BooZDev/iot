@@ -135,6 +135,8 @@ export default function InventoryTransactionsPage() {
   const { user } = useUserStore()
   const currentUserId = user?.id || "";
 
+  console.log("Current User ID:", currentUserId);
+
   // Create inbound transaction mutation
   const createInboundMutation = useMutation({
     mutationFn: async (data: any) => {

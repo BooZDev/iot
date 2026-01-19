@@ -143,6 +143,11 @@ export class MqttController {
         .to(`wh:${gateway.warehouseId.toString()}`)
         .emit('alert', { ...payload, level: 'critical' });
 
+      this.wsGateway.server.emit(
+        'generalAlert',
+        `Cảnh báo: ${payload.reason} với mức độ CRITICAL!`,
+      );
+
       await this.mailService.sendMailAPI(
         process.env.MAIL_TO as string,
         'Cảnh báo CRITICAL từ hệ thống IoT Warehouse!',
@@ -160,6 +165,11 @@ export class MqttController {
     this.wsGateway.server
       .to(`wh:${gateway.warehouseId.toString()}`)
       .emit('alert', payload);
+
+    this.wsGateway.server.emit(
+      'generalAlert',
+      `Cảnh báo: ${payload.reason} với mức độ ${payload.level.toUpperCase()}!`,
+    );
 
     await this.mailService.sendMailAPI(
       process.env.MAIL_TO as string,
@@ -208,12 +218,14 @@ export class MqttController {
     }
 
     if (message.op === 3) {
-      const transaction = await this.inventoryTransactionModel.findOne({
-        productId: product._id.toString(),
-        warehouseId: gateway.warehouseId,
-        transactionType: InventoryTransactionType.IN,
-        status: InventoryTransactionStatus.PENDING,
-      });
+      const transaction = await this.inventoryTransactionModel
+        .findOne({
+          productId: product._id.toString(),
+          warehouseId: gateway.warehouseId,
+          transactionType: InventoryTransactionType.IN,
+          status: InventoryTransactionStatus.PENDING,
+        })
+        .sort({ requestTime: -1 });
 
       if (!transaction) {
         console.error(
